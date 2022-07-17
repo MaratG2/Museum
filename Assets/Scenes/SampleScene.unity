@@ -669,7 +669,7 @@ GameObject:
   - component: {fileID: 1707151087}
   - component: {fileID: 1707151086}
   m_Layer: 0
-  m_Name: DriveGet
+  m_Name: DriveGet - Hall1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -690,14 +690,14 @@ MonoBehaviour:
   _parent: {fileID: 1562019662}
   _parentPainting: {fileID: 802063236864213337, guid: bc7ac6102856a9e489718dc6ded9c30c, type: 3}
   hallElements:
-  - title: asd
-    image_url: https://forum.unity.com/styles/UnitySkin/xenforo/avatars/avatar_m.png
+  - title: Title1
+    image_url: http://data.pixiz.com/output/user/frame/preview/api/big/7/6/0/8/3288067_db463.jpg
     image_desc: Image doesn't have a spriteRenderer. It's just a sprite. So something
       like this is how I assign a downloaded texture to an Image.
     id: 0
     floor: 1
-  - title: asd2
-    image_url: https://forum.unity.com/styles/UnitySkin/xenforo/avatars/avatar_m.png
+  - title: Title2
+    image_url: https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/NYCS-bull-trans-2.svg/1200px-NYCS-bull-trans-2.svg.png
     image_desc: So something like this is how I assign a downloaded texture to an
       Image.
     id: 1
@@ -755,11 +755,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5773023273067632631, guid: d588f7fdf02a32449ace113c90f0eb19, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 644.7191
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5773023273067632631, guid: d588f7fdf02a32449ace113c90f0eb19, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 343.7903
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5773023273067632631, guid: d588f7fdf02a32449ace113c90f0eb19, type: 3}
       propertyPath: m_LocalPosition.x
@@ -820,3 +820,41 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5773023273067632631, guid: d588f7fdf02a32449ace113c90f0eb19, type: 3}
   m_PrefabInstance: {fileID: 5906927135760576288}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5906927135760576292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562019662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 8
+  m_StartCorner: 3
+  m_StartAxis: 1
+  m_CellSize: {x: 200, y: 100}
+  m_Spacing: {x: 20, y: 100}
+  m_Constraint: 2
+  m_ConstraintCount: 2
+--- !u!114 &5906927135760576293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562019662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 1
+  m_VerticalFit: 1

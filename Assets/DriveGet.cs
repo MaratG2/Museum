@@ -62,6 +62,7 @@ public class DriveGet : MonoBehaviour
             Debug.Log(dataContainer.msg);
         }
 
+        RefreshHall();
         Drive.responseCallback -= HandleDriveResponse;
     }
 
@@ -71,12 +72,14 @@ public class DriveGet : MonoBehaviour
         Drive.GetTable(tableName, true);
     }
 
-    private void Start()
+    private void RefreshHall()
     {
-        foreach (var eles in hallElements)
+        int hallNumber = Convert.ToInt32(tableName.Substring(4));
+        for (int i = 0; i < hallElements.Count; i++)
         {
             Painting painting = Instantiate(_parentPainting, Vector3.zero, Quaternion.identity, _parent.transform);
-            painting.StartCoroutine(painting.LoadImage(eles.image_url));
+            painting.StartCoroutine(painting.LoadImage(hallElements[i].image_url));
+            //painting.GetComponent<RectTransform>().anchoredPosition = new Vector2(-(i / 2 * 250f), 300f * (i % 2));
         }
     }
 }
