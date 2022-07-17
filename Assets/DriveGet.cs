@@ -16,8 +16,9 @@ public class HallElement
 
 public class DriveGet : MonoBehaviour
 {
-    [SerializeField] private GameObject _parent;
-    [SerializeField] private Painting _parentPainting; 
+    [SerializeField] private GameObject _hallPrefab;
+    [SerializeField] private Painting _paintingPrefab; 
+    private GameObject _parent;
     public List<HallElement> hallElements;
     public string tableName = "Hall1";
     
@@ -68,16 +69,16 @@ public class DriveGet : MonoBehaviour
 
     private void Awake()
     {
+        _parent = Instantiate(_hallPrefab, Vector3.zero, Quaternion.identity, GameObject.FindWithTag("Canvas").transform);
         Drive.responseCallback += HandleDriveResponse;
         Drive.GetTable(tableName, true);
     }
 
     private void RefreshHall()
     {
-        int hallNumber = Convert.ToInt32(tableName.Substring(4));
         for (int i = 0; i < hallElements.Count; i++)
         {
-            Painting painting = Instantiate(_parentPainting, Vector3.zero, Quaternion.identity, _parent.transform);
+            Painting painting = Instantiate(_paintingPrefab, Vector3.zero, Quaternion.identity, _parent.transform);
             painting.StartCoroutine(painting.LoadImage(hallElements[i].image_url));
             //painting.GetComponent<RectTransform>().anchoredPosition = new Vector2(-(i / 2 * 250f), 300f * (i % 2));
         }
