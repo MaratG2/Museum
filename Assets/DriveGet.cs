@@ -11,10 +11,13 @@ public class HallElement
     public string image_url;
     public string image_desc;
     public int id;
+    public int floor;
 }
 
 public class DriveGet : MonoBehaviour
 {
+    [SerializeField] private GameObject _parent;
+    [SerializeField] private Painting _parentPainting; 
     public List<HallElement> hallElements;
     public string tableName = "Hall1";
     
@@ -60,5 +63,20 @@ public class DriveGet : MonoBehaviour
         }
 
         Drive.responseCallback -= HandleDriveResponse;
+    }
+
+    private void Awake()
+    {
+        Drive.responseCallback += HandleDriveResponse;
+        Drive.GetTable(tableName, true);
+    }
+
+    private void Start()
+    {
+        foreach (var eles in hallElements)
+        {
+            Painting painting = Instantiate(_parentPainting, Vector3.zero, Quaternion.identity, _parent.transform);
+            painting.StartCoroutine(painting.LoadImage(eles.image_url));
+        }
     }
 }
