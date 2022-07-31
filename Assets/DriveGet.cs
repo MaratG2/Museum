@@ -70,7 +70,7 @@ public class DriveGet : MonoBehaviour
 
     public void Setup()
     {
-        _parent = Instantiate(_hallPrefab, Vector3.zero, Quaternion.identity, GameObject.FindWithTag("Canvas").transform);
+        _parent = Instantiate(_hallPrefab, Vector3.zero, Quaternion.identity, GameObject.FindWithTag("Canvas").transform.GetChild(0));
         _contentRT = _parent.transform.GetChild(0).GetComponent<RectTransform>();
         Drive.responseCallback += HandleDriveResponse;
         Drive.GetTable(tableName, true);
