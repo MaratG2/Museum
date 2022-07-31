@@ -21,6 +21,7 @@ public class DriveGet : MonoBehaviour
     private GameObject _parent;
     public List<HallElement> hallElements;
     public string tableName = "Hall1";
+    private RectTransform _contentRT;
     
     // Overwrites local translation data with the table obtained from the cloud.
     [ContextMenu("Download Localization Table")]
@@ -70,6 +71,7 @@ public class DriveGet : MonoBehaviour
     public void Setup()
     {
         _parent = Instantiate(_hallPrefab, Vector3.zero, Quaternion.identity, GameObject.FindWithTag("Canvas").transform);
+        _contentRT = _parent.transform.GetChild(0).GetComponent<RectTransform>();
         Drive.responseCallback += HandleDriveResponse;
         Drive.GetTable(tableName, true);
     }
@@ -78,9 +80,10 @@ public class DriveGet : MonoBehaviour
     {
         for (int i = 0; i < hallElements.Count; i++)
         {
-            Painting painting = Instantiate(_paintingPrefab, Vector3.zero, Quaternion.identity, _parent.transform);
+            Painting painting = Instantiate(_paintingPrefab, Vector3.zero, Quaternion.identity, _parent.transform.GetChild(0));
             painting.StartCoroutine(painting.LoadImage(hallElements[i].image_url));
             //painting.GetComponent<RectTransform>().anchoredPosition = new Vector2(-(i / 2 * 250f), 300f * (i % 2));
         }
+        _contentRT.anchoredPosition = new Vector2(0f, 150f);
     }
 }
