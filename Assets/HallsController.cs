@@ -42,6 +42,8 @@ public class HallsController : MonoBehaviour
                 string tableName = tables[i].objType;
                 var hall = Instantiate(_hallPrefab, Vector3.zero, Quaternion.identity);
                 hall.gameObject.name = tableName;
+                hall.tableName = tableName;
+                hall.Setup();
                 logMsg += "\n<color=blue>Table Name: " + tables[i].objType + "</color>\n" + tables[i].payload + "\n";
             }
 

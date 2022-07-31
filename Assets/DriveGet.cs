@@ -67,7 +67,7 @@ public class DriveGet : MonoBehaviour
         Drive.responseCallback -= HandleDriveResponse;
     }
 
-    private void Awake()
+    public void Setup()
     {
         _parent = Instantiate(_hallPrefab, Vector3.zero, Quaternion.identity, GameObject.FindWithTag("Canvas").transform);
         Drive.responseCallback += HandleDriveResponse;
