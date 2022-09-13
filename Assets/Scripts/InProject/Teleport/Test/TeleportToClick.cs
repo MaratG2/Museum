@@ -38,6 +38,7 @@ public class TeleportToClick : MonoBehaviour
             telCam.Priority = 1;
             playerCam.Priority = 10;
         }
+        
     }
 
 }
