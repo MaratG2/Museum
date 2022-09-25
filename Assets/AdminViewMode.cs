@@ -36,6 +36,9 @@ public class AdminViewMode : MonoBehaviour
     public void SelectHall(int num)
     {
         Debug.Log(num + " | " + _cachedHallOptions.Count);
+        if(_hallSelected.name != _cachedHallOptions[num].name)
+            FindObjectOfType<AdminEditMode>().ClearAll();
+        
         _hallSelected = _cachedHallOptions[num];
     }
 

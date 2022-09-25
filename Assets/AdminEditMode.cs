@@ -8,6 +8,7 @@ public class AdminEditMode : MonoBehaviour
 {
     [SerializeField] private Color32 _doorColor, _frameColor, _rubberColor;
     [SerializeField] private AdminViewMode _adminView;
+    [SerializeField] private RectTransform _paintsParent;
     [SerializeField] private RectTransform _cursorTile;
     [SerializeField] private RectTransform _imagePreview;
     private int _currentTool = -999;
@@ -57,9 +58,15 @@ public class AdminEditMode : MonoBehaviour
         }
     }
 
+    public void ClearAll()
+    {
+        for (int i = 0; i < _paintsParent.childCount; i++)
+            Destroy(_paintsParent.GetChild(i).gameObject);
+    }
+
     private void Paint()
     {
-        var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, null);
+        var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, _paintsParent);
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchoredPosition = _cursorTile.anchoredPosition;
