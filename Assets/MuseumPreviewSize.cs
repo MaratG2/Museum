@@ -30,8 +30,8 @@ public class MuseumPreviewSize : MonoBehaviour
         if (!isX || !isZ)
             return;
         
-        float heightScale = (windowSize.y - 250f) / sizeZ;
-        float widthScale = (windowSize.x - 1400f) / sizeX;
+        float heightScale = windowSize.y * 0.85f / sizeZ;
+        float widthScale = windowSize.x * 0.25f / sizeX;
         if(heightScale < widthScale)
             _rt.sizeDelta = new Vector2(sizeX * heightScale, sizeZ * heightScale);
         else

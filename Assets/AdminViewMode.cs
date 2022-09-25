@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class AdminViewMode : MonoBehaviour
 {
+    [SerializeField] private GameObject _hallPreview;
     [SerializeField] private GameObject _textGORefreshing;
     [SerializeField] private Button _hallListingPrefab;
     [SerializeField] private RectTransform _hallListingsParent;
@@ -43,6 +44,7 @@ public class AdminViewMode : MonoBehaviour
         for (int i = 0; i < _hallListingsParent.childCount; i++)
             Destroy(_hallListingsParent.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
+        _hallPreview.SetActive(false);
         Invoke(nameof(DelayRefresh), 0.5f);
     }
 
@@ -55,6 +57,7 @@ public class AdminViewMode : MonoBehaviour
     {
         Debug.Log(dataContainer.msg);
         _textGORefreshing.SetActive(false);
+        _hallPreview.SetActive(true);
         if (dataContainer.QueryType == Drive.QueryType.getTable)
         {
             string rawJSon = dataContainer.payload;
