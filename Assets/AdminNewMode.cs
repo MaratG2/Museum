@@ -40,7 +40,7 @@ public class AdminNewMode : MonoBehaviour
         bool isX = Int32.TryParse(_inputSizeX.text, out sizeX);
         bool isZ = Int32.TryParse(_inputSizeZ.text, out sizeZ);
 
-        if (_inputName.text.Equals("") || !isX || !isZ)
+        if (_inputName.text.Equals("") || !isX || !isZ || sizeX <= 0 || sizeZ <= 0)
         {
             _createHall.interactable = false;
             return;
