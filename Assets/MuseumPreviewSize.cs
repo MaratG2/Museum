@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MuseumPreviewSize : MonoBehaviour
 {
@@ -10,10 +11,12 @@ public class MuseumPreviewSize : MonoBehaviour
     [SerializeField] private TMP_InputField _inputSizeZ;
 
     private RectTransform _rt;
+    private Image _image;
 
     private void Awake()
     {
         _rt = GetComponent<RectTransform>();
+        _image = GetComponent<Image>();
     }
 
     void Update()
@@ -39,5 +42,7 @@ public class MuseumPreviewSize : MonoBehaviour
             _rt.sizeDelta = new Vector2(sizeX * heightScale, sizeZ * heightScale);
         else
             _rt.sizeDelta = new Vector2(sizeX * widthScale, sizeZ * widthScale);
+
+        _image.material.SetTextureScale("_MainTex", new Vector2(sizeX, sizeZ));
     }
 }
