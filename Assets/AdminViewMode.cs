@@ -16,13 +16,26 @@ public class AdminViewMode : MonoBehaviour
     {
         // Suscribe for catching cloud responses.
         Drive.responseCallback += HandleDriveResponse;
-        Drive.GetTable(_tableOptionsName, true);
+        Refresh();
     }
 
     private void OnDisable()
     {
         // Remove listeners.
         Drive.responseCallback -= HandleDriveResponse;
+    }
+
+    public void Refresh()
+    {
+        for (int i = 0; i < _hallListingsParent.childCount; i++)
+            Destroy(_hallListingsParent.GetChild(i).gameObject);
+        
+        Invoke(nameof(DelayRefresh), 0.5f);
+    }
+
+    private void DelayRefresh()
+    {
+        Drive.GetTable(_tableOptionsName, true);
     }
 
     public void HandleDriveResponse(Drive.DataContainer dataContainer)
