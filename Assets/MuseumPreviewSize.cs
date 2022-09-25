@@ -17,6 +17,7 @@ public class MuseumPreviewSize : MonoBehaviour
     {
         _rt = GetComponent<RectTransform>();
         _image = GetComponent<Image>();
+        _rt.sizeDelta = Vector2.zero;
     }
 
     void Update()
