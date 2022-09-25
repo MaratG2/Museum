@@ -1,15 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AdminEditMode : MonoBehaviour
 {
+    [SerializeField] private Color32 _doorColor, _frameColor, _rubberColor;
     [SerializeField] private AdminViewMode _adminView;
     [SerializeField] private RectTransform _cursorTile;
     [SerializeField] private RectTransform _imagePreview;
+    private int _currentTool = -999;
+
+    private void Start()
+    {
+        SelectTool(-1);
+    }
 
     void Update()
     {
+        if (_adminView.HallSelected.sizex == 0 || _adminView.HallSelected.sizez == 0)
+            return;
+        
         Vector2 windowSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
         Vector2 absoluteMousePos = Input.mousePosition;
         float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
@@ -35,5 +47,42 @@ public class AdminEditMode : MonoBehaviour
             _cursorTile.anchoredPosition = tiledMousePos;
         else
             _cursorTile.anchoredPosition = -windowSize;
+
+        if(_currentTool is 0 or 1)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Paint();
+            }
+        }
+    }
+
+    private void Paint()
+    {
+        var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, null);
+        newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+        newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
+        newTile.GetComponent<RectTransform>().anchoredPosition = _cursorTile.anchoredPosition;
+        newTile.GetComponent<Image>().color = _cursorTile.GetComponent<Image>().color;
+    }
+
+    public void SelectTool(int tool)
+    {
+        _currentTool = tool;
+        switch (tool)
+        {
+            case -1:
+                _cursorTile.GetComponent<Image>().color = Color.clear;
+                break;
+            case 0:
+                _cursorTile.GetComponent<Image>().color = _doorColor;
+                break;
+            case 1:
+                _cursorTile.GetComponent<Image>().color = _frameColor;
+                break;
+            case 8:
+                _cursorTile.GetComponent<Image>().color = _rubberColor;
+                break;
+        }
     }
 }
