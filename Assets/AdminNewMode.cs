@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GoogleSheetsForUnity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,23 @@ public class AdminNewMode : MonoBehaviour
     [SerializeField] private TMP_InputField _inputDateBegin;
     [SerializeField] private TMP_InputField _inputDateEnd;
     [SerializeField] private Button _createHall;
+
+    private bool _isOnCooldown;
+    private string _tableOptionsName = "Options";
+    
+    [System.Serializable]
+    public struct HallOptions
+    {
+        public string name;
+        public int sizex;
+        public int sizez;
+        public string is_date_b;
+        public string is_date_e;
+        public string date_begin;
+        public string date_end;
+        public string is_maintained;
+        public string is_hidden;
+    }
     
     void Update()
     {
@@ -37,9 +55,43 @@ public class AdminNewMode : MonoBehaviour
         _createHall.interactable = true;
     }
 
+    public void CreateHall()
+    {
+        if (_isOnCooldown)
+            return;
+        _isOnCooldown = true;
+        Invoke(nameof(CooldoownOff), 1f);
+        HallOptions newOptions = new HallOptions();
+        newOptions.name = _inputName.text;
+        newOptions.sizex = Int32.Parse(_inputSizeX.text);
+        newOptions.sizez = Int32.Parse(_inputSizeZ.text);
+        newOptions.is_date_b = _dateBegin.isOn.ToString();
+        newOptions.is_date_e = _dateEnd.isOn.ToString();
+        newOptions.date_begin = _dateBegin.isOn ? _inputDateBegin.text : "";
+        newOptions.date_end = _dateEnd.isOn ? _inputDateEnd.text : "";
+        newOptions.is_maintained = false.ToString();
+        newOptions.is_hidden = true.ToString();
+        SaveHallOptions(newOptions);
+    }
+    
+    private void SaveHallOptions(HallOptions options)
+    {
+        // Get the json string of the object.
+        string jsonOptions = JsonUtility.ToJson(options);
+
+        Debug.Log("<color=yellow>Sending following hall options to the cloud: \n</color>" + options);
+
+        // Save the object on the cloud, in a table called like the object type.
+        Drive.CreateObject(jsonOptions, _tableOptionsName, true);
+    }
+
+    private void CooldoownOff()
+    {
+        _isOnCooldown = false;
+    }
+    
     private bool ParseDate(string input)
     {
-        Debug.Log(input.Length);
         if (input.Length != 16)
             return false;
         int day, month, year, hour, minute;
