@@ -9617,6 +9617,7 @@ GameObject:
   m_Component:
   - component: {fileID: 244376365}
   - component: {fileID: 244376366}
+  - component: {fileID: 244376367}
   m_Layer: 5
   m_Name: Panel - New Mode
   m_TagString: Untagged
@@ -9672,6 +9673,26 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &244376367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244376364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c48f08a1c85885a4fadc58c810c6ec21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputName: {fileID: 909170297}
+  _inputSizeX: {fileID: 1320300825}
+  _inputSizeZ: {fileID: 310482156}
+  _dateBegin: {fileID: 1530456352}
+  _dateEnd: {fileID: 1655991852}
+  _inputDateBegin: {fileID: 287830572}
+  _inputDateEnd: {fileID: 2023076362}
+  _createHall: {fileID: 983626042}
 --- !u!1001 &258164143
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13149,7 +13170,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 26/09/2022::16:00
+  m_text: 26/09/2022-00:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
   m_sharedMaterial: {fileID: 7325918636915973531, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
@@ -37123,7 +37144,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 983626043}
   m_OnClick:
     m_PersistentCalls:
@@ -37216,7 +37237,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -89406,7 +89427,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 25/09/2022::16:00
+  m_text: 25/09/2022-16:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
   m_sharedMaterial: {fileID: 7325918636915973531, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}

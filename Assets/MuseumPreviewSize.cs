@@ -25,16 +25,9 @@ public class MuseumPreviewSize : MonoBehaviour
         int sizeX = 0, sizeZ;
         bool isX = Int32.TryParse(_inputSizeX.text, out sizeX);
         bool isZ = Int32.TryParse(_inputSizeZ.text, out sizeZ);
-        if (!isX)
-        {
-            //_inputSizeX.text = 8.ToString();
+        
+        if (!isX || !isZ)
             return;
-        }
-        if (!isZ)
-        {
-            //_inputSizeZ.text = 40.ToString();
-            return;
-        }
         
         float heightScale = (windowSize.y - 250f) / sizeZ;
         float widthScale = (windowSize.x - 1400f) / sizeX;
