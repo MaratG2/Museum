@@ -28,6 +28,21 @@ public class AdminHallPreview : MonoBehaviour
         int sizeX = _adminView.HallSelected.sizex, sizeZ = _adminView.HallSelected.sizez;
         float heightScale = windowSize.y * 0.92f / sizeZ;
         float widthScale = windowSize.x * 0.55f / sizeX;
+        
+        float tileSize = _image.rectTransform.sizeDelta.x / _adminView.HallSelected.sizex;
+        
+        float addPosX = 0, addPosY = tileSize / 4;
+        if(_adminView.HallSelected.sizez % 2 == 0)
+            addPosY = -tileSize / 4;
+        if (_adminView.HallSelected.sizex % 2 != 0)
+            addPosX = tileSize / 2;
+        
+        _image.rectTransform.anchoredPosition = new Vector2
+        (
+            Mathf.FloorToInt((0.4f) * (windowSize.x / tileSize)) * tileSize + addPosX,
+            Mathf.FloorToInt((0.5f) * (windowSize.y / tileSize)) * tileSize + addPosY
+        );
+        
         if (heightScale < widthScale)
             _rt.sizeDelta = new Vector2(sizeX * heightScale, sizeZ * heightScale);
         else
