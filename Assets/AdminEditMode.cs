@@ -78,8 +78,7 @@ public class AdminEditMode : MonoBehaviour
     private void FindLeftBottomTile()
     {
         float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
-        _cursorTile.sizeDelta = new Vector2(tileSize, tileSize);
-
+     
         float addPosX = 0, addPosY = tileSize / 4;
         if(_adminView.HallSelected.sizez % 2 == 0)
             addPosY += -tileSize / 4;
@@ -285,6 +284,7 @@ public class AdminEditMode : MonoBehaviour
         newTile.GetComponent<Tile>().hallContent.uid = uid;
         if (hasStruct)
             newTile.GetComponent<Tile>().hallContent = content;
+        newTile.GetComponent<Tile>().Setup();
         uid++;
     }
 

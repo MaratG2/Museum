@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GoogleSheetsForUnity;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,11 +14,14 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private GameObject _textGORefreshing;
     [SerializeField] private Button _hallListingPrefab;
     [SerializeField] private RectTransform _hallListingsParent;
-
+    [SerializeField] private GameObject _tilePrefab;
+    [SerializeField] private GameObject _tilesParent;
+    
     private string _tableOptionsName = "Options";
     private AdminNewMode.HallOptions _hallSelected;
     private List<AdminNewMode.HallOptions> _cachedHallOptions;
-
+    private Vector2 _startTilePos;
+    
     public AdminNewMode.HallOptions HallSelected
     {
         get => _hallSelected;
@@ -41,17 +45,31 @@ public class AdminViewMode : MonoBehaviour
     {
         if (Convert.ToBoolean(_cachedHallOptions[num].is_deleted))
             return;
-        
+
         Debug.Log(num + " | " + _cachedHallOptions.Count);
-        if(_hallSelected.name != _cachedHallOptions[num].name)
+        if (_hallSelected.name != _cachedHallOptions[num].name)
             FindObjectOfType<AdminEditMode>().ClearAll();
-        
+
         _hallSelected = _cachedHallOptions[num];
+        
+        Invoke(nameof(FindLeftBottomTile), 0.5f);
     }
 
     public void GoToWebInterface()
     {
         Application.OpenURL("https://docs.google.com/spreadsheets/d/1cjU08lg0u6w_ys3M87C6UCgx8mWUjaUEwwSOsDuXm1k/edit#gid=756982139");
+    }
+    
+    private void Paint(Vector2 tiledPos, Vector2 pos, AdminEditMode.HallContent content)
+    {
+        var newTile = Instantiate(_tilePrefab.gameObject, Vector2.zero, Quaternion.identity, _tilesParent.GetComponent<RectTransform>());
+        newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+        newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
+        newTile.GetComponent<RectTransform>().anchoredPosition = pos;
+        newTile.GetComponent<Tile>().hallContent = content;
+        newTile.GetComponent<Tile>().Setup();
+        float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
+        newTile.GetComponent<RectTransform>().sizeDelta = new Vector2(tileSize, tileSize);
     }
     
     public void Refresh()
@@ -67,18 +85,73 @@ public class AdminViewMode : MonoBehaviour
     {
         Drive.GetTable(_tableOptionsName, true);
     }
+    
+    private void FindLeftBottomTile()
+    {
+        float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
+
+        float addPosX = 0, addPosY = tileSize / 4;
+        if(HallSelected.sizez % 2 == 0)
+            addPosY += -tileSize / 4;
+        if (HallSelected.sizex % 2 != 0)
+            addPosX += tileSize / 2;
+
+        for(int i = 0; i < 1920 / tileSize; i++)
+        {
+            for (int j = 0; j < 1080 / tileSize; j++)
+            {
+                bool isOverPreview = false;
+                GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
+                    AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(
+                        new Vector2(i * tileSize + tileSize/2, j * tileSize + tileSize/4)));
+                foreach (var c in casted)
+                {
+                    if (c.GetComponent<AdminHallPreview>())
+                        isOverPreview = true;
+                }
+
+                if (isOverPreview)
+                {
+                    _startTilePos = new Vector2
+                    (
+                        i + 0.5f,
+                        j + 0.25f
+                    );
+                    Drive.GetTable(HallSelected.name, true);
+                    return;
+                }
+            }
+        }
+    }
 
     public void HandleDriveResponse(Drive.DataContainer dataContainer)
     {
         Debug.Log(dataContainer.msg);
         _textGORefreshing.SetActive(false);
         _hallPreview.SetActive(true);
+        
         if (dataContainer.QueryType == Drive.QueryType.getTable)
         {
             string rawJSon = dataContainer.payload;
             Debug.Log(rawJSon);
 
-            // Check if the type is correct.
+            if (string.Compare(dataContainer.objType, HallSelected.name) == 0)
+            {
+                AdminEditMode.HallContent[] players = JsonHelper.ArrayFromJson<AdminEditMode.HallContent>(rawJSon);
+                float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
+                for (int i = 0; i < players.Length; i++)
+                {
+                    Vector2 tilePos = _startTilePos + new Vector2(players[i].pos_x, players[i].pos_z);
+                    Vector2 drawPos = new Vector2
+                    (
+                        tilePos.x * tileSize,
+                        tilePos.y * tileSize
+                    );
+                    Paint(tilePos, drawPos, players[i]);
+                    Debug.Log("IN");
+                }
+            }
+            
             if (string.Compare(dataContainer.objType, _tableOptionsName) == 0)
             {
                 // Parse from json to the desired object type.
