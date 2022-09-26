@@ -8,12 +8,14 @@ public class AdminHallPreview : MonoBehaviour
 {
     [SerializeField] private AdminViewMode _adminView;
     private RectTransform _rt;
+    private BoxCollider2D _collider2D;
     private Image _image;
 
     private void Awake()
     {
         _rt = GetComponent<RectTransform>();
         _image = GetComponent<Image>();
+        _collider2D = GetComponent<BoxCollider2D>();
         _rt.sizeDelta = Vector2.zero;
     }
 
@@ -21,6 +23,8 @@ public class AdminHallPreview : MonoBehaviour
     {
         if (!_adminView || _adminView.HallSelected.sizex == 0 || _adminView.HallSelected.sizez == 0)
         {
+            _rt.sizeDelta = Vector2.zero;
+            _collider2D.size = _rt.sizeDelta;
             return;
         }
         
@@ -49,5 +53,6 @@ public class AdminHallPreview : MonoBehaviour
             _rt.sizeDelta = new Vector2(sizeX * widthScale, sizeZ * widthScale);
 
         _image.material.SetTextureScale("_MainTex", new Vector2(sizeX, sizeZ));
+        _collider2D.size = _rt.sizeDelta;
     }
 }
