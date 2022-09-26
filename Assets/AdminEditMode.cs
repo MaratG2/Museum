@@ -33,7 +33,7 @@ public class AdminEditMode : MonoBehaviour
             addPosY = -tileSize / 4;
         if (_adminView.HallSelected.sizex % 2 != 0)
             addPosX = tileSize / 2;
-        
+
         _imagePreview.anchoredPosition = new Vector2
         (
             Mathf.FloorToInt((0.4f) * (windowSize.x / tileSize)) * tileSize + addPosX,
@@ -42,14 +42,24 @@ public class AdminEditMode : MonoBehaviour
         Vector2 tiledMousePos = new Vector2
         (
             Mathf.FloorToInt((absoluteMousePos.x / windowSize.x) * (windowSize.x / tileSize)) * tileSize + tileSize/2,
-            Mathf.FloorToInt((absoluteMousePos.y / windowSize.y) * (windowSize.y / tileSize)) * tileSize + tileSize/4
+            Mathf.FloorToInt(((absoluteMousePos.y + tileSize / 4) / windowSize.y) * (windowSize.y / tileSize)) * tileSize + tileSize/4
         );
-        if (absoluteMousePos.x < 0.75f * windowSize.x)
+
+        bool isOverPreview = false;
+        GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
+            AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(absoluteMousePos));
+        foreach (var c in casted)
+        {
+            if (c.GetComponent<AdminHallPreview>())
+                isOverPreview = true;
+        }
+        
+        if (absoluteMousePos.x < 0.75f * windowSize.x && isOverPreview)
             _cursorTile.anchoredPosition = tiledMousePos;
         else
             _cursorTile.anchoredPosition = -windowSize;
 
-        if(_currentTool is 0 or 1)
+        if(_currentTool is 0 or 1 && _cursorTile.anchoredPosition.x > 1)
         {
             if (Input.GetMouseButtonDown(0))
             {
