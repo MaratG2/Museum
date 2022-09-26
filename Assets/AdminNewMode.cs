@@ -71,9 +71,26 @@ public class AdminNewMode : MonoBehaviour
         newOptions.date_end = _dateEnd.isOn ? _inputDateEnd.text : "";
         newOptions.is_maintained = false.ToString();
         newOptions.is_hidden = true.ToString();
+        CreateHallTable(newOptions.name);
         SaveHallOptions(newOptions);
     }
-    
+
+    private void CreateHallTable(string tableName)
+    {
+        Debug.Log("<color=yellow>Creating a hall table in the cloud for hall data.</color>");
+
+        // Creating a string array for field names (table headers) .
+        string[] fieldNames = new string[6];
+        fieldNames[0] = "uid";
+        fieldNames[1] = "title";
+        fieldNames[2] = "image_url";
+        fieldNames[3] = "image_desc";
+        fieldNames[4] = "pos_x";
+        fieldNames[5] = "pos_z";
+
+        // Request for the table to be created on the cloud.
+        Drive.CreateTable(fieldNames, tableName, true);
+    }
     private void SaveHallOptions(HallOptions options)
     {
         // Get the json string of the object.

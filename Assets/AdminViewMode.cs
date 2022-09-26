@@ -42,6 +42,11 @@ public class AdminViewMode : MonoBehaviour
         _hallSelected = _cachedHallOptions[num];
     }
 
+    public void GoToWebInterface()
+    {
+        Application.OpenURL("https://docs.google.com/spreadsheets/d/1cjU08lg0u6w_ys3M87C6UCgx8mWUjaUEwwSOsDuXm1k/edit#gid=756982139");
+    }
+    
     public void Refresh()
     {
         for (int i = 0; i < _hallListingsParent.childCount; i++)

@@ -45,8 +45,8 @@ public class AdminHallPreview : MonoBehaviour
 
         _image.rectTransform.anchoredPosition = new Vector2
         (
-            Mathf.FloorToInt((0.4f) * (windowSize.x / tileSize)) * tileSize + addPosX,
-            Mathf.FloorToInt((0.5f) * (windowSize.y / tileSize)) * tileSize + addPosY
+            Mathf.FloorToInt((0.35f) * (windowSize.x / tileSize)) * tileSize + addPosX,
+            Mathf.FloorToInt((0.55f) * (windowSize.y / tileSize)) * tileSize + addPosY
         );
         
         if (heightScale < widthScale)
