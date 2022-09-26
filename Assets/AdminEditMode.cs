@@ -14,14 +14,29 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private RectTransform _cursorTile;
     [SerializeField] private RectTransform _imagePreview;
     [SerializeField] private Toggle _toggleMaintained, _toggleHidden;
-    [SerializeField] private TMP_InputField _inputFieldName;
+    [SerializeField] private TextMeshProUGUI _nameText;
     
     private int _currentTool = -999;
     private int[][] _hallPlan;
     private Vector2 _startTilePos = Vector2.zero;
-
+    private bool _toDelete;
+    private bool _toUpdate;
+    
+    [System.Serializable]
+    public struct HallContent
+    {
+        public int uid;
+        public string type;
+        public string title;
+        public string image_url;
+        public string image_desc;
+        public int pos_x;
+        public int pos_z;
+    }
+    
     private void Start()
     {
+        _nameText.text = "";
         SelectTool(-1);
     }
     
@@ -41,9 +56,9 @@ public class AdminEditMode : MonoBehaviour
     {
         if (_adminView.HallSelected.sizex == 0)
         {
+            _nameText.text = "";
             _toggleMaintained.interactable = false;
             _toggleHidden.interactable = false;
-            _inputFieldName.interactable = false;
             return;
         }
         _hallPlan = new int[_adminView.HallSelected.sizex][];
@@ -52,11 +67,10 @@ public class AdminEditMode : MonoBehaviour
         
         _toggleMaintained.interactable = true;
         _toggleHidden.interactable = true;
-        _inputFieldName.interactable = true;
-        
+
+        _nameText.text = _adminView.HallSelected.name;
         _toggleMaintained.isOn = Convert.ToBoolean(_adminView.HallSelected.is_maintained);
         _toggleHidden.isOn = Convert.ToBoolean(_adminView.HallSelected.is_hidden);
-        _inputFieldName.text = _adminView.HallSelected.name;
         _startTilePos = Vector2.zero;
     }
 
@@ -96,21 +110,52 @@ public class AdminEditMode : MonoBehaviour
                 }
             }
         }
-        
     }
 
     public void DeleteHall()
     {
+        _toDelete = true;
         Drive.GetObjectsByField("Options", "name", _adminView.HallSelected.name, true);
         ClearAll();
+        _nameText.text = "";
         _adminView.HallSelected = new AdminNewMode.HallOptions();
+        SelectTool(-1);
+    }
+
+    public void SaveHall()
+    {
+        _toUpdate = true;
+        Drive.GetObjectsByField("Options", "name", _adminView.HallSelected.name, true);
     }
 
     public void HandleDriveResponse(Drive.DataContainer dataContainer)
     {
         Debug.Log(dataContainer.msg);
 
-        // First check the type of answer.
+        
+        if (dataContainer.QueryType == Drive.QueryType.getTable)
+        {
+            string rawJSon2 = dataContainer.payload;
+            Debug.Log("GET");
+            if (string.Compare(dataContainer.objType, _adminView.HallSelected.name) == 0)
+            {
+                HallContent[] players = JsonHelper.ArrayFromJson<HallContent>(rawJSon2);
+                float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
+                for (int i = 0; i < players.Length; i++)
+                {
+                    SelectTool(Int32.Parse(players[i].type));
+                    Vector2 tilePos = _startTilePos + new Vector2(players[i].pos_x, players[i].pos_z);
+                    Vector2 drawPos = new Vector2
+                    (
+                        tilePos.x * tileSize,
+                        tilePos.y * tileSize
+                    );
+                    Paint(tilePos, drawPos);
+                    Debug.Log("IN");
+                }
+            }
+        }
+        
         if (dataContainer.QueryType == Drive.QueryType.getObjectsByField)
         {
             string rawJSon = dataContainer.payload;
@@ -124,12 +169,25 @@ public class AdminEditMode : MonoBehaviour
 
                 for (int i = 0; i < players.Length; i++)
                 {
-                    players[i].is_deleted = true.ToString();
-                    string jsonPlayer = JsonUtility.ToJson(players[i]);
-                    Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
-                    Debug.Log("Changed");
+                    if(_toDelete)
+                    {
+                        players[i].is_deleted = true.ToString();
+                        string jsonPlayer = JsonUtility.ToJson(players[i]);
+                        Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
+                        Debug.Log("Deleted");
+                    }
+
+                    if (_toUpdate)
+                    {
+                        players[i].is_maintained = _toggleMaintained.isOn.ToString();
+                        players[i].is_hidden = _toggleHidden.isOn.ToString();
+                        string jsonPlayer = JsonUtility.ToJson(players[i]);
+                        Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
+                    }
                 }
             }
+            _toDelete = false;
+            _toUpdate = false;
         }
     }
 
@@ -173,20 +231,23 @@ public class AdminEditMode : MonoBehaviour
             _cursorTile.anchoredPosition = tiledMousePos;
         else
             _cursorTile.anchoredPosition = -windowSize;
-
+        
+        if(_startTilePos == Vector2.zero)
+        {
+            _startTilePos = Vector2.one;
+            _hallPlan = new int[_adminView.HallSelected.sizex][];
+            for (int i = 0; i < _adminView.HallSelected.sizex; i++)
+                _hallPlan[i] = new int[_adminView.HallSelected.sizez];
+            FindLeftBottomTile();
+            Debug.Log("GetStart - " + _adminView.HallSelected.name);
+            Drive.GetTable(_adminView.HallSelected.name, true);
+        }
+        
         if(_currentTool is 0 or 1 or 2 && _cursorTile.anchoredPosition.x > 1)
         {
-            if(_startTilePos == Vector2.zero)
-            {
-                _hallPlan = new int[_adminView.HallSelected.sizex][];
-                for (int i = 0; i < _adminView.HallSelected.sizex; i++)
-                    _hallPlan[i] = new int[_adminView.HallSelected.sizez];
-                FindLeftBottomTile();
-            }
-            
             if (Input.GetMouseButtonDown(0))
             {
-                Paint(tiledMousePos/tileSize);
+                Paint(tiledMousePos/tileSize, _cursorTile.anchoredPosition);
             }
         }
     }
@@ -197,12 +258,12 @@ public class AdminEditMode : MonoBehaviour
             Destroy(_paintsParent.GetChild(i).gameObject);
     }
 
-    private void Paint(Vector2 tiledPos)
+    private void Paint(Vector2 tiledPos, Vector2 pos)
     {
         var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, _paintsParent);
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
-        newTile.GetComponent<RectTransform>().anchoredPosition = _cursorTile.anchoredPosition;
+        newTile.GetComponent<RectTransform>().anchoredPosition = pos;
         newTile.GetComponent<Image>().color = _cursorTile.GetComponent<Image>().color;
         _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)][Mathf.FloorToInt(tiledPos.y - _startTilePos.y)] =
             _currentTool;
