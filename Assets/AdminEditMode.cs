@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GoogleSheetsForUnity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,18 @@ public class AdminEditMode : MonoBehaviour
     {
         SelectTool(-1);
     }
+    
+    private void OnEnable()
+    {
+        // Suscribe for catching cloud responses.
+        Drive.responseCallback += HandleDriveResponse;
+    }
+
+    private void OnDisable()
+    {
+        // Remove listeners.
+        Drive.responseCallback -= HandleDriveResponse;
+    }
 
     public void Refresh()
     {
@@ -38,6 +51,40 @@ public class AdminEditMode : MonoBehaviour
         _toggleMaintained.isOn = Convert.ToBoolean(_adminView.HallSelected.is_maintained);
         _toggleHidden.isOn = Convert.ToBoolean(_adminView.HallSelected.is_hidden);
         _inputFieldName.text = _adminView.HallSelected.name;
+    }
+
+    public void DeleteHall()
+    {
+        Drive.GetObjectsByField("Options", "name", _adminView.HallSelected.name, true);
+        ClearAll();
+        _adminView.HallSelected = new AdminNewMode.HallOptions();
+    }
+
+    public void HandleDriveResponse(Drive.DataContainer dataContainer)
+    {
+        Debug.Log(dataContainer.msg);
+
+        // First check the type of answer.
+        if (dataContainer.QueryType == Drive.QueryType.getObjectsByField)
+        {
+            string rawJSon = dataContainer.payload;
+            Debug.Log(rawJSon);
+
+            // Check if the type is correct.
+            if (string.Compare(dataContainer.objType, "Options") == 0)
+            {
+                // Parse from json to the desired object type.
+                AdminNewMode.HallOptions[] players = JsonHelper.ArrayFromJson<AdminNewMode.HallOptions>(rawJSon);
+
+                for (int i = 0; i < players.Length; i++)
+                {
+                    players[i].is_deleted = true.ToString();
+                    string jsonPlayer = JsonUtility.ToJson(players[i]);
+                    Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
+                    Debug.Log("Changed");
+                }
+            }
+        }
     }
 
     void Update()

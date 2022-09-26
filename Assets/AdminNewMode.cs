@@ -32,6 +32,7 @@ public class AdminNewMode : MonoBehaviour
         public string date_end;
         public string is_maintained;
         public string is_hidden;
+        public string is_deleted;
     }
     
     void Update()
@@ -71,6 +72,7 @@ public class AdminNewMode : MonoBehaviour
         newOptions.date_end = _dateEnd.isOn ? _inputDateEnd.text : "";
         newOptions.is_maintained = false.ToString();
         newOptions.is_hidden = true.ToString();
+        newOptions.is_deleted = false.ToString();
         CreateHallTable(newOptions.name);
         SaveHallOptions(newOptions);
     }

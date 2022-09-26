@@ -18,7 +18,11 @@ public class AdminViewMode : MonoBehaviour
     private AdminNewMode.HallOptions _hallSelected;
     private List<AdminNewMode.HallOptions> _cachedHallOptions;
 
-    public AdminNewMode.HallOptions HallSelected => _hallSelected;
+    public AdminNewMode.HallOptions HallSelected
+    {
+        get => _hallSelected;
+        set => _hallSelected = value;
+    }
 
     private void OnEnable()
     {
@@ -35,6 +39,9 @@ public class AdminViewMode : MonoBehaviour
 
     public void SelectHall(int num)
     {
+        if (Convert.ToBoolean(_cachedHallOptions[num].is_deleted))
+            return;
+        
         Debug.Log(num + " | " + _cachedHallOptions.Count);
         if(_hallSelected.name != _cachedHallOptions[num].name)
             FindObjectOfType<AdminEditMode>().ClearAll();
@@ -80,6 +87,8 @@ public class AdminViewMode : MonoBehaviour
                 string logMsg = "<color=yellow>" + options.Length.ToString() + " hall options retrieved from the cloud and parsed:</color>";
                 for (int i = 0; i < options.Length; i++)
                 {
+                    if (Convert.ToBoolean(options[i].is_deleted))
+                        continue;
                     var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
                         _hallListingsParent);
                     newInstance.gameObject.name = i.ToString();
