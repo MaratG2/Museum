@@ -17,6 +17,8 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private TMP_InputField _inputFieldName;
     
     private int _currentTool = -999;
+    private int[][] _hallPlan;
+    private Vector2 _startTilePos = Vector2.zero;
 
     private void Start()
     {
@@ -44,6 +46,10 @@ public class AdminEditMode : MonoBehaviour
             _inputFieldName.interactable = false;
             return;
         }
+        _hallPlan = new int[_adminView.HallSelected.sizex][];
+        for (int i = 0; i < _adminView.HallSelected.sizex; i++)
+            _hallPlan[i] = new int[_adminView.HallSelected.sizez];
+        
         _toggleMaintained.interactable = true;
         _toggleHidden.interactable = true;
         _inputFieldName.interactable = true;
@@ -51,6 +57,46 @@ public class AdminEditMode : MonoBehaviour
         _toggleMaintained.isOn = Convert.ToBoolean(_adminView.HallSelected.is_maintained);
         _toggleHidden.isOn = Convert.ToBoolean(_adminView.HallSelected.is_hidden);
         _inputFieldName.text = _adminView.HallSelected.name;
+        _startTilePos = Vector2.zero;
+    }
+
+    private void FindLeftBottomTile()
+    {
+        float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
+        _cursorTile.sizeDelta = new Vector2(tileSize, tileSize);
+
+        float addPosX = 0, addPosY = tileSize / 4;
+        if(_adminView.HallSelected.sizez % 2 == 0)
+            addPosY += -tileSize / 4;
+        if (_adminView.HallSelected.sizex % 2 != 0)
+            addPosX += tileSize / 2;
+
+        for(int i = 0; i < 1920 / tileSize; i++)
+        {
+            for (int j = 0; j < 1080 / tileSize; j++)
+            {
+                bool isOverPreview = false;
+                GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
+                    AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(
+                        new Vector2(i * tileSize + tileSize/2, j * tileSize + tileSize/4)));
+                foreach (var c in casted)
+                {
+                    if (c.GetComponent<AdminHallPreview>())
+                        isOverPreview = true;
+                }
+
+                if (isOverPreview)
+                {
+                    _startTilePos = new Vector2
+                    (
+                        i + 0.5f,
+                        j + 0.25f
+                    );
+                    return;
+                }
+            }
+        }
+        
     }
 
     public void DeleteHall()
@@ -130,9 +176,17 @@ public class AdminEditMode : MonoBehaviour
 
         if(_currentTool is 0 or 1 or 2 && _cursorTile.anchoredPosition.x > 1)
         {
+            if(_startTilePos == Vector2.zero)
+            {
+                _hallPlan = new int[_adminView.HallSelected.sizex][];
+                for (int i = 0; i < _adminView.HallSelected.sizex; i++)
+                    _hallPlan[i] = new int[_adminView.HallSelected.sizez];
+                FindLeftBottomTile();
+            }
+            
             if (Input.GetMouseButtonDown(0))
             {
-                Paint();
+                Paint(tiledMousePos/tileSize);
             }
         }
     }
@@ -143,13 +197,15 @@ public class AdminEditMode : MonoBehaviour
             Destroy(_paintsParent.GetChild(i).gameObject);
     }
 
-    private void Paint()
+    private void Paint(Vector2 tiledPos)
     {
         var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, _paintsParent);
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchoredPosition = _cursorTile.anchoredPosition;
         newTile.GetComponent<Image>().color = _cursorTile.GetComponent<Image>().color;
+        _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)][Mathf.FloorToInt(tiledPos.y - _startTilePos.y)] =
+            _currentTool;
     }
 
     public void SelectTool(int tool)
