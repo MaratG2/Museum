@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,32 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private RectTransform _paintsParent;
     [SerializeField] private RectTransform _cursorTile;
     [SerializeField] private RectTransform _imagePreview;
+    [SerializeField] private Toggle _toggleMaintained, _toggleHidden;
+    [SerializeField] private TMP_InputField _inputFieldName;
+    
     private int _currentTool = -999;
 
     private void Start()
     {
         SelectTool(-1);
+    }
+
+    public void Refresh()
+    {
+        if (_adminView.HallSelected.sizex == 0)
+        {
+            _toggleMaintained.interactable = false;
+            _toggleHidden.interactable = false;
+            _inputFieldName.interactable = false;
+            return;
+        }
+        _toggleMaintained.interactable = true;
+        _toggleHidden.interactable = true;
+        _inputFieldName.interactable = true;
+        
+        _toggleMaintained.isOn = Convert.ToBoolean(_adminView.HallSelected.is_maintained);
+        _toggleHidden.isOn = Convert.ToBoolean(_adminView.HallSelected.is_hidden);
+        _inputFieldName.text = _adminView.HallSelected.name;
     }
 
     void Update()
