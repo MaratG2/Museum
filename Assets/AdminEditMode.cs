@@ -21,6 +21,7 @@ public class AdminEditMode : MonoBehaviour
     private Vector2 _startTilePos = Vector2.zero;
     private bool _toDelete;
     private bool _toUpdate;
+    private int uid = 0;
     
     [System.Serializable]
     public struct HallContent
@@ -126,6 +127,13 @@ public class AdminEditMode : MonoBehaviour
     {
         _toUpdate = true;
         Drive.GetObjectsByField("Options", "name", _adminView.HallSelected.name, true);
+        for (int i = 0; i < _paintsParent.childCount; i++)
+        {
+            string jsonPlayer = JsonUtility.ToJson(_paintsParent.GetChild(i).GetComponent<Tile>().hallContent);
+            Drive.UpdateObjects(_adminView.HallSelected.name
+                , "uid", _paintsParent.GetChild(i).GetComponent<Tile>().hallContent.uid.ToString()
+                , jsonPlayer, true, true);
+        }
     }
 
     public void HandleDriveResponse(Drive.DataContainer dataContainer)
@@ -150,7 +158,7 @@ public class AdminEditMode : MonoBehaviour
                         tilePos.x * tileSize,
                         tilePos.y * tileSize
                     );
-                    Paint(tilePos, drawPos);
+                    Paint(tilePos, drawPos, true, players[i]);
                     Debug.Log("IN");
                 }
             }
@@ -256,9 +264,10 @@ public class AdminEditMode : MonoBehaviour
     {
         for (int i = 0; i < _paintsParent.childCount; i++)
             Destroy(_paintsParent.GetChild(i).gameObject);
+        uid = 0;
     }
 
-    private void Paint(Vector2 tiledPos, Vector2 pos)
+    private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new HallContent())
     {
         var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, _paintsParent);
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
@@ -267,6 +276,16 @@ public class AdminEditMode : MonoBehaviour
         newTile.GetComponent<Image>().color = _cursorTile.GetComponent<Image>().color;
         _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)][Mathf.FloorToInt(tiledPos.y - _startTilePos.y)] =
             _currentTool;
+        newTile.GetComponent<Tile>().hallContent.image_desc = "desc";
+        newTile.GetComponent<Tile>().hallContent.image_url = "url";
+        newTile.GetComponent<Tile>().hallContent.title = "title";
+        newTile.GetComponent<Tile>().hallContent.type = _currentTool.ToString();
+        newTile.GetComponent<Tile>().hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
+        newTile.GetComponent<Tile>().hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
+        newTile.GetComponent<Tile>().hallContent.uid = uid;
+        if (hasStruct)
+            newTile.GetComponent<Tile>().hallContent = content;
+        uid++;
     }
 
     public void SelectTool(int tool)
