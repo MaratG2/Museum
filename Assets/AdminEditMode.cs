@@ -300,16 +300,17 @@ public class AdminEditMode : MonoBehaviour
         newTile.GetComponent<Image>().color = _cursorTile.GetComponent<Image>().color;
         _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)][Mathf.FloorToInt(tiledPos.y - _startTilePos.y)] =
             _currentTool;
-        newTile.GetComponent<Tile>().hallContent.image_desc = "desc";
-        newTile.GetComponent<Tile>().hallContent.image_url = "url";
-        newTile.GetComponent<Tile>().hallContent.title = "title";
-        newTile.GetComponent<Tile>().hallContent.type = _currentTool.ToString();
-        newTile.GetComponent<Tile>().hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
-        newTile.GetComponent<Tile>().hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
-        newTile.GetComponent<Tile>().hallContent.uid = uid;
+        Tile tileInstance = newTile.GetComponent<Tile>();
+        tileInstance.hallContent.image_desc = "desc";
+        tileInstance.hallContent.image_url = "url";
+        tileInstance.hallContent.title = "title";
+        tileInstance.hallContent.type = _currentTool.ToString();
+        tileInstance.hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
+        tileInstance.hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
+        tileInstance.hallContent.uid = uid;
         if (hasStruct)
-            newTile.GetComponent<Tile>().hallContent = content;
-        newTile.GetComponent<Tile>().Setup();
+            tileInstance.hallContent = content;
+        tileInstance.Setup();
         uid++;
     }
 
