@@ -7,18 +7,19 @@ namespace GenerationMap
       public readonly Vector3 StartPointRoom;
       public readonly int Length;
       public readonly int Width;
+      public readonly int Height;
       //локальная точка спавна 
       public readonly Vector2 LocalSpawnPoint;
       public readonly PrefabPack Prefabs;
       
-      public Room(Vector3 startPointRoom, int length, int width, Vector2 localSpawnPoint, PrefabPack prefabPack
-      )
+      public Room(Vector3 startPointRoom, int length, int width, int height, Vector2 localSpawnPoint, PrefabPack prefabPack)
       {
          Length = length;
          Width = width;
          LocalSpawnPoint = CheckLocalSpawnPoint(localSpawnPoint);
          StartPointRoom = startPointRoom;
-         Prefabs = prefabPack; 
+         Prefabs = prefabPack;
+         Height = height;
       }
 
       public Vector2 GetSpawnPointPosition()
