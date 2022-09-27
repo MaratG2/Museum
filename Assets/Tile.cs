@@ -32,6 +32,9 @@ public class Tile : MonoBehaviour
             case 2:
                 _image.color = _infoColor;
                 break;
+            case 7:
+                _image.color = Color.clear;
+                break;
             case 8:
                 _image.color = _rubberColor;
                 break;

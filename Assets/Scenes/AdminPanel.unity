@@ -2851,15 +2851,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6579566535508403074, guid: 12e2bf3d11eafc04c9661fe0ee0cab07, type: 3}
       propertyPath: m_Type
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6579566535508403074, guid: 12e2bf3d11eafc04c9661fe0ee0cab07, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+      objectReference: {fileID: 21300000, guid: 79d90270f26854540b357495c608aca4, type: 3}
     - target: {fileID: 6579566535508403076, guid: 12e2bf3d11eafc04c9661fe0ee0cab07, type: 3}
       propertyPath: m_Name
-      value: Tool Empty (6)
+      value: Tool Change
       objectReference: {fileID: 0}
     - target: {fileID: 6579566535508403077, guid: 12e2bf3d11eafc04c9661fe0ee0cab07, type: 3}
       propertyPath: m_Pivot.x
@@ -2947,7 +2947,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7350222582047239419, guid: 12e2bf3d11eafc04c9661fe0ee0cab07, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7350222582047239419, guid: 12e2bf3d11eafc04c9661fe0ee0cab07, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size

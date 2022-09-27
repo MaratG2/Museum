@@ -274,6 +274,36 @@ public class AdminEditMode : MonoBehaviour
                 Paint(tiledMousePos/tileSize, _cursorTile.anchoredPosition);
             }
         }
+        if(_currentTool is 7 && _cursorTile.anchoredPosition.x > 1)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector2 tiledPos = tiledMousePos / tileSize;
+                Vector2 tileRealPos = new Vector2(Mathf.FloorToInt(tiledPos.x - _startTilePos.x),
+                    Mathf.FloorToInt(tiledPos.y - _startTilePos.y));
+           
+                for (int i = 0; i < _paintsParent.childCount; i++)
+                {
+                    Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
+                    if(tileChange && tileChange.hallContent.pos_x == tileRealPos.x && tileChange.hallContent.pos_z == tileRealPos.y)
+                    {
+                        Debug.Log("tileChange " + i);
+                        if (tileChange.hallContent.type == 0.ToString())
+                        {
+                            Debug.Log("Tile Change Door" + i);
+                        }
+                        if (tileChange.hallContent.type == 1.ToString())
+                        {
+                            Debug.Log("Tile Change Painting" + i);
+                        }
+                        if (tileChange.hallContent.type == 2.ToString())
+                        {
+                            Debug.Log("Tile Change Info" + i);
+                        }
+                    }
+                }
+            }
+        }
         if(_currentTool is 8 && _cursorTile.anchoredPosition.x > 1)
         {
             if (Input.GetMouseButtonDown(0))
@@ -349,6 +379,9 @@ public class AdminEditMode : MonoBehaviour
                 break;
             case 2:
                 _cursorTile.GetComponent<Image>().color = _infoColor;
+                break;
+            case 3:
+                _cursorTile.GetComponent<Image>().color = Color.clear;
                 break;
             case 8:
                 _cursorTile.GetComponent<Image>().color = _rubberColor;
