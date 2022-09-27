@@ -48,8 +48,11 @@ public class AdminViewMode : MonoBehaviour
 
         Debug.Log(num + " | " + _cachedHallOptions.Count);
         if (_hallSelected.name != _cachedHallOptions[num].name)
+        {
             FindObjectOfType<AdminEditMode>().ClearAll();
-
+            for (int i = 0; i < _tilesParent.transform.childCount; i++)
+                Destroy(_tilesParent.transform.GetChild(i).gameObject);
+        }
         _hallSelected = _cachedHallOptions[num];
         
         Invoke(nameof(FindLeftBottomTile), 0.5f);
@@ -76,6 +79,9 @@ public class AdminViewMode : MonoBehaviour
     {
         for (int i = 0; i < _hallListingsParent.childCount; i++)
             Destroy(_hallListingsParent.GetChild(i).gameObject);
+        HallSelected = new AdminNewMode.HallOptions();
+        for (int i = 0; i < _tilesParent.transform.childCount; i++)
+            Destroy(_tilesParent.transform.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
         _hallPreview.SetActive(false);
         Invoke(nameof(DelayRefresh), 0.5f);
