@@ -64,7 +64,11 @@ public class AdminEditMode : MonoBehaviour
         }
         _hallPlan = new int[_adminView.HallSelected.sizex][];
         for (int i = 0; i < _adminView.HallSelected.sizex; i++)
+        {
             _hallPlan[i] = new int[_adminView.HallSelected.sizez];
+            for (int j = 0; j < _adminView.HallSelected.sizez; j++)
+                _hallPlan[i][j] = -1;
+        }
         
         _toggleMaintained.interactable = true;
         _toggleHidden.interactable = true;
@@ -244,7 +248,11 @@ public class AdminEditMode : MonoBehaviour
             _startTilePos = Vector2.one;
             _hallPlan = new int[_adminView.HallSelected.sizex][];
             for (int i = 0; i < _adminView.HallSelected.sizex; i++)
+            {
                 _hallPlan[i] = new int[_adminView.HallSelected.sizez];
+                for (int j = 0; j < _adminView.HallSelected.sizez; j++)
+                    _hallPlan[i][j] = -1;
+            }
             FindLeftBottomTile();
             Debug.Log("GetStart - " + _adminView.HallSelected.name);
             Drive.GetTable(_adminView.HallSelected.name, true);
@@ -255,6 +263,23 @@ public class AdminEditMode : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 Paint(tiledMousePos/tileSize, _cursorTile.anchoredPosition);
+            }
+        }
+        if(_currentTool is 8 && _cursorTile.anchoredPosition.x > 1)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector2 tiledPos = tiledMousePos / tileSize;
+                _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)][
+                    Mathf.FloorToInt(tiledPos.y - _startTilePos.y)] = -1;
+                for (int i = 0; i < _paintsParent.childCount; i++)
+                {
+                    Tile tileDelete = _paintsParent.GetChild(i).GetComponent<Tile>();
+                    if(tileDelete && tileDelete.hallContent.pos_x == Mathf.FloorToInt(tiledPos.x - _startTilePos.x) 
+                       && tileDelete.hallContent.pos_z == Mathf.FloorToInt(tiledPos.y - _startTilePos.y))
+                        Drive.DeleteObjects(_adminView.HallSelected.name, "uid", tileDelete.hallContent.uid.ToString(), true);
+                    Destroy(tileDelete.gameObject);
+                }
             }
         }
     }
