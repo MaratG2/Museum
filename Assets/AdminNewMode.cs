@@ -82,7 +82,7 @@ public class AdminNewMode : MonoBehaviour
         Debug.Log("<color=yellow>Creating a hall table in the cloud for hall data.</color>");
 
         // Creating a string array for field names (table headers) .
-        string[] fieldNames = new string[7];
+        string[] fieldNames = new string[8];
         fieldNames[0] = "uid";
         fieldNames[1] = "type";
         fieldNames[2] = "title";
@@ -90,6 +90,7 @@ public class AdminNewMode : MonoBehaviour
         fieldNames[4] = "image_desc";
         fieldNames[5] = "pos_x";
         fieldNames[6] = "pos_z";
+        fieldNames[7] = "combined_pos";
 
         // Request for the table to be created on the cloud.
         Drive.CreateTable(fieldNames, tableName, true);

@@ -22,6 +22,7 @@ public class AdminEditMode : MonoBehaviour
     private bool _toDelete;
     private bool _toUpdate;
     private int uid = 0;
+    private List<Vector2> posToDelete = new List<Vector2>();
     
     [System.Serializable]
     public struct HallContent
@@ -33,6 +34,7 @@ public class AdminEditMode : MonoBehaviour
         public string image_desc;
         public int pos_x;
         public int pos_z;
+        public string combined_pos;
     }
     
     private void Start()
@@ -69,10 +71,10 @@ public class AdminEditMode : MonoBehaviour
             for (int j = 0; j < _adminView.HallSelected.sizez; j++)
                 _hallPlan[i][j] = -1;
         }
-        
+
         _toggleMaintained.interactable = true;
         _toggleHidden.interactable = true;
-
+        posToDelete = new List<Vector2>();
         _nameText.text = _adminView.HallSelected.name;
         _toggleMaintained.isOn = Convert.ToBoolean(_adminView.HallSelected.is_maintained);
         _toggleHidden.isOn = Convert.ToBoolean(_adminView.HallSelected.is_hidden);
@@ -134,8 +136,14 @@ public class AdminEditMode : MonoBehaviour
         {
             string jsonPlayer = JsonUtility.ToJson(_paintsParent.GetChild(i).GetComponent<Tile>().hallContent);
             Drive.UpdateObjects(_adminView.HallSelected.name
-                , "uid", _paintsParent.GetChild(i).GetComponent<Tile>().hallContent.uid.ToString()
+                , "combined_pos", _paintsParent.GetChild(i).GetComponent<Tile>().hallContent.combined_pos
                 , jsonPlayer, true, true);
+            
+        }
+
+        foreach (var posDel in posToDelete)
+        {
+            Drive.DeleteObjects(_adminView.HallSelected.name, "combined_pos", posDel.x + "_" + posDel.y,true);
         }
     }
 
@@ -253,6 +261,7 @@ public class AdminEditMode : MonoBehaviour
                 for (int j = 0; j < _adminView.HallSelected.sizez; j++)
                     _hallPlan[i][j] = -1;
             }
+            posToDelete = new List<Vector2>();
             FindLeftBottomTile();
             Debug.Log("GetStart - " + _adminView.HallSelected.name);
             Drive.GetTable(_adminView.HallSelected.name, true);
@@ -277,8 +286,11 @@ public class AdminEditMode : MonoBehaviour
                     Tile tileDelete = _paintsParent.GetChild(i).GetComponent<Tile>();
                     if(tileDelete && tileDelete.hallContent.pos_x == Mathf.FloorToInt(tiledPos.x - _startTilePos.x) 
                        && tileDelete.hallContent.pos_z == Mathf.FloorToInt(tiledPos.y - _startTilePos.y))
-                        Drive.DeleteObjects(_adminView.HallSelected.name, "uid", tileDelete.hallContent.uid.ToString(), true);
-                    Destroy(tileDelete.gameObject);
+                    {
+                        Debug.Log("Delete " + i);
+                        posToDelete.Add(new Vector2(tileDelete.hallContent.pos_x, tileDelete.hallContent.pos_z));
+                        Destroy(tileDelete.gameObject);
+                    }
                 }
             }
         }
@@ -288,6 +300,7 @@ public class AdminEditMode : MonoBehaviour
     {
         for (int i = 0; i < _paintsParent.childCount; i++)
             Destroy(_paintsParent.GetChild(i).gameObject);
+        posToDelete = new List<Vector2>();
         uid = 0;
     }
 
@@ -307,6 +320,12 @@ public class AdminEditMode : MonoBehaviour
         tileInstance.hallContent.type = _currentTool.ToString();
         tileInstance.hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
         tileInstance.hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
+        tileInstance.hallContent.combined_pos = tileInstance.hallContent.pos_x + "_" + tileInstance.hallContent.pos_z;
+        for (int i = 0; i < posToDelete.Count; i++)
+        {
+            if (tileInstance.hallContent.combined_pos == posToDelete[i].x + "_" + posToDelete[i].y)
+                posToDelete.RemoveAt(i);
+        }
         tileInstance.hallContent.uid = uid;
         if (hasStruct)
             tileInstance.hallContent = content;
