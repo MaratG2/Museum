@@ -15,6 +15,10 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private RectTransform _imagePreview;
     [SerializeField] private Toggle _toggleMaintained, _toggleHidden;
     [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private CanvasGroup _changePropertiesGroup;
+    [SerializeField] private TMP_InputField _propertiesName;
+    [SerializeField] private TMP_InputField _propertiesUrl;
+    [SerializeField] private TMP_InputField _propertiesDesc;
     
     private int _currentTool = -999;
     private int[][] _hallPlan;
@@ -23,6 +27,7 @@ public class AdminEditMode : MonoBehaviour
     private bool _toUpdate;
     private int uid = 0;
     private List<Vector2> posToDelete = new List<Vector2>();
+    private Tile _tileSelected;
     
     [System.Serializable]
     public struct HallContent
@@ -267,14 +272,14 @@ public class AdminEditMode : MonoBehaviour
             Drive.GetTable(_adminView.HallSelected.name, true);
         }
         
-        if(_currentTool is 0 or 1 or 2 && _cursorTile.anchoredPosition.x > 1)
+        if(_currentTool is 0 or 1 or 2 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 Paint(tiledMousePos/tileSize, _cursorTile.anchoredPosition);
             }
         }
-        if(_currentTool is 7 && _cursorTile.anchoredPosition.x > 1)
+        if(_currentTool is 7 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -295,6 +300,13 @@ public class AdminEditMode : MonoBehaviour
                         if (tileChange.hallContent.type == 1.ToString())
                         {
                             Debug.Log("Tile Change Painting" + i);
+                            _changePropertiesGroup.alpha = 1;
+                            _changePropertiesGroup.interactable = true;
+                            _changePropertiesGroup.blocksRaycasts = true;
+                            _propertiesName.text = tileChange.hallContent.title;
+                            _propertiesUrl.text = tileChange.hallContent.image_url;
+                            _propertiesDesc.text = tileChange.hallContent.image_desc;
+                            _tileSelected = tileChange;
                         }
                         if (tileChange.hallContent.type == 2.ToString())
                         {
@@ -304,7 +316,7 @@ public class AdminEditMode : MonoBehaviour
                 }
             }
         }
-        if(_currentTool is 8 && _cursorTile.anchoredPosition.x > 1)
+        if(_currentTool is 8 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -326,6 +338,23 @@ public class AdminEditMode : MonoBehaviour
         }
     }
 
+    public void HidePropertiesGroup()
+    {
+        _changePropertiesGroup.alpha = 0;
+        _changePropertiesGroup.interactable = false;
+        _changePropertiesGroup.blocksRaycasts = false;
+    }
+
+    public void SaveProperties()
+    {
+        if (!_tileSelected)
+            return;
+        _tileSelected.hallContent.title = _propertiesName.text;
+        _tileSelected.hallContent.image_url = _propertiesUrl.text;
+        _tileSelected.hallContent.image_desc = _propertiesDesc.text;
+        HidePropertiesGroup();
+    }
+    
     public void ClearAll()
     {
         for (int i = 0; i < _paintsParent.childCount; i++)
@@ -380,7 +409,7 @@ public class AdminEditMode : MonoBehaviour
             case 2:
                 _cursorTile.GetComponent<Image>().color = _infoColor;
                 break;
-            case 3:
+            case 7:
                 _cursorTile.GetComponent<Image>().color = Color.clear;
                 break;
             case 8:
