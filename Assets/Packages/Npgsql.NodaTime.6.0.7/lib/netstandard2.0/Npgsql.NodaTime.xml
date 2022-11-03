@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Npgsql.NodaTime</name>
+    </assembly>
+    <members>
+        <member name="M:Npgsql.NodaTime.Internal.NodaTimeUtils.DecodeInstant(System.Int64)">
+            <summary>
+            Decodes a PostgreSQL timestamp/timestamptz into a NodaTime Instant.
+            </summary>
+            <param name="value">The number of microseconds from 2000-01-01T00:00:00.</param>
+            <remarks>
+            Unfortunately NodaTime doesn't have Duration.FromMicroseconds(), so we decompose into milliseconds and nanoseconds.
+            </remarks>
+        </member>
+        <member name="M:Npgsql.NodaTime.Internal.NodaTimeUtils.EncodeInstant(NodaTime.Instant)">
+            <summary>
+            Encodes a NodaTime Instant to a PostgreSQL timestamp/timestamptz.
+            </summary>
+        </member>
+        <member name="T:Npgsql.NpgsqlNodaTimeExtensions">
+            <summary>
+            Extension adding the NodaTime plugin to an Npgsql type mapper.
+            </summary>
+        </member>
+        <member name="M:Npgsql.NpgsqlNodaTimeExtensions.UseNodaTime(Npgsql.TypeMapping.INpgsqlTypeMapper)">
+            <summary>
+            Sets up NodaTime mappings for the PostgreSQL date/time types.
+            </summary>
+            <param name="mapper">The type mapper to set up (global or connection-specific)</param>
+        </member>
+    </members>
+</doc>
