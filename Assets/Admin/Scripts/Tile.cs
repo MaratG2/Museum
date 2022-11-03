@@ -9,7 +9,12 @@ public class Tile : MonoBehaviour
     public AdminEditMode.HallContent hallContent;
     private Image _image;
     [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _rubberColor;
-    
+
+    private void Start()
+    {
+        Test.postgres();
+    }
+
     public void Setup()
     {
         _image = GetComponent<Image>();

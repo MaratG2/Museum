@@ -1,4 +1,3 @@
-/*
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -11,9 +10,9 @@ public class Test
     public static void postgres()
     {
         string connectionString =
-            "Port = 5433;"+
+            "Port = 5432;"+
             "Server=localhost;" +
-            "Database=db_eco;" +
+            "Database=museumistu;" +
             "User ID=postgres;" +
             "Password=postgres;";
         // IDbConnection dbcon; ## CHANGE THIS TO
@@ -21,6 +20,7 @@ public class Test
 
         dbcon = new NpgsqlConnection(connectionString);
         dbcon.Open();
+        
         //IDbCommand dbcmd = dbcon.CreateCommand();## CHANGE THIS TO
         NpgsqlCommand dbcmd = dbcon.CreateCommand();
         // requires a table to be created named employee
@@ -30,18 +30,19 @@ public class Test
         //           firstname varchar(32),
         //           lastname varchar(32));
         string sql =
-            "SELECT vendor, product " +
-            "FROM visualinspectiondata.devices";
+            "SELECT onum, name " +
+            "FROM public.options";
         dbcmd.CommandText = sql;
         //IDataReader reader = dbcmd.ExecuteReader(); ## CHANGE THIS TO
         NpgsqlDataReader reader = dbcmd.ExecuteReader();
+
         while (reader.Read())
         {
 
             //string FirstName = (string)reader.GetString(0); 
             string LastName = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1).ToString();
             //string LastName = (string)reader.GetString(1);
-            Debug.Log("Name: " + " " + LastName);
+            Debug.Log("Name: " + LastName);
             //Console.WriteLine();
         }
         // clean up
@@ -53,4 +54,3 @@ public class Test
         dbcon = null;
     }
 }
-*/
