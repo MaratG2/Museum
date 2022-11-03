@@ -30,8 +30,10 @@ public class Test
         //           firstname varchar(32),
         //           lastname varchar(32));
         string sql =
-            "SELECT onum, name " +
-            "FROM public.options";
+            "SELECT c.title, c.image_desc " +
+            "FROM public.contents AS c " +
+            "JOIN public.options AS o ON c.onum = o.onum ";
+            
         dbcmd.CommandText = sql;
         //IDataReader reader = dbcmd.ExecuteReader(); ## CHANGE THIS TO
         NpgsqlDataReader reader = dbcmd.ExecuteReader();
@@ -41,8 +43,9 @@ public class Test
 
             //string FirstName = (string)reader.GetString(0); 
             string LastName = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1).ToString();
+            string FirstName = (reader.IsDBNull(0)) ? "NULL" : reader.GetString(0).ToString();
             //string LastName = (string)reader.GetString(1);
-            Debug.Log("Name: " + LastName);
+            Debug.Log(FirstName + " | " + LastName);
             //Console.WriteLine();
         }
         // clean up
