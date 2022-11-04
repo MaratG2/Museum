@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GoogleSheetsForUnity;
 using TMPro;
+using Npgsql;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,23 +23,25 @@ public class AdminViewMode : MonoBehaviour
     private List<AdminNewMode.HallOptions> _cachedHallOptions;
     private Vector2 _startTilePos;
     
+    NpgsqlConnection dbcon;
+    
     public AdminNewMode.HallOptions HallSelected
     {
         get => _hallSelected;
         set => _hallSelected = value;
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        // Suscribe for catching cloud responses.
-        Drive.responseCallback += HandleDriveResponse;
+        string connectionString =
+            "Port = 5432;"+
+            "Server=localhost;" +
+            "Database=museumistu;" +
+            "User ID=postgres;" +
+            "Password=postgres;";
+        dbcon = new NpgsqlConnection(connectionString);
+        dbcon.Open();
         Refresh();
-    }
-
-    private void OnDisable()
-    {
-        // Remove listeners.
-        Drive.responseCallback -= HandleDriveResponse;
     }
 
     public void SelectHall(int num)
@@ -84,12 +87,32 @@ public class AdminViewMode : MonoBehaviour
             Destroy(_tilesParent.transform.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
         _hallPreview.SetActive(false);
-        Invoke(nameof(DelayRefresh), 0.5f);
+        Invoke(nameof(SQLGetAllOptions), 0.5f);
     }
 
-    private void DelayRefresh()
+    private void SQLGetAllOptions()
     {
-        Drive.GetTable(_tableOptionsName, true);
+        //Drive.GetTable(_tableOptionsName, true);
+        NpgsqlCommand dbcmd = dbcon.CreateCommand();
+        string sql =
+            "SELECT * FROM " +
+            "public.options";
+        dbcmd.CommandText = sql;
+        NpgsqlDataReader reader = dbcmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            string name = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1).ToString();
+            int onum = (reader.IsDBNull(0)) ? 0 : Int32.Parse(reader.GetString(0));
+            var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
+                _hallListingsParent);
+            newInstance.gameObject.name = (onum).ToString();
+            newInstance.GetComponentInChildren<TextMeshProUGUI>().text = name;
+            newInstance.onClick.AddListener(() => SelectHall(onum));
+        }
+        
+        reader.Close();
+        reader = null;
     }
     
     private void FindLeftBottomTile()
