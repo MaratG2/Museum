@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GoogleSheetsForUnity;
+using Npgsql;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,8 +19,7 @@ public class AdminNewMode : MonoBehaviour
     [SerializeField] private Button _createHall;
 
     private bool _isOnCooldown;
-    private string _tableOptionsName = "Options";
-    
+
     [System.Serializable]
     public struct HallOptions
     {
@@ -62,47 +62,33 @@ public class AdminNewMode : MonoBehaviour
             return;
         _isOnCooldown = true;
         Invoke(nameof(CooldoownOff), 1f);
-        HallOptions newOptions = new HallOptions();
-        newOptions.name = _inputName.text;
-        newOptions.sizex = Int32.Parse(_inputSizeX.text);
-        newOptions.sizez = Int32.Parse(_inputSizeZ.text);
-        newOptions.is_date_b = _dateBegin.isOn;
-        newOptions.is_date_e = _dateEnd.isOn;
-        newOptions.date_begin = _dateBegin.isOn ? _inputDateBegin.text : "";
-        newOptions.date_end = _dateEnd.isOn ? _inputDateEnd.text : "";
-        newOptions.is_maintained = false;
-        newOptions.is_hidden = true;
-        CreateHallTable(newOptions.name);
-        SaveHallOptions(newOptions);
+        HallOptions newOption = new HallOptions();
+        newOption.name = _inputName.text;
+        newOption.sizex = Int32.Parse(_inputSizeX.text);
+        newOption.sizez = Int32.Parse(_inputSizeZ.text);
+        newOption.is_date_b = _dateBegin.isOn;
+        newOption.is_date_e = _dateEnd.isOn;
+        newOption.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "CURRENT_TIMESTAMP";
+        newOption.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
+        newOption.is_maintained = true;
+        newOption.is_hidden = true;
+        SQLInsertOption(newOption);
     }
 
-    private void CreateHallTable(string tableName)
+    private void SQLInsertOption(HallOptions option)
     {
-        Debug.Log("<color=yellow>Creating a hall table in the cloud for hall data.</color>");
-
-        // Creating a string array for field names (table headers) .
-        string[] fieldNames = new string[8];
-        fieldNames[0] = "uid";
-        fieldNames[1] = "type";
-        fieldNames[2] = "title";
-        fieldNames[3] = "image_url";
-        fieldNames[4] = "image_desc";
-        fieldNames[5] = "pos_x";
-        fieldNames[6] = "pos_z";
-        fieldNames[7] = "combined_pos";
-
-        // Request for the table to be created on the cloud.
-        Drive.CreateTable(fieldNames, tableName, true);
-    }
-    private void SaveHallOptions(HallOptions options)
-    {
-        // Get the json string of the object.
-        string jsonOptions = JsonUtility.ToJson(options);
-
-        Debug.Log("<color=yellow>Sending following hall options to the cloud: \n</color>" + options);
-
-        // Save the object on the cloud, in a table called like the object type.
-        Drive.CreateObject(jsonOptions, _tableOptionsName, true);
+        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
+        string dateSql = "SET datestyle to DMY";
+        dbcmd.Prepare();
+        dbcmd.CommandText = dateSql;
+        dbcmd.ExecuteNonQuery();
+        string sql =
+            "INSERT INTO public.options (name, sizex, sizez, is_date_b, is_date_e, date_begin, date_end, is_maintained, is_hidden) " +
+            "VALUES('" + option.name + "'," + option.sizex + ',' + option.sizez + ',' + option.is_date_b + ',' + option.is_date_e
+            + ',' + option.date_begin + ',' + option.date_end + ',' + option.is_maintained + ',' + option.is_hidden + ')';
+        dbcmd.Prepare();
+        dbcmd.CommandText = sql;
+        dbcmd.ExecuteNonQuery();
     }
 
     private void CooldoownOff()

@@ -22,7 +22,7 @@ public class AdminViewMode : MonoBehaviour
     private List<AdminNewMode.HallOptions> _cachedHallOptions = new List<AdminNewMode.HallOptions>();
     private Vector2 _startTilePos;
     
-    NpgsqlConnection dbcon;
+    public static NpgsqlConnection dbcon;
     
     public AdminNewMode.HallOptions HallSelected
     {

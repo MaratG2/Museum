@@ -268,7 +268,6 @@ public class AdminEditMode : MonoBehaviour
             }
             posToDelete = new List<Vector2>();
             FindLeftBottomTile();
-            Debug.Log("GetStart - " + _adminView.HallSelected.name);
             Drive.GetTable(_adminView.HallSelected.name, true);
         }
         
