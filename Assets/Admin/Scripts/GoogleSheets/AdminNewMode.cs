@@ -23,16 +23,16 @@ public class AdminNewMode : MonoBehaviour
     [System.Serializable]
     public struct HallOptions
     {
+        public int onum;
         public string name;
         public int sizex;
         public int sizez;
-        public string is_date_b;
-        public string is_date_e;
+        public bool is_date_b;
+        public bool is_date_e;
         public string date_begin;
         public string date_end;
-        public string is_maintained;
-        public string is_hidden;
-        public string is_deleted;
+        public bool is_maintained;
+        public bool is_hidden;
     }
     
     void Update()
@@ -66,13 +66,12 @@ public class AdminNewMode : MonoBehaviour
         newOptions.name = _inputName.text;
         newOptions.sizex = Int32.Parse(_inputSizeX.text);
         newOptions.sizez = Int32.Parse(_inputSizeZ.text);
-        newOptions.is_date_b = _dateBegin.isOn.ToString();
-        newOptions.is_date_e = _dateEnd.isOn.ToString();
+        newOptions.is_date_b = _dateBegin.isOn;
+        newOptions.is_date_e = _dateEnd.isOn;
         newOptions.date_begin = _dateBegin.isOn ? _inputDateBegin.text : "";
         newOptions.date_end = _dateEnd.isOn ? _inputDateEnd.text : "";
-        newOptions.is_maintained = false.ToString();
-        newOptions.is_hidden = true.ToString();
-        newOptions.is_deleted = false.ToString();
+        newOptions.is_maintained = false;
+        newOptions.is_hidden = true;
         CreateHallTable(newOptions.name);
         SaveHallOptions(newOptions);
     }

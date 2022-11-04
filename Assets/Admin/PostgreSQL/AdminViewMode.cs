@@ -18,9 +18,8 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private GameObject _tilePrefab;
     [SerializeField] private GameObject _tilesParent;
     
-    private string _tableOptionsName = "Options";
     private AdminNewMode.HallOptions _hallSelected;
-    private List<AdminNewMode.HallOptions> _cachedHallOptions;
+    private List<AdminNewMode.HallOptions> _cachedHallOptions = new List<AdminNewMode.HallOptions>();
     private Vector2 _startTilePos;
     
     NpgsqlConnection dbcon;
@@ -46,19 +45,30 @@ public class AdminViewMode : MonoBehaviour
 
     public void SelectHall(int num)
     {
-        if (Convert.ToBoolean(_cachedHallOptions[num].is_deleted))
+        AdminNewMode.HallOptions currentOption = new AdminNewMode.HallOptions();
+        bool hasFound = false;
+        foreach (var cho in _cachedHallOptions)
+        {
+            if (cho.onum == num)
+            {
+                currentOption = cho;
+                hasFound = true;
+            }
+        }
+        if (!hasFound)
+        {
+            Debug.LogError("NOT FOUND OPTION BY THAT ONUM");
             return;
-
-        Debug.Log(num + " | " + _cachedHallOptions.Count);
-        if (_hallSelected.name != _cachedHallOptions[num].name)
+        }
+        
+        if (_hallSelected.name != currentOption.name)
         {
             FindObjectOfType<AdminEditMode>().ClearAll();
             for (int i = 0; i < _tilesParent.transform.childCount; i++)
                 Destroy(_tilesParent.transform.GetChild(i).gameObject);
         }
-        _hallSelected = _cachedHallOptions[num];
-        
-        Invoke(nameof(FindLeftBottomTile), 0.5f);
+        _hallSelected = currentOption;
+        StartCoroutine(FindLeftBottomTile(num));
     }
 
     public void GoToWebInterface()
@@ -87,12 +97,13 @@ public class AdminViewMode : MonoBehaviour
             Destroy(_tilesParent.transform.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
         _hallPreview.SetActive(false);
-        Invoke(nameof(SQLGetAllOptions), 0.5f);
+        SQLGetAllOptions();
     }
 
     private void SQLGetAllOptions()
     {
-        //Drive.GetTable(_tableOptionsName, true);
+        _cachedHallOptions = new List<AdminNewMode.HallOptions>();
+        
         NpgsqlCommand dbcmd = dbcon.CreateCommand();
         string sql =
             "SELECT * FROM " +
@@ -102,8 +113,30 @@ public class AdminViewMode : MonoBehaviour
 
         while (reader.Read())
         {
-            string name = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1).ToString();
-            int onum = (reader.IsDBNull(0)) ? 0 : Int32.Parse(reader.GetString(0));
+            int onum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
+            string name = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1);
+            int sizex = (reader.IsDBNull(2)) ? 0 : reader.GetInt32(2);
+            int sizez = (reader.IsDBNull(3)) ? 0 : reader.GetInt32(3);
+            bool is_date_b = reader.GetBoolean(4);
+            bool is_date_e = reader.GetBoolean(5);
+            string date_begin = (reader.IsDBNull(6)) ? "NULL" : reader.GetDateTime(6).ToShortDateString();
+            string date_end = (reader.IsDBNull(7)) ? "NULL" : reader.GetDateTime(7).ToShortDateString();
+            bool is_maintained = reader.GetBoolean(8);
+            bool is_hidden = reader.GetBoolean(9);
+            
+            AdminNewMode.HallOptions newOption = new AdminNewMode.HallOptions();
+            newOption.onum = onum;
+            newOption.name = name;
+            newOption.sizex = sizex;
+            newOption.sizez = sizez;
+            newOption.is_date_b = is_date_b;
+            newOption.is_date_e = is_date_e;
+            newOption.date_begin = date_begin;
+            newOption.date_end = date_end;
+            newOption.is_maintained = is_maintained;
+            newOption.is_hidden = is_hidden;
+            _cachedHallOptions.Add(newOption);
+            
             var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
                 _hallListingsParent);
             newInstance.gameObject.name = (onum).ToString();
@@ -113,18 +146,73 @@ public class AdminViewMode : MonoBehaviour
         
         reader.Close();
         reader = null;
+        
+        _textGORefreshing.SetActive(false);
+        _hallPreview.SetActive(true);
+    }
+
+    private void SQLGetContentByOnum(int num)
+    {
+        NpgsqlCommand dbcmd = dbcon.CreateCommand();
+        string sql =
+            "SELECT c.cnum, c.title, c.image_desc, c.image_url, c.pos_x, c.pos_z, c.combined_pos, c.type " +
+            "FROM public.options AS o " +
+            "JOIN public.contents AS c ON " + num + " = c.onum";
+        dbcmd.CommandText = sql;
+        NpgsqlDataReader reader = dbcmd.ExecuteReader();
+
+        float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
+        while (reader.Read())
+        {
+            AdminEditMode.HallContent content = new AdminEditMode.HallContent();
+            int onum = num;
+            int cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
+            string title = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1);
+            string image_desc = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2);
+            string image_url = (reader.IsDBNull(3)) ? "NULL" : reader.GetString(3);
+            int pos_x = (reader.IsDBNull(4)) ? 0 : reader.GetInt32(4);
+            int pos_z = (reader.IsDBNull(5)) ? 0 : reader.GetInt32(5);
+            string combined_pos = (reader.IsDBNull(6)) ? "NULL" : reader.GetString(6);
+            int type = (reader.IsDBNull(7)) ? 0 : reader.GetInt32(7);
+
+            content.onum = onum;
+            content.cnum = cnum;
+            content.title = title;
+            content.image_desc = image_desc;
+            content.image_url = image_url;
+            content.pos_x = pos_x;
+            content.pos_z = pos_z;
+            content.combined_pos = combined_pos;
+            content.type = type;
+            
+            Vector2 tilePos = _startTilePos + new Vector2(content.pos_x, content.pos_z);
+            Vector2 drawPos = new Vector2
+            (
+                tilePos.x * tileSize,
+                tilePos.y * tileSize
+            );
+            Paint(tilePos, drawPos, content);
+        }
+        
+        reader.Close();
+        reader = null;
     }
     
-    private void FindLeftBottomTile()
+    private IEnumerator FindLeftBottomTile(int num)
     {
-        float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
-
+        yield return new WaitForSecondsRealtime(0.1f);
+        float tileSize = 0f;
+        while (tileSize.Equals(0f))
+        {
+            tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
+            yield return new WaitForEndOfFrame();
+        }
         float addPosX = 0, addPosY = tileSize / 4;
         if(HallSelected.sizez % 2 == 0)
             addPosY += -tileSize / 4;
         if (HallSelected.sizex % 2 != 0)
             addPosX += tileSize / 2;
-
+      
         for(int i = 0; i < 1920 / tileSize; i++)
         {
             for (int j = 0; j < 1080 / tileSize; j++)
@@ -138,7 +226,7 @@ public class AdminViewMode : MonoBehaviour
                     if (c.GetComponent<AdminHallPreview>())
                         isOverPreview = true;
                 }
-
+                
                 if (isOverPreview)
                 {
                     _startTilePos = new Vector2
@@ -146,56 +234,8 @@ public class AdminViewMode : MonoBehaviour
                         i + 0.5f,
                         j + 0.25f
                     );
-                    Drive.GetTable(HallSelected.name, true);
-                    return;
-                }
-            }
-        }
-    }
-
-    public void HandleDriveResponse(Drive.DataContainer dataContainer)
-    {
-        Debug.Log(dataContainer.msg);
-        _textGORefreshing.SetActive(false);
-        _hallPreview.SetActive(true);
-        
-        if (dataContainer.QueryType == Drive.QueryType.getTable)
-        {
-            string rawJSon = dataContainer.payload;
-            Debug.Log(rawJSon);
-
-            if (string.Compare(dataContainer.objType, HallSelected.name) == 0)
-            {
-                AdminEditMode.HallContent[] players = JsonHelper.ArrayFromJson<AdminEditMode.HallContent>(rawJSon);
-                float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
-                for (int i = 0; i < players.Length; i++)
-                {
-                    Vector2 tilePos = _startTilePos + new Vector2(players[i].pos_x, players[i].pos_z);
-                    Vector2 drawPos = new Vector2
-                    (
-                        tilePos.x * tileSize,
-                        tilePos.y * tileSize
-                    );
-                    Paint(tilePos, drawPos, players[i]);
-                    Debug.Log("IN");
-                }
-            }
-            
-            if (string.Compare(dataContainer.objType, _tableOptionsName) == 0)
-            {
-                // Parse from json to the desired object type.
-                AdminNewMode.HallOptions[] options = JsonHelper.ArrayFromJson<AdminNewMode.HallOptions>(rawJSon);
-                _cachedHallOptions = options.ToList();
-                string logMsg = "<color=yellow>" + options.Length.ToString() + " hall options retrieved from the cloud and parsed:</color>";
-                for (int i = 0; i < options.Length; i++)
-                {
-                    if (Convert.ToBoolean(options[i].is_deleted))
-                        continue;
-                    var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
-                        _hallListingsParent);
-                    newInstance.gameObject.name = i.ToString();
-                    newInstance.GetComponentInChildren<TextMeshProUGUI>().text = options[i].name;
-                    newInstance.onClick.AddListener(() => SelectHall(Int32.Parse(newInstance.gameObject.name)));
+                    SQLGetContentByOnum(num);
+                    yield break;
                 }
             }
         }

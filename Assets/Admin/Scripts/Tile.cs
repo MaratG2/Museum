@@ -10,15 +10,10 @@ public class Tile : MonoBehaviour
     private Image _image;
     [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _rubberColor;
 
-    private void Start()
-    {
-        Test.postgres();
-    }
-
     public void Setup()
     {
         _image = GetComponent<Image>();
-        SelectTool(Int32.Parse(hallContent.type));
+        SelectTool(hallContent.type);
     }
     
     private void SelectTool(int tool)

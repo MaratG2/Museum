@@ -32,14 +32,15 @@ public class AdminEditMode : MonoBehaviour
     [System.Serializable]
     public struct HallContent
     {
-        public int uid;
-        public string type;
+        public int onum;
+        public int cnum;
         public string title;
         public string image_url;
-        public string image_desc;
         public int pos_x;
         public int pos_z;
         public string combined_pos;
+        public int type;
+        public string image_desc;
     }
     
     private void Start()
@@ -167,7 +168,7 @@ public class AdminEditMode : MonoBehaviour
                 float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
                 for (int i = 0; i < players.Length; i++)
                 {
-                    SelectTool(Int32.Parse(players[i].type));
+                    SelectTool(players[i].type);
                     Vector2 tilePos = _startTilePos + new Vector2(players[i].pos_x, players[i].pos_z);
                     Vector2 drawPos = new Vector2
                     (
@@ -195,7 +196,6 @@ public class AdminEditMode : MonoBehaviour
                 {
                     if(_toDelete)
                     {
-                        players[i].is_deleted = true.ToString();
                         string jsonPlayer = JsonUtility.ToJson(players[i]);
                         Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
                         Debug.Log("Deleted");
@@ -203,8 +203,8 @@ public class AdminEditMode : MonoBehaviour
 
                     if (_toUpdate)
                     {
-                        players[i].is_maintained = _toggleMaintained.isOn.ToString();
-                        players[i].is_hidden = _toggleHidden.isOn.ToString();
+                        players[i].is_maintained = _toggleMaintained.isOn;
+                        players[i].is_hidden = _toggleHidden.isOn;
                         string jsonPlayer = JsonUtility.ToJson(players[i]);
                         Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
                     }
@@ -293,11 +293,11 @@ public class AdminEditMode : MonoBehaviour
                     if(tileChange && tileChange.hallContent.pos_x == tileRealPos.x && tileChange.hallContent.pos_z == tileRealPos.y)
                     {
                         Debug.Log("tileChange " + i);
-                        if (tileChange.hallContent.type == 0.ToString())
+                        if (tileChange.hallContent.type == 0)
                         {
                             Debug.Log("Tile Change Door" + i);
                         }
-                        if (tileChange.hallContent.type == 1.ToString())
+                        if (tileChange.hallContent.type == 1)
                         {
                             Debug.Log("Tile Change Painting" + i);
                             _changePropertiesGroup.alpha = 1;
@@ -308,7 +308,7 @@ public class AdminEditMode : MonoBehaviour
                             _propertiesDesc.text = tileChange.hallContent.image_desc;
                             _tileSelected = tileChange;
                         }
-                        if (tileChange.hallContent.type == 2.ToString())
+                        if (tileChange.hallContent.type == 2)
                         {
                             Debug.Log("Tile Change Info" + i);
                         }
@@ -376,7 +376,7 @@ public class AdminEditMode : MonoBehaviour
         tileInstance.hallContent.image_desc = "desc";
         tileInstance.hallContent.image_url = "url";
         tileInstance.hallContent.title = "title";
-        tileInstance.hallContent.type = _currentTool.ToString();
+        tileInstance.hallContent.type = _currentTool;
         tileInstance.hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
         tileInstance.hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
         tileInstance.hallContent.combined_pos = tileInstance.hallContent.pos_x + "_" + tileInstance.hallContent.pos_z;
@@ -385,7 +385,7 @@ public class AdminEditMode : MonoBehaviour
             if (tileInstance.hallContent.combined_pos == posToDelete[i].x + "_" + posToDelete[i].y)
                 posToDelete.RemoveAt(i);
         }
-        tileInstance.hallContent.uid = uid;
+        //tileInstance.hallContent.uid = uid;
         if (hasStruct)
             tileInstance.hallContent = content;
         tileInstance.Setup();
