@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GoogleSheetsForUnity;
+using Npgsql;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,9 +24,7 @@ public class AdminEditMode : MonoBehaviour
     private int _currentTool = -999;
     private int[][] _hallPlan;
     private Vector2 _startTilePos = Vector2.zero;
-    private bool _toDelete;
     private bool _toUpdate;
-    private int uid = 0;
     private List<Vector2> posToDelete = new List<Vector2>();
     private Tile _tileSelected;
     
@@ -47,18 +46,6 @@ public class AdminEditMode : MonoBehaviour
     {
         _nameText.text = "";
         SelectTool(-1);
-    }
-    
-    private void OnEnable()
-    {
-        // Suscribe for catching cloud responses.
-        Drive.responseCallback += HandleDriveResponse;
-    }
-
-    private void OnDisable()
-    {
-        // Remove listeners.
-        Drive.responseCallback -= HandleDriveResponse;
     }
 
     public void Refresh()
@@ -126,8 +113,12 @@ public class AdminEditMode : MonoBehaviour
 
     public void DeleteHall()
     {
-        _toDelete = true;
-        Drive.GetObjectsByField("Options", "name", _adminView.HallSelected.name, true);
+        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
+        string sql = "DELETE FROM options "
+            + "WHERE onum = " + _adminView.HallSelected.onum;
+        dbcmd.Prepare();
+        dbcmd.CommandText = sql;
+        dbcmd.ExecuteNonQuery();
         ClearAll();
         _nameText.text = "";
         _adminView.HallSelected = new AdminNewMode.HallOptions();
@@ -194,13 +185,6 @@ public class AdminEditMode : MonoBehaviour
 
                 for (int i = 0; i < players.Length; i++)
                 {
-                    if(_toDelete)
-                    {
-                        string jsonPlayer = JsonUtility.ToJson(players[i]);
-                        Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
-                        Debug.Log("Deleted");
-                    }
-
                     if (_toUpdate)
                     {
                         players[i].is_maintained = _toggleMaintained.isOn;
@@ -210,7 +194,6 @@ public class AdminEditMode : MonoBehaviour
                     }
                 }
             }
-            _toDelete = false;
             _toUpdate = false;
         }
     }
@@ -359,7 +342,6 @@ public class AdminEditMode : MonoBehaviour
         for (int i = 0; i < _paintsParent.childCount; i++)
             Destroy(_paintsParent.GetChild(i).gameObject);
         posToDelete = new List<Vector2>();
-        uid = 0;
     }
 
     private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new HallContent())
@@ -388,7 +370,6 @@ public class AdminEditMode : MonoBehaviour
         if (hasStruct)
             tileInstance.hallContent = content;
         tileInstance.Setup();
-        uid++;
     }
 
     public void SelectTool(int tool)
