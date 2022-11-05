@@ -24,7 +24,6 @@ public class AdminEditMode : MonoBehaviour
     private int _currentTool = -999;
     private int[][] _hallPlan;
     private Vector2 _startTilePos = Vector2.zero;
-    private bool _toUpdate;
     private List<Vector2> posToDelete = new List<Vector2>();
     private Tile _tileSelected;
     
@@ -127,75 +126,85 @@ public class AdminEditMode : MonoBehaviour
 
     public void SaveHall()
     {
-        _toUpdate = true;
-        Drive.GetObjectsByField("Options", "name", _adminView.HallSelected.name, true);
+        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
+        string sql = "UPDATE options"
+                     + " SET is_maintained = " + _toggleMaintained.isOn
+                     + ", is_hidden = " + _toggleHidden.isOn
+                     + " WHERE onum = " + _adminView.HallSelected.onum;
+        dbcmd.Prepare();
+        dbcmd.CommandText = sql;
+        dbcmd.ExecuteNonQuery();
+
         for (int i = 0; i < _paintsParent.childCount; i++)
         {
-            string jsonPlayer = JsonUtility.ToJson(_paintsParent.GetChild(i).GetComponent<Tile>().hallContent);
-            Drive.UpdateObjects(_adminView.HallSelected.name
-                , "combined_pos", _paintsParent.GetChild(i).GetComponent<Tile>().hallContent.combined_pos
-                , jsonPlayer, true, true);
-            
+            var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
+            c.onum = _adminView.HallSelected.onum;
+            Debug.Log(c.image_url);
+            string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type)" +
+                               " VALUES(" + c.onum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
+                               c.combined_pos + "','" + c.image_desc + "'," + c.type + ")" +
+                               " ON CONFLICT (combined_pos) DO UPDATE" +
+                               " SET title = EXCLUDED.title, image_url = EXCLUDED.image_url, pos_x = EXCLUDED.pos_x, pos_z = EXCLUDED.pos_z, " +
+                               "combined_pos = EXCLUDED.combined_pos, image_desc = EXCLUDED.image_desc, type = EXCLUDED.type";
+            dbcmd.Prepare();
+            dbcmd.CommandText = sqlInsert;
+            dbcmd.ExecuteNonQuery();
         }
 
         foreach (var posDel in posToDelete)
         {
-            Drive.DeleteObjects(_adminView.HallSelected.name, "combined_pos", posDel.x + "_" + posDel.y,true);
+            string sqlDelete = "DELETE FROM contents"
+                               + " WHERE combined_pos = '" + posDel.x + "_" + posDel.y + "'";
+            dbcmd.Prepare();
+            dbcmd.CommandText = sqlDelete;
+            dbcmd.ExecuteNonQuery();
         }
     }
 
-    public void HandleDriveResponse(Drive.DataContainer dataContainer)
+    private void SQLGetOptionsContents(int on)
     {
-        Debug.Log(dataContainer.msg);
-
-        
-        if (dataContainer.QueryType == Drive.QueryType.getTable)
+        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
+        string sql =
+            "SELECT * FROM public.contents c" +
+            " WHERE c.onum = " + on;
+        dbcmd.CommandText = sql;
+        NpgsqlDataReader reader = dbcmd.ExecuteReader();
+        float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
+        while (reader.Read())
         {
-            string rawJSon2 = dataContainer.payload;
-            Debug.Log("GET");
-            if (string.Compare(dataContainer.objType, _adminView.HallSelected.name) == 0)
-            {
-                HallContent[] players = JsonHelper.ArrayFromJson<HallContent>(rawJSon2);
-                float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
-                for (int i = 0; i < players.Length; i++)
-                {
-                    SelectTool(players[i].type);
-                    Vector2 tilePos = _startTilePos + new Vector2(players[i].pos_x, players[i].pos_z);
-                    Vector2 drawPos = new Vector2
-                    (
-                        tilePos.x * tileSize,
-                        tilePos.y * tileSize
-                    );
-                    Paint(tilePos, drawPos, true, players[i]);
-                    Debug.Log("IN");
-                }
-            }
+            int onum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
+            int cnum = (reader.IsDBNull(1)) ? 0 : reader.GetInt32(1);
+            string title = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2);
+            string image_url = (reader.IsDBNull(3)) ? "NULL" : reader.GetString(3);
+            int pos_x = (reader.IsDBNull(4)) ? 0 : reader.GetInt32(4);
+            int pos_z = (reader.IsDBNull(5)) ? 0 : reader.GetInt32(5);
+            string combined_pos = (reader.IsDBNull(6)) ? "NULL" : reader.GetString(6);
+            int type = (reader.IsDBNull(7)) ? 0 : reader.GetInt32(7);
+            string image_desc = (reader.IsDBNull(8)) ? "NULL" : reader.GetString(8);
+          
+            HallContent newContent = new HallContent();
+            newContent.onum = onum;
+            newContent.cnum = cnum;
+            newContent.title = title;
+            newContent.image_url = image_url;
+            newContent.pos_x = pos_x;
+            newContent.pos_z = pos_z;
+            newContent.combined_pos = combined_pos;
+            newContent.type = type;
+            newContent.image_desc = image_desc;
+
+            SelectTool(newContent.type);
+            Vector2 tilePos = _startTilePos + new Vector2(newContent.pos_x, newContent.pos_z);
+            Vector2 drawPos = new Vector2
+            (
+                tilePos.x * tileSize,
+                tilePos.y * tileSize
+            );
+            Paint(tilePos, drawPos, true, newContent);
         }
         
-        if (dataContainer.QueryType == Drive.QueryType.getObjectsByField)
-        {
-            string rawJSon = dataContainer.payload;
-            Debug.Log(rawJSon);
-
-            // Check if the type is correct.
-            if (string.Compare(dataContainer.objType, "Options") == 0)
-            {
-                // Parse from json to the desired object type.
-                AdminNewMode.HallOptions[] players = JsonHelper.ArrayFromJson<AdminNewMode.HallOptions>(rawJSon);
-
-                for (int i = 0; i < players.Length; i++)
-                {
-                    if (_toUpdate)
-                    {
-                        players[i].is_maintained = _toggleMaintained.isOn;
-                        players[i].is_hidden = _toggleHidden.isOn;
-                        string jsonPlayer = JsonUtility.ToJson(players[i]);
-                        Drive.UpdateObjects("Options", "name", players[i].name, jsonPlayer, false, true);
-                    }
-                }
-            }
-            _toUpdate = false;
-        }
+        reader.Close();
+        reader = null;
     }
 
     void Update()
@@ -251,7 +260,7 @@ public class AdminEditMode : MonoBehaviour
             }
             posToDelete = new List<Vector2>();
             FindLeftBottomTile();
-            Drive.GetTable(_adminView.HallSelected.name, true);
+            SQLGetOptionsContents(_adminView.HallSelected.onum);
         }
         
         if(_currentTool is 0 or 1 or 2 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
@@ -334,6 +343,8 @@ public class AdminEditMode : MonoBehaviour
         _tileSelected.hallContent.title = _propertiesName.text;
         _tileSelected.hallContent.image_url = _propertiesUrl.text;
         _tileSelected.hallContent.image_desc = _propertiesDesc.text;
+        
+        Debug.Log("SAVE: " + _propertiesUrl.text + " | " + _tileSelected.hallContent.image_url);
         HidePropertiesGroup();
     }
     
