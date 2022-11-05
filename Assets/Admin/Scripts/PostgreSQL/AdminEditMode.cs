@@ -139,7 +139,6 @@ public class AdminEditMode : MonoBehaviour
         {
             var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
             c.onum = _adminView.HallSelected.onum;
-            Debug.Log(c.image_url);
             string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type)" +
                                " VALUES(" + c.onum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
                                c.combined_pos + "','" + c.image_desc + "'," + c.type + ")" +
@@ -343,8 +342,6 @@ public class AdminEditMode : MonoBehaviour
         _tileSelected.hallContent.title = _propertiesName.text;
         _tileSelected.hallContent.image_url = _propertiesUrl.text;
         _tileSelected.hallContent.image_desc = _propertiesDesc.text;
-        
-        Debug.Log("SAVE: " + _propertiesUrl.text + " | " + _tileSelected.hallContent.image_url);
         HidePropertiesGroup();
     }
     
