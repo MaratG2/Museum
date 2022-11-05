@@ -83,9 +83,9 @@ public class AdminNewMode : MonoBehaviour
         dbcmd.CommandText = dateSql;
         dbcmd.ExecuteNonQuery();
         string sql =
-            "INSERT INTO public.options (name, sizex, sizez, is_date_b, is_date_e, date_begin, date_end, is_maintained, is_hidden) " +
+            "INSERT INTO public.options (name, sizex, sizez, is_date_b, is_date_e, date_begin, date_end, is_maintained, is_hidden, operation) " +
             "VALUES('" + option.name + "'," + option.sizex + ',' + option.sizez + ',' + option.is_date_b + ',' + option.is_date_e
-            + ',' + option.date_begin + ',' + option.date_end + ',' + option.is_maintained + ',' + option.is_hidden + ')';
+            + ',' + option.date_begin + ',' + option.date_end + ',' + option.is_maintained + ',' + option.is_hidden + ", 'INSERT')";
         dbcmd.Prepare();
         dbcmd.CommandText = sql;
         dbcmd.ExecuteNonQuery();

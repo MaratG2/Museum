@@ -107,7 +107,7 @@ public class AdminViewMode : MonoBehaviour
         NpgsqlCommand dbcmd = dbcon.CreateCommand();
         string sql =
             "SELECT * FROM " +
-            "public.options " + "ORDER BY 1";
+            "options_view";
         dbcmd.CommandText = sql;
         NpgsqlDataReader reader = dbcmd.ExecuteReader();
 

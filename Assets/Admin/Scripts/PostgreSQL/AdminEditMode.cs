@@ -130,6 +130,7 @@ public class AdminEditMode : MonoBehaviour
         string sql = "UPDATE options"
                      + " SET is_maintained = " + _toggleMaintained.isOn
                      + ", is_hidden = " + _toggleHidden.isOn
+                     + ", operation = 'UPDATE'"
                      + " WHERE onum = " + _adminView.HallSelected.onum;
         dbcmd.Prepare();
         dbcmd.CommandText = sql;
@@ -139,12 +140,12 @@ public class AdminEditMode : MonoBehaviour
         {
             var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
             c.onum = _adminView.HallSelected.onum;
-            string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type)" +
+            string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type, operation)" +
                                " VALUES(" + c.onum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
-                               c.combined_pos + "','" + c.image_desc + "'," + c.type + ")" +
+                               c.combined_pos + "','" + c.image_desc + "'," + c.type + ", 'INSERT')" +
                                " ON CONFLICT (combined_pos) DO UPDATE" +
                                " SET title = EXCLUDED.title, image_url = EXCLUDED.image_url, pos_x = EXCLUDED.pos_x, pos_z = EXCLUDED.pos_z, " +
-                               "combined_pos = EXCLUDED.combined_pos, image_desc = EXCLUDED.image_desc, type = EXCLUDED.type";
+                               "combined_pos = EXCLUDED.combined_pos, image_desc = EXCLUDED.image_desc, type = EXCLUDED.type, operation = 'UPDATE'";
             dbcmd.Prepare();
             dbcmd.CommandText = sqlInsert;
             dbcmd.ExecuteNonQuery();
