@@ -42,6 +42,12 @@ public class AdminAuth : MonoBehaviour
 
     void Start()
     {
+        _authCGroup.alpha = 1f;
+        _authCGroup.interactable = true;
+        _authCGroup.blocksRaycasts = true;
+        _viewCGroup.alpha = 0f;
+        _viewCGroup.interactable = false;
+        _viewCGroup.blocksRaycasts = false;
         _errorReg.text = "";
         _errorReg.color = Color.red; 
         _errorAuth.text = "";
