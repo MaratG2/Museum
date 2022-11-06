@@ -22,6 +22,8 @@ public class AdminAuth : MonoBehaviour
     [SerializeField] private Button _buttonAuth;
     [SerializeField] private CanvasGroup _authCGroup;
     [SerializeField] private CanvasGroup _viewCGroup;
+    [SerializeField] private CanvasGroup _editCGroup;
+    [SerializeField] private CanvasGroup _newCGroup;
 
     [System.Serializable]
     public struct User
@@ -48,6 +50,12 @@ public class AdminAuth : MonoBehaviour
         _viewCGroup.alpha = 0f;
         _viewCGroup.interactable = false;
         _viewCGroup.blocksRaycasts = false;
+        _editCGroup.alpha = 0f;
+        _editCGroup.interactable = false;
+        _editCGroup.blocksRaycasts = false;
+        _newCGroup.alpha = 0f;
+        _newCGroup.interactable = false;
+        _newCGroup.blocksRaycasts = false;
         _errorReg.text = "";
         _errorReg.color = Color.red; 
         _errorAuth.text = "";
