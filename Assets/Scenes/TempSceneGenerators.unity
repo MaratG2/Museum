@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 8196199930604732181, guid: d856c0a3c1105bb44b6b9560832b5be0, type: 3}
+  floor: {fileID: 5674533656865193050, guid: 43e765b2fa56c994bb8ded72cb03bc6e, type: 3}
+  wall: {fileID: 351236680772316137, guid: aac21bf3ae8d62d4e953823d7a8a258f, type: 3}
 --- !u!4 &272775900
 Transform:
   m_ObjectHideFlags: 0

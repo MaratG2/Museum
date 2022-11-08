@@ -13,6 +13,7 @@ namespace GenerationMap
             PrefabWall = prefabWall;
             PrefabFloor = prefabFloor;
             PrefabCeiling = prefabCeiling;
+            
         }
     }
 }
