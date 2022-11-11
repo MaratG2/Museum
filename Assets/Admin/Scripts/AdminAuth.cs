@@ -122,7 +122,7 @@ public class AdminAuth : MonoBehaviour
             reader = null;
             
             string securedPassword = Convert.ToBase64String(
-                new SHA1CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordReg.text)));
+                new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordReg.text)));
             
             dbcmd = AdminViewMode.dbcon.CreateCommand();
             string regSql = "INSERT INTO public.users(name, email, password) " +
@@ -190,7 +190,7 @@ public class AdminAuth : MonoBehaviour
             reader = null;
 
             string securedPassword = Convert.ToBase64String(
-                new SHA1CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
+                new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
 
             dbcmd = AdminViewMode.dbcon.CreateCommand();
             string loginSql = "SELECT * from public.users " +
