@@ -11,55 +11,56 @@ namespace GenerationMap
       public readonly int Height;
       //локальная точка спавна 
       public readonly Vector2 LocalSpawnPoint;
-      public readonly PrefabPack Prefabs;
+      //public readonly PrefabPack Prefabs;
       public List<Exhibit> Exhibits;
-      public TypeBlock[,,] Blocks;
+      public ExhibitDto[,,] Blocks;
+      public GameObject[,,] Objects;
 
-      public Room(Vector3 startPointRoom, int length, int width, int height, Vector2 localSpawnPoint, PrefabPack prefabPack, List<Exhibit> exhibits)
+      public Room(Vector3 startPointRoom, int length, int width, int height, Vector2 localSpawnPoint, List<Exhibit> exhibits)
       {
          Length = length;
          Width = width;
          LocalSpawnPoint = CheckLocalSpawnPoint(localSpawnPoint);
          StartPointRoom = startPointRoom;
-         Prefabs = prefabPack;
          Height = height;
          Exhibits = exhibits;
          Blocks = GenerateMap(width, length, height);
       }
       
-      public TypeBlock[,,] GenerateMap(int width, int length, int height)
+      public ExhibitDto[,,] GenerateMap(int width, int length, int height)
       {
-         var resultMap = new TypeBlock[width, height, length];
+         var resultMap = new ExhibitDto[width, height, length];
+         //генерация блоков пола и потолка
          for (var i = 0; i < length; i++)
          {
             for (var j = 0; j < width; j++)
             {
-               resultMap[j, 0, i] = TypeBlock.Floor;
-               resultMap[j, height - 1, i] = TypeBlock.Celling;
+               resultMap[j, 0, i] = ExhibitsConstants.Floor;
+               resultMap[j, height - 1, i] = ExhibitsConstants.Celling;
             }
          }
-
+         //генерация блоков стен параллельных оси Z
          for (int i = 0; i < width; i++)
          {
             for (int j = 0; j < height; j++)
             {
-               resultMap[i, j, 0] = TypeBlock.Wall;
-               resultMap[i, j, length - 1] = TypeBlock.Wall;
+               resultMap[i, j, 0] = ExhibitsConstants.Wall;
+               resultMap[i, j, length - 1] = ExhibitsConstants.Wall;
             }
          }
-            
+         //генерация блоков стен параллельных оси X   
          for (int i = 0; i < length; i++)
          {
              for (int j = 0; j < height; j++)
              {
-                 resultMap[0, j, i] = TypeBlock.Wall;
-                 resultMap[width - 1, j, i] = TypeBlock.Wall;
+                 resultMap[0, j, i] = ExhibitsConstants.Wall;
+                 resultMap[width - 1, j, i] = ExhibitsConstants.Wall;
              }
          }
-
+         
          foreach (var exhibit in Exhibits)
          {
-            resultMap[(int) exhibit.LocalPosition.x, (int) exhibit.LocalPosition.y, (int) exhibit.LocalPosition.z] = TypeBlock.Exhibit;
+            resultMap[exhibit.LocalPosition.x, exhibit.LocalPosition.y, exhibit.LocalPosition.z] = ExhibitsConstants.GetModelById(exhibit.Id);
          }
 
          return resultMap;

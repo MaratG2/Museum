@@ -23,7 +23,7 @@ Characters, Effects
 +-------------------------------------------+
 |  SUPPORT                                  |
 +-------------------------------------------+
-
+    
 In case of any questions, please contact with me by email:
 
 	karbo243@gmail.com

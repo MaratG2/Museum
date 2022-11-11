@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 
+
 namespace GenerationMap
 {
-    public class Exhibit : IExhibit
+    public class Exhibit 
     {
-        public GameObject Model { get; set; }
-        public Vector3 LocalPosition { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public Vector3Int LocalPosition { get; set; }
 
-        public Exhibit(GameObject model, Vector3 localPosition)
+        public Exhibit( int id, string name, Vector3Int localPosition)
         {
-            Model = model;
             LocalPosition = localPosition;
+            Id = id;
+            Name = name;
         }
     }
 }

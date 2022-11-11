@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection.Emit;
-using System.Threading;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 namespace GenerationMap
@@ -14,18 +12,23 @@ namespace GenerationMap
         [SerializeField] public GameObject wall;
         [SerializeField] public GameObject celling;
         [SerializeField] public GameObject picture;
+        [SerializeField] public GameObject repositoryPrefabs;
+        public Dictionary<string, GameObject> prefabs;
+        
 
         public void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                var exs = new List<Exhibit>();
-                exs.Add(new Exhibit(picture, new Vector3(6, 2, 1)));
-                /*exs.Add(new Exhibit(picture, new Vector3(3, 2, 1)));
-                exs.Add(new Exhibit(picture, new Vector3(3, 2, 8)));*/
-                var room = new Room(Vector3.zero, 10, 8, 5, Vector2.one, new PrefabPack(wall, floor, celling),exs);
+                
+                var room = new Room(Vector3.zero, 20, 15, 5, Vector2.one, );
                 Spawn(room);
             }
+        }
+
+        public void SpawnRoom(Room room)
+        {
+            Spawn(room);
         }
 
         public void Spawn(Room room)
@@ -38,32 +41,17 @@ namespace GenerationMap
                     {
                         GameObject spawnBlock;
                         var kostil = false;
-                        
-                        switch (room.Blocks[i,j,k])
-                        {
-                            case TypeBlock.Floor:
-                                spawnBlock = room.Prefabs.PrefabFloor;
-                                break;
-                            case TypeBlock.Celling:
-                                spawnBlock = room.Prefabs.PrefabCeiling;
-                                break;
-                            case TypeBlock.Wall:
-                                spawnBlock = room.Prefabs.PrefabWall;
-                                break;
-                            case TypeBlock.Exhibit:
-                                spawnBlock = picture;
-                                kostil = true;
-                                break;
-                            
-                            default: 
-                                continue;
-                        }
 
-                        var localScale = spawnBlock.transform.localScale;
+                        spawnBlock = repositoryPrefabs.gameObject.Find(room.Blocks[i, j, k].Name);
+
+                        var localScale = new Vector3(1, 1, 1);
                         if (kostil)
                         {
                             SpawnPicture(room,picture,new Point(i,k),new Vector3(i * localScale.x, j * localScale.y,
                                 k * localScale.z));
+                            
+                            print($"{i}, {k}");
+                            continue;
                         }
 
                         SpawnChunk(spawnBlock,
@@ -73,27 +61,38 @@ namespace GenerationMap
                 }
             }
         }
-
+        private void SpawnExhibit(Room room, Point internalСoordinates)
+        {
+            
+        }
         private void SpawnPicture(Room room, GameObject picture, Point pos,Vector3 globalPos)
         {
             var rotate = Quaternion.identity;
             var axis = new Vector3(0, 1, 0);
-            if (pos.X > room.Width / 2)
+            var deltas = new int[4]
             {
-                rotate = Quaternion.AngleAxis(180f, axis);
-                //разварачиваем на 180
-            }
-
-            if (pos.Y == 1)
+                room.Width - 1 - pos.X,
+                pos.X,
+                room.Length - 1 - pos.Y,
+                pos.Y,
+            };
+            var minDelta = deltas.Min(x => x);
+            if (room.Width - 1 - pos.X == minDelta)
             {
-                //разварачиваем на 90
-                rotate = Quaternion.AngleAxis(90f, axis);
+                rotate = Quaternion.AngleAxis(270, axis);
+                print("270");
             }
             
-            if (pos.Y == room.Length - 2)
+            else if (pos.X == minDelta)
             {
-                //разварачиваем на 270
-                rotate = Quaternion.AngleAxis(270f, axis);
+                rotate = Quaternion.AngleAxis(90, axis);
+                print("90");
+            }
+            
+            else if (room.Length - 1 - pos.Y == minDelta)
+            {
+                rotate = Quaternion.AngleAxis(180, axis);
+                print("180");
             }
 
             SpawnChunk(picture, globalPos, rotate);
