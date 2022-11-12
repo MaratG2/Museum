@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GenerationMap;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,24 +21,27 @@ public class Tile : MonoBehaviour
     {
         switch (tool)
         {
+            case -2:
+                _image.color = _rubberColor;
+                break;
             case -1:
                 _image.color = Color.clear;
                 break;
-            case 0:
-                _image.color = _doorColor;
-                break;
-            case 1:
-                _image.color = _frameColor;
-                break;
-            case 2:
-                _image.color = _infoColor;
-                break;
-            case 7:
-                _image.color = Color.clear;
-                break;
-            case 8:
-                _image.color = _rubberColor;
-                break;
+        }
+        if (tool == ExhibitsConstants.Picture.Id)
+        {
+            _image.color = _frameColor;
+            return;
+        }
+        if (tool == ExhibitsConstants.SpawnPoint.Id)
+        {
+            _image.color = _doorColor;
+            return;
+        }
+        if (tool == ExhibitsConstants.InfoBox.Id)
+        {
+            _image.color = _infoColor;
+            return;
         }
     }
 }

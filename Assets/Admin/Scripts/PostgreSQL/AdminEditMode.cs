@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GenerationMap;
 using GoogleSheetsForUnity;
 using Npgsql;
 using TMPro;
@@ -139,11 +140,11 @@ public class AdminEditMode : MonoBehaviour
         for (int i = 0; i < _paintsParent.childCount; i++)
         {
             var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
-            c.onum = _adminView.HallSelected.onum;
+            c.onum = _adminView.HallSelected.onum;Вмес
             string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type, operation)" +
                                " VALUES(" + c.onum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
                                c.combined_pos + "','" + c.image_desc + "'," + c.type + ", 'INSERT')" +
-                               " ON CONFLICT (combined_pos) DO UPDATE" +
+                               " ON CONFLICT ON CONSTRAINT combined_pos_onum_unique DO UPDATE" +
                                " SET title = EXCLUDED.title, image_url = EXCLUDED.image_url, pos_x = EXCLUDED.pos_x, pos_z = EXCLUDED.pos_z, " +
                                "combined_pos = EXCLUDED.combined_pos, image_desc = EXCLUDED.image_desc, type = EXCLUDED.type, operation = 'UPDATE'";
             dbcmd.Prepare();
@@ -263,14 +264,19 @@ public class AdminEditMode : MonoBehaviour
             SQLGetOptionsContents(_adminView.HallSelected.onum);
         }
         
-        if(_currentTool is 0 or 1 or 2 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
+        if(_currentTool == ExhibitsConstants.SpawnPoint.Id 
+           || _currentTool == ExhibitsConstants.Picture.Id
+           || _currentTool == ExhibitsConstants.InfoBox.Id
+           || _currentTool == ExhibitsConstants.Cup.Id
+           || _currentTool == ExhibitsConstants.Medal.Id
+           && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 Paint(tiledMousePos/tileSize, _cursorTile.anchoredPosition);
             }
         }
-        if(_currentTool is 7 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
+        if(_currentTool is -3 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -284,11 +290,11 @@ public class AdminEditMode : MonoBehaviour
                     if(tileChange && tileChange.hallContent.pos_x == tileRealPos.x && tileChange.hallContent.pos_z == tileRealPos.y)
                     {
                         Debug.Log("tileChange " + i);
-                        if (tileChange.hallContent.type == 0)
+                        if (tileChange.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
                         {
                             Debug.Log("Tile Change Door" + i);
                         }
-                        if (tileChange.hallContent.type == 1)
+                        if (tileChange.hallContent.type == ExhibitsConstants.Picture.Id)
                         {
                             Debug.Log("Tile Change Painting" + i);
                             _changePropertiesGroup.alpha = 1;
@@ -299,7 +305,7 @@ public class AdminEditMode : MonoBehaviour
                             _propertiesDesc.text = tileChange.hallContent.image_desc;
                             _tileSelected = tileChange;
                         }
-                        if (tileChange.hallContent.type == 2)
+                        if (tileChange.hallContent.type == ExhibitsConstants.InfoBox.Id)
                         {
                             Debug.Log("Tile Change Info" + i);
                         }
@@ -307,7 +313,7 @@ public class AdminEditMode : MonoBehaviour
                 }
             }
         }
-        if(_currentTool is 8 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
+        if(_currentTool is -2 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -355,11 +361,20 @@ public class AdminEditMode : MonoBehaviour
 
     private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new HallContent())
     {
+        if(Mathf.FloorToInt(tiledPos.x - _startTilePos.x) >= _hallPlan.Length || 
+           (Mathf.FloorToInt(tiledPos.x - _startTilePos.x) < _hallPlan.Length 
+            && Mathf.FloorToInt(tiledPos.y - _startTilePos.y) >= _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)].Length))
+        {
+            Debug.Log("INDEX OUT OF RANGE: " + Mathf.FloorToInt(tiledPos.x - _startTilePos.x) + " | " + Mathf.FloorToInt(tiledPos.y - _startTilePos.y) + " | MAX: " + _hallPlan.Length);
+            return;
+        }
+        
         var newTile = Instantiate(_cursorTile.gameObject, _cursorTile.anchoredPosition, Quaternion.identity, _paintsParent);
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchoredPosition = pos;
         newTile.GetComponent<Image>().color = _cursorTile.GetComponent<Image>().color;
+        
         _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)][Mathf.FloorToInt(tiledPos.y - _startTilePos.y)] =
             _currentTool;
         Tile tileInstance = newTile.GetComponent<Tile>();
@@ -370,6 +385,7 @@ public class AdminEditMode : MonoBehaviour
         tileInstance.hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
         tileInstance.hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
         tileInstance.hallContent.combined_pos = tileInstance.hallContent.pos_x + "_" + tileInstance.hallContent.pos_z;
+        Debug.Log(tileInstance.hallContent.combined_pos);
         for (int i = 0; i < posToDelete.Count; i++)
         {
             if (tileInstance.hallContent.combined_pos == posToDelete[i].x + "_" + posToDelete[i].y)
@@ -377,33 +393,43 @@ public class AdminEditMode : MonoBehaviour
         }
         //tileInstance.hallContent.uid = uid;
         if (hasStruct)
+        {
             tileInstance.hallContent = content;
+            Debug.Log("Has Struct Updated: " + tileInstance.hallContent.combined_pos);
+        }
         tileInstance.Setup();
     }
 
     public void SelectTool(int tool)
     {
         _currentTool = tool;
-        switch (tool)
+        switch (_currentTool)
         {
+            case -3:
+                _cursorTile.GetComponent<Image>().color = Color.clear;
+                _cursorTile.GetComponent<Image>().raycastTarget = false;
+                break;
+            case -2:
+                _cursorTile.GetComponent<Image>().color = _rubberColor;
+                break;
             case -1:
                 _cursorTile.GetComponent<Image>().color = Color.clear;
                 break;
-            case 0:
-                _cursorTile.GetComponent<Image>().color = _doorColor;
-                break;
-            case 1:
-                _cursorTile.GetComponent<Image>().color = _frameColor;
-                break;
-            case 2:
-                _cursorTile.GetComponent<Image>().color = _infoColor;
-                break;
-            case 7:
-                _cursorTile.GetComponent<Image>().color = Color.clear;
-                break;
-            case 8:
-                _cursorTile.GetComponent<Image>().color = _rubberColor;
-                break;
+        }
+        if (_currentTool == ExhibitsConstants.Picture.Id)
+        {
+            _cursorTile.GetComponent<Image>().color = _frameColor;
+            return;
+        }
+        if (_currentTool == ExhibitsConstants.SpawnPoint.Id)
+        {
+            _cursorTile.GetComponent<Image>().color = _doorColor;
+            return;
+        }
+        if (_currentTool == ExhibitsConstants.InfoBox.Id)
+        {
+            _cursorTile.GetComponent<Image>().color = _infoColor;
+            return;
         }
     }
 }
