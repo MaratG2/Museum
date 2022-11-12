@@ -9,6 +9,8 @@ namespace GenerationMap
         public Image Icon { get; set; }
         
         public bool IsBlock { get; set; }
+        
+        public float HeightSpawn { get; set; }
         public string NameComponent { get; set; }
     }
 }

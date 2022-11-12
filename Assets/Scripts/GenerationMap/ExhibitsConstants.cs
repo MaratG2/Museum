@@ -11,7 +11,9 @@ namespace GenerationMap
             Icon = null,
             Name = "Picture",
             IsBlock = false, 
-            NameComponent = typeof(Room).FullName 
+            NameComponent = typeof(PictureBlock).FullName,
+            HeightSpawn = 1,
+            
         };
         
         public static ExhibitDto InfoBox = new ExhibitDto()
