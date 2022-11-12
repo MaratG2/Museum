@@ -5,6 +5,14 @@ namespace GenerationMap
 {
     public static class ExhibitsConstants
     {
+        public static ExhibitDto SpawnPoint = new ExhibitDto()
+        {
+            Id = 0,
+            Icon = null,
+            Name = "SpawnPoint",
+            IsBlock = false
+        };
+        
         public static ExhibitDto Picture = new ExhibitDto()
         {
             Id = 1,
@@ -12,8 +20,7 @@ namespace GenerationMap
             Name = "Picture",
             IsBlock = false, 
             NameComponent = typeof(PictureBlock).FullName,
-            HeightSpawn = 1,
-            
+            HeightSpawn = 1
         };
         
         public static ExhibitDto InfoBox = new ExhibitDto()
@@ -24,17 +31,25 @@ namespace GenerationMap
             IsBlock = false
         };
         
-        public static ExhibitDto Thumb = new ExhibitDto()
+        public static ExhibitDto Cup = new ExhibitDto()
         {
             Id = 3,
             Icon = null,
-            Name = "Thumb",
+            Name = "Cup",
+            IsBlock = false
+        };
+        
+        public static ExhibitDto Medal = new ExhibitDto()
+        {
+            Id = 4,
+            Icon = null,
+            Name = "Medal",
             IsBlock = false
         };
         
         public static ExhibitDto Floor = new ExhibitDto()
         {
-            Id = 4,
+            Id = 101,
             Icon = null,
             Name = "Floor",
             IsBlock = true
@@ -42,7 +57,7 @@ namespace GenerationMap
         
         public static ExhibitDto Celling = new ExhibitDto()
         {
-            Id = 5,
+            Id = 102,
             Icon = null,
             Name = "Celling",
             IsBlock = true
@@ -50,7 +65,7 @@ namespace GenerationMap
         
         public static ExhibitDto Wall = new ExhibitDto()
         {
-            Id = 6,
+            Id = 103,
             Icon = null,
             Name = "Wall",
             IsBlock = true
