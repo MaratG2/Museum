@@ -505,6 +505,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3031424015120084139, guid: bdc25d92cf6de164ab36663e8528c363, type: 3}
   m_PrefabInstance: {fileID: 1707348105}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1747806380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1747806382}
+  - component: {fileID: 1747806381}
+  m_Layer: 0
+  m_Name: Converter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1747806381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747806380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f8bd62c339dad48839aded466744f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generationScript: {fileID: 272775899}
+  wallBlock: {fileID: 135282, guid: 32e30d45c007acd4b93e95edc9168b90, type: 3}
+  floorBlock: {fileID: 197208, guid: ad5912cee0e9bb44982053d5e1a46c24, type: 3}
+  cellingBlock: {fileID: 138158, guid: 115872680293f7c4b95d6d570f61221a, type: 3}
+  positionForSpawn: {x: 100, y: 0, z: 100}
+--- !u!4 &1747806382
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747806380}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.056674547, y: 2.265899, z: -0.37331292}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1894850545
 PrefabInstance:
   m_ObjectHideFlags: 0

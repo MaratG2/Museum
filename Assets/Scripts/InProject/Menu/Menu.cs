@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 #pragma warning disable 0649
@@ -18,15 +18,28 @@ public class Menu : MonoBehaviour
         }
     }
     #endregion
-    bool flag = false;
+    bool flag;
     [SerializeField]
     GameObject obj;
+
     [SerializeField]
-    List<GameObject> MustBeClosed = new List<GameObject>();
+    public GameObject roomsMenu;
+    
+    [SerializeField]
+    List<GameObject> MustBeClosed = new();
     private void Awake()
     {
         _instance = GetComponent<Menu>();
     }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            roomsMenu.SetActive(!roomsMenu.activeSelf);
+        }
+    }
+
     public void Activate()
     {
         if (!State.Frozen || flag)

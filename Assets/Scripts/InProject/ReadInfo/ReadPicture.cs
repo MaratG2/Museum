@@ -20,15 +20,6 @@ public class ReadPicture : ReadText
         UpdatePicture(picture);
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            print("a");
-            SetNewPicture("https://cdnstatic.rg.ru/uploads/images/226/04/06/hrom.jpeg");
-        }
-    }
-
     public void SetNewPicture(string url)
     {
         StartCoroutine(LoadImage(url));

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3031424015121398359}
   - component: {fileID: 3031424015122115479}
   - component: {fileID: 3031424015120459374}
-  - component: {fileID: 9067504278080153354}
   - component: {fileID: 2381704914730953487}
   m_Layer: 8
   m_Name: Picture
@@ -29,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3031424015120459369}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalPosition: {x: -0.0023248, y: 0, z: -0.051919}
+  m_LocalScale: {x: 2.1231, y: 2.1231, z: 1.4154}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -100,18 +99,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.1790576, y: 0.75110334, z: 0.24915898}
   m_Center: {x: 0.0037308482, y: 0, z: 0.12957948}
---- !u!114 &9067504278080153354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3031424015120459369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8812fb40615705845a7519536976bd4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2381704914730953487
 MonoBehaviour:
   m_ObjectHideFlags: 0

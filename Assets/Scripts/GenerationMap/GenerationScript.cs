@@ -1,3 +1,5 @@
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -5,32 +7,7 @@ namespace GenerationMap
 {
     public class GenerationScript : MonoBehaviour
     {
-        [SerializeField] public GameObject floor;
-        [SerializeField] public GameObject wall;
-        [SerializeField] public GameObject celling;
         [SerializeField] public GameObject picture;
-        [SerializeField] public GameObject repositoryPrefabs;
-        
-
-        public void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                var map = new ExhibitDto[5,11];
-                for (int i = 0; i < map.GetLength(0); i++)
-                {
-                    for (int j = 0; j < map.GetLength(1); j++)
-                    {
-                        map[i, j] = ExhibitsConstants.Picture;
-                        
-                    }
-                }
-
-                var prPack = new PrefabPack(wall, floor, celling);
-                var room = new Room(map, prPack, new Vector2Int(2, 2), Vector3.zero);
-                SpawnRoom(room);
-            }
-        }
 
         public void SpawnRoom(Room room)
         {
@@ -43,44 +20,51 @@ namespace GenerationMap
             room.WallBlocs = wallBlocs;
             room.CellingBlocs = cellingBlocs;
 
-            SpawnExhibits(room);
+            room.ExhibitsGO = SpawnExhibits(room);
         }
 
-        private void SpawnExhibits(Room room)
+        private List<GameObject> SpawnExhibits(Room room)
         {
-            for (int i = 0; i < room.Exhibits.GetLength(0); i++)
+            var exhibits = new List<GameObject>();
+            for (var i = 0; i < room.Exhibits.GetLength(0); i++)
             {
-                for (int j = 0; j < room.Exhibits.GetLength(1); j++)
+                for (var j = 0; j < room.Exhibits.GetLength(1); j++)
                 {
                     var exhibitDto = room.Exhibits[i, j];
                     if (exhibitDto.NameComponent == "PictureBlock")
                     {
-                        SpawnWallExhibit(i, j, room.WallBlocs, picture);
+                        exhibits.Add(SpawnWallExhibit(i, j, exhibitDto,room.WallBlocs, picture));
                     }
                     
                     if (exhibitDto.NameComponent == "Pedestal")
                     {
-                        SpawnExhibit(i, j, exhibitDto.HeightSpawn, room.WallBlocs, room.FloorBlocs, picture);
+                        exhibits.Add(SpawnExhibit(i, j, exhibitDto.HeightSpawn, room.WallBlocs, room.FloorBlocs, picture));
                     }
                 }
             }
+
+            return exhibits;
         }
 
-        private void SpawnWallExhibit(int i, int j, GameObject[,] roomWallBlocs, GameObject o)
+        private GameObject SpawnWallExhibit(int i, int j, ExhibitDto exhibitDto,GameObject[,] roomWallBlocs, GameObject o)
         {
             var nearWall = FindNearWall(i, j, roomWallBlocs);
             var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
             var rotate = nearWall.transform.rotation;
-            SpawnChunk(picture,
+            var exhibit = SpawnChunk(picture,
                 position, rotate);
+            exhibit.GetComponent<ReadPicture>().SetNewPicture(exhibitDto.LinkOnImage);
+
+            return exhibit;
         }
         
-        private void SpawnExhibit(int i, int j, float height, GameObject[,] roomWallBlocs, GameObject[,] floorBlocks, GameObject o)
+        private GameObject SpawnExhibit(int i, int j, float height, GameObject[,] roomWallBlocs, GameObject[,] floorBlocks, GameObject o)
         {
             var nearWall = FindNearWall(i, j, roomWallBlocs);
             var rotate = nearWall.transform.rotation;
-            SpawnChunk(picture,
+            var exhibit = SpawnChunk(picture,
                 floorBlocks[i,j].transform.position + new Vector3(0,height, 0), rotate);
+            return exhibit;
         }
 
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using System.Drawing;
+using UnityEngine.UI;
 
 namespace GenerationMap
 {
@@ -12,5 +13,10 @@ namespace GenerationMap
         
         public float HeightSpawn { get; set; }
         public string NameComponent { get; set; }
+        
+        public string LinkOnImage { get; set; }
+        public string TextContentFirst { get; set; }
+        public string TextContentSecond { get; set; }
+        public Point LocalPosition { get; set; }
     }
 }
