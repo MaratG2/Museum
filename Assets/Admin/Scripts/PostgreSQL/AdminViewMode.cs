@@ -32,7 +32,6 @@ public class AdminViewMode : MonoBehaviour
 
     private void Start()
     {
-
         string connectionString =
             "Port = 5432;" +
             "Server= ec2-54-77-40-202.eu-west-1.compute.amazonaws.com;" +
@@ -42,11 +41,7 @@ public class AdminViewMode : MonoBehaviour
             "sslmode=Prefer;" +
             "Trust Server Certificate=true";
         dbcon = new NpgsqlConnection(connectionString);
-        Debug.Log(dbcon.Database + " | " + dbcon.Host + " | " + dbcon.Port + " | " + dbcon.UserName + " | " +
-                  dbcon.State);
         dbcon.Open();
-        Debug.Log(dbcon.Database + " | " + dbcon.Host + " | " + dbcon.Port + " | " + dbcon.UserName + " | " +
-                  dbcon.State);
         Refresh();
     }
 
