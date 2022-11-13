@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GoogleSheetsForUnity;
 using Npgsql;
 using TMPro;
 using UnityEngine;
