@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Npgsql;
-using Unity.VisualScripting;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 namespace GenerationMap
@@ -18,7 +16,7 @@ namespace GenerationMap
                                                    "Trust Server Certificate=true";
 
         private static NpgsqlConnection _dbConnection;
-        private static bool connectIsOpen;
+        private static bool _connectIsOpen;
 
         public static void OpenConnection()
         {
@@ -27,13 +25,13 @@ namespace GenerationMap
             Debug.Log("Open Connection");
         }
 
-        public static List<AdminNewMode.HallOptions> GetAllOptions()
+        public static List<HallOptions> GetAllOptions()
         {
-            if (!connectIsOpen)
+            if (!_connectIsOpen)
             {
                 OpenConnection();
             }
-            var options = new List<AdminNewMode.HallOptions>();
+            var options = new List<HallOptions>();
 
             var command = _dbConnection.CreateCommand();
             var sqlRequest =
@@ -43,7 +41,7 @@ namespace GenerationMap
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var newOption = new AdminNewMode.HallOptions
+                var newOption = new HallOptions
                 {
                     onum = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                     name = reader.IsDBNull(1) ? "NULL" : reader.GetString(1),
@@ -63,9 +61,9 @@ namespace GenerationMap
             return options;
         }
         
-        public static AdminNewMode.HallOptions GetOptionByOnum(int num)
+        public static HallOptions GetOptionByOnum(int num)
         {
-            var options = new List<AdminNewMode.HallOptions>();
+            var options = new List<HallOptions>();
 
             var command = _dbConnection.CreateCommand();
             var sqlRequest =
@@ -78,7 +76,7 @@ namespace GenerationMap
 
             while (reader.Read())
             {
-                var newOption = new AdminNewMode.HallOptions
+                var newOption = new HallOptions
                 {
                     onum = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                     name = reader.IsDBNull(1) ? "NULL" : reader.GetString(1),
@@ -99,7 +97,7 @@ namespace GenerationMap
             return options.First();
         }
     
-        public static AdminEditMode.HallContent GetContentByOnum(int num)
+        public static HallContent GetContentByOnum(int num)
         {
             var command = _dbConnection.CreateCommand();
             var sql =
@@ -108,10 +106,10 @@ namespace GenerationMap
                 $"JOIN public.contents AS c ON {num} = c.onum";
             command.CommandText = sql;
             var reader = command.ExecuteReader();
-            var content = new AdminEditMode.HallContent();
+            var content = new HallContent();
             while (reader.Read())
             {
-                content = new AdminEditMode.HallContent()
+                content = new HallContent()
                 {
                     onum = num,
                     cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0),
@@ -133,9 +131,9 @@ namespace GenerationMap
             return content;
         }
         
-        public static List<AdminEditMode.HallContent> GetAllContentByOnum(int num)
+        public static List<HallContent> GetAllContentByOnum(int num)
         {
-            var contents = new List<AdminEditMode.HallContent>();
+            var contents = new List<HallContent>();
             var command = _dbConnection.CreateCommand();
             var sql =
                 "SELECT cnum, title, image_desc, image_url, pos_x, pos_z, combined_pos, type " +
@@ -145,7 +143,7 @@ namespace GenerationMap
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var content = new AdminEditMode.HallContent()
+                var content = new HallContent()
                 {
                     onum = num,
                     cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0),

@@ -36,7 +36,8 @@ namespace GenerationMap
             Id = 3,
             Icon = null,
             Name = "Cup",
-            IsBlock = false
+            IsBlock = false,
+            HeightSpawn = 1
         };
         
         public static ExhibitDto Medal = new ExhibitDto()

@@ -13,7 +13,7 @@ namespace GenerationMap
         [SerializeField] public GameObject floorBlock;
         [SerializeField] public GameObject cellingBlock;
         [SerializeField] public Vector3 positionForSpawn = new Vector3(100,0,100);
-        public List<Room> rooms = new List<Room>();
+        public List<Room> Rooms = new List<Room>();
 
         public void Start()
         {
@@ -25,16 +25,16 @@ namespace GenerationMap
             return GenerateRoomByOnum(ConnectionDb.GetOptionByOnum(num));
         }
 
-        public Vector3 GenerateRoomByOnum(AdminNewMode.HallOptions roomOptions)
+        public Vector3 GenerateRoomByOnum(HallOptions roomOptions)
         {
             var room = GetRoomByResponse(roomOptions);
             generationScript.SpawnRoom(room);
-            rooms.Add(room);
+            Rooms.Add(room);
             return room.GetSpawnPosition();
         }
 
 
-        public ExhibitDto GetExhibitByResponse(AdminEditMode.HallContent content)
+        public ExhibitDto GetExhibitByResponse(HallContent content)
         {
             var constExhibit = ExhibitsConstants.GetModelById(content.type);
             return new ExhibitDto()
@@ -51,7 +51,7 @@ namespace GenerationMap
             };
         }
         
-        public Room GetRoomByResponse(AdminNewMode.HallOptions roomOptions)
+        public Room GetRoomByResponse(HallOptions roomOptions)
         {
             var exhibitsData = ConnectionDb
                 .GetAllContentByOnum(roomOptions.onum)

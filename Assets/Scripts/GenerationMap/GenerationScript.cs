@@ -32,16 +32,19 @@ namespace GenerationMap
                 for (var j = 0; j < room.Exhibits.GetLength(1); j++)
                 {
                     var exhibitDto = room.Exhibits[i, j];
-                    if (exhibitDto.NameComponent == "PictureBlock")
+                    if (exhibitDto.Id == ExhibitsConstants.Picture.Id)
                     {
                         exhibits.Add(SpawnWallExhibit(i, j, exhibitDto, room.WallBlocs, picture));
+                        
                     }
 
-                    if (exhibitDto.NameComponent == "Pedestal")
+                    if (exhibitDto.Id == ExhibitsConstants.Cup.Id)
                     {
                         exhibits.Add(SpawnExhibit(i, j, exhibitDto.HeightSpawn, exhibitDto, room.WallBlocs,
                             room.FloorBlocs, picture));
+                        
                     }
+                   
                 }
             }
 

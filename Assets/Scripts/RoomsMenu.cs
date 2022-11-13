@@ -71,7 +71,7 @@ public class RoomsMenu : MonoBehaviour
             .ToList();
     }
 
-    private RoomInfo ConvertRoom(AdminNewMode.HallOptions rawData)
+    private RoomInfo ConvertRoom(HallOptions rawData)
     {
         var roomInfo = new RoomInfo()
         {
