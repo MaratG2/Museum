@@ -361,6 +361,8 @@ public class AdminEditMode : MonoBehaviour
 
     private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new HallContent())
     {
+        if (_hallPlan == null)
+            return;
         if(Mathf.FloorToInt(tiledPos.x - _startTilePos.x) >= _hallPlan.Length || 
            (Mathf.FloorToInt(tiledPos.x - _startTilePos.x) < _hallPlan.Length 
             && Mathf.FloorToInt(tiledPos.y - _startTilePos.y) >= _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)].Length))
@@ -385,7 +387,6 @@ public class AdminEditMode : MonoBehaviour
         tileInstance.hallContent.pos_x = Mathf.FloorToInt(tiledPos.x - _startTilePos.x);
         tileInstance.hallContent.pos_z = Mathf.FloorToInt(tiledPos.y - _startTilePos.y);
         tileInstance.hallContent.combined_pos = tileInstance.hallContent.pos_x + "_" + tileInstance.hallContent.pos_z;
-        Debug.Log(tileInstance.hallContent.combined_pos);
         for (int i = 0; i < posToDelete.Count; i++)
         {
             if (tileInstance.hallContent.combined_pos == posToDelete[i].x + "_" + posToDelete[i].y)
