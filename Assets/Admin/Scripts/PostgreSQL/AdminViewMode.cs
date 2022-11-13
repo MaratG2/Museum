@@ -31,7 +31,7 @@ public class AdminViewMode : MonoBehaviour
     }
 
     private void Start()
-    {
+    { 
         string connectionString =
             "Port = 5432;"+
             "Server=localhost;" +

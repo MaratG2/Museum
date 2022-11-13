@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace GenerationMap
 {
@@ -13,6 +10,7 @@ namespace GenerationMap
         [SerializeField] public GameObject celling;
         [SerializeField] public GameObject picture;
         [SerializeField] public GameObject repositoryPrefabs;
+        
 
         public void Update()
         {
@@ -152,6 +150,7 @@ namespace GenerationMap
             //находим крайнюю точку исзодя из центра комнаты
             positionRoom = new Vector3(scale.x / 2 + positionRoom.x - (float) roomLength / 2 * scale.x, positionRoom.y,
                 scale.x / 2 + positionRoom.z - (float) roomWidth / 2 * scale.z);
+            
             for (int i = 0; i < blocs.GetLength(0); i++)
             {
                 for (int j = 0; j < blocs.GetLength(1); j++)
