@@ -32,20 +32,24 @@ public class Menu : MonoBehaviour
         _instance = GetComponent<Menu>();
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            roomsMenu.SetActive(!roomsMenu.activeSelf);
-        }
-    }
-
     public void Activate()
     {
         if (!State.Frozen || flag)
         {
             State.View();
             obj.SetActive(!obj.activeInHierarchy);
+            flag = !flag;               
+            foreach (var i in MustBeClosed)
+                i.SetActive(false);
+        }
+    }
+    
+    public void ActivateRoomMenu()
+    {
+        if (!State.Frozen || flag)
+        {
+            State.View();
+            roomsMenu.SetActive(!roomsMenu.activeInHierarchy);
             flag = !flag;               
             foreach (var i in MustBeClosed)
                 i.SetActive(false);

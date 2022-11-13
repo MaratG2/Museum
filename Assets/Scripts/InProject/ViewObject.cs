@@ -6,7 +6,7 @@ using UnityEngine;
 public class ViewObject : MonoBehaviour,IInterative
 {
     [SerializeField]
-    private string Name;
+    public string Name;
     bool flag = false;
     public void Interact()
     {

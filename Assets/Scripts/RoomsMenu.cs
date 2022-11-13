@@ -32,7 +32,7 @@ public class RoomsMenu : MonoBehaviour
         var newButton = new GameObject($"button: {room.Name}", typeof(Image), typeof(Button), typeof(LayoutElement));
         newButton.transform.SetParent(gameObject.transform);
         newButton.GetComponent<LayoutElement>().minHeight = 35;
-        newButton.GetComponent<LayoutElement>().minHeight = 100;
+        newButton.GetComponent<LayoutElement>().minWidth = 100;
         
         
         var newText = new GameObject($"text: {room.Name}", typeof(Text));

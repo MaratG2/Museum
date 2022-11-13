@@ -55,6 +55,11 @@ public class ActiveAction : MonoBehaviour
             {
                 Menu.Instance.Activate();
             }
+            
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Menu.Instance.ActivateRoomMenu();
+            }
 
             if (Input.GetKeyDown(KeyCode.M))
             {
