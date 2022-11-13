@@ -33,11 +33,13 @@ public class AdminViewMode : MonoBehaviour
     private void Start()
     { 
         string connectionString =
-            "Port = 5432;"+
-            "Server=localhost;" +
-            "Database=museumistu;" +
-            "User ID=postgres;" +
-            "Password=postgres;";
+            "Port = 5432;" +
+            "Server= ec2-54-77-40-202.eu-west-1.compute.amazonaws.com;" +
+            "Database= dp3oh4vja8l35;" +
+            "User ID= eudqcffpovolpi;" +
+            "Password= 65f254f251471be22f035c26958c8cfad49fc31c9e8134febf4f4c165bd47665;" +
+            "sslmode=Prefer;" +
+            "Trust Server Certificate=true";
         dbcon = new NpgsqlConnection(connectionString);
         dbcon.Open();
         Refresh();

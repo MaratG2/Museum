@@ -11,6 +11,7 @@ using UnityEngine.UI;
 
 public class AdminAuth : MonoBehaviour
 {
+    [SerializeField] private bool _isAuth = true;
     [SerializeField] private TMP_InputField _nameReg;
     [SerializeField] private TMP_InputField _emailReg;
     [SerializeField] private TMP_InputField _passwordReg;
@@ -44,24 +45,27 @@ public class AdminAuth : MonoBehaviour
 
     void Start()
     {
-        _authCGroup.alpha = 1f;
-        _authCGroup.interactable = true;
-        _authCGroup.blocksRaycasts = true;
-        _viewCGroup.alpha = 0f;
-        _viewCGroup.interactable = false;
-        _viewCGroup.blocksRaycasts = false;
-        _editCGroup.alpha = 0f;
-        _editCGroup.interactable = false;
-        _editCGroup.blocksRaycasts = false;
-        _newCGroup.alpha = 0f;
-        _newCGroup.interactable = false;
-        _newCGroup.blocksRaycasts = false;
-        _errorReg.text = "";
-        _errorReg.color = Color.red; 
-        _errorAuth.text = "";
-        _buttonReg.interactable = false;
-        _buttonAuth.interactable = false;
-        Invoke(nameof(LateStart), 0.5f);
+        if(_isAuth)
+        {
+            _authCGroup.alpha = 1f;
+            _authCGroup.interactable = true;
+            _authCGroup.blocksRaycasts = true;
+            _viewCGroup.alpha = 0f;
+            _viewCGroup.interactable = false;
+            _viewCGroup.blocksRaycasts = false;
+            _editCGroup.alpha = 0f;
+            _editCGroup.interactable = false;
+            _editCGroup.blocksRaycasts = false;
+            _newCGroup.alpha = 0f;
+            _newCGroup.interactable = false;
+            _newCGroup.blocksRaycasts = false;
+            _errorReg.text = "";
+            _errorReg.color = Color.red;
+            _errorAuth.text = "";
+            _buttonReg.interactable = false;
+            _buttonAuth.interactable = false;
+            Invoke(nameof(LateStart), 0.5f);
+        }
     }
 
     private void LateStart()
