@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using GoogleSheetsForUnity;
 using TMPro;
 using Npgsql;
 using Unity.VisualScripting;
@@ -18,13 +17,13 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private GameObject _tilePrefab;
     [SerializeField] private GameObject _tilesParent;
     
-    private AdminNewMode.HallOptions _hallSelected;
-    private List<AdminNewMode.HallOptions> _cachedHallOptions = new List<AdminNewMode.HallOptions>();
+    private HallOptions _hallSelected;
+    private List<HallOptions> _cachedHallOptions = new List<HallOptions>();
     private Vector2 _startTilePos;
     
     public static NpgsqlConnection dbcon;
     
-    public AdminNewMode.HallOptions HallSelected
+    public HallOptions HallSelected
     {
         get => _hallSelected;
         set => _hallSelected = value;
@@ -47,7 +46,7 @@ public class AdminViewMode : MonoBehaviour
 
     public void SelectHall(int num)
     {
-        AdminNewMode.HallOptions currentOption = new AdminNewMode.HallOptions();
+        HallOptions currentOption = new HallOptions();
         bool hasFound = false;
         foreach (var cho in _cachedHallOptions)
         {
@@ -78,7 +77,7 @@ public class AdminViewMode : MonoBehaviour
         Application.OpenURL("https://docs.google.com/spreadsheets/d/1cjU08lg0u6w_ys3M87C6UCgx8mWUjaUEwwSOsDuXm1k/edit#gid=756982139");
     }
     
-    private void Paint(Vector2 tiledPos, Vector2 pos, AdminEditMode.HallContent content)
+    private void Paint(Vector2 tiledPos, Vector2 pos, HallContent content)
     {
         var newTile = Instantiate(_tilePrefab.gameObject, Vector2.zero, Quaternion.identity, _tilesParent.GetComponent<RectTransform>());
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
@@ -94,7 +93,7 @@ public class AdminViewMode : MonoBehaviour
     {
         for (int i = 0; i < _hallListingsParent.childCount; i++)
             Destroy(_hallListingsParent.GetChild(i).gameObject);
-        HallSelected = new AdminNewMode.HallOptions();
+        HallSelected = new HallOptions();
         for (int i = 0; i < _tilesParent.transform.childCount; i++)
             Destroy(_tilesParent.transform.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
@@ -104,7 +103,7 @@ public class AdminViewMode : MonoBehaviour
 
     private void SQLGetAllOptions()
     {
-        _cachedHallOptions = new List<AdminNewMode.HallOptions>();
+        _cachedHallOptions = new List<HallOptions>();
         
         NpgsqlCommand dbcmd = dbcon.CreateCommand();
         string sql =
@@ -126,7 +125,7 @@ public class AdminViewMode : MonoBehaviour
             bool is_maintained = reader.GetBoolean(8);
             bool is_hidden = reader.GetBoolean(9);
             
-            AdminNewMode.HallOptions newOption = new AdminNewMode.HallOptions();
+            HallOptions newOption = new HallOptions();
             newOption.onum = onum;
             newOption.name = name;
             newOption.sizex = sizex;
@@ -166,7 +165,7 @@ public class AdminViewMode : MonoBehaviour
         float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
         while (reader.Read())
         {
-            AdminEditMode.HallContent content = new AdminEditMode.HallContent();
+            HallContent content = new HallContent();
             int onum = num;
             int cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
             string title = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1);

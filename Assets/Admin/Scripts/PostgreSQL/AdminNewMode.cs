@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GoogleSheetsForUnity;
 using Npgsql;
 using TMPro;
 using UnityEngine;
@@ -20,21 +19,6 @@ public class AdminNewMode : MonoBehaviour
 
     private bool _isOnCooldown;
 
-    [System.Serializable]
-    public struct HallOptions
-    {
-        public int onum;
-        public string name;
-        public int sizex;
-        public int sizez;
-        public bool is_date_b;
-        public bool is_date_e;
-        public string date_begin;
-        public string date_end;
-        public bool is_maintained;
-        public bool is_hidden;
-    }
-    
     void Update()
     {
         int sizeX = 0, sizeZ;
