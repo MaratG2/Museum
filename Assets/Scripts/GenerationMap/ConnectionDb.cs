@@ -17,7 +17,7 @@ public class ConnectionDb : MonoBehaviour
             "Password=postgres;";
         Connection = new NpgsqlConnection(connectionString);
         Connection.Open();
-        Refresh();
+        //Refresh();
     }
 
     // Update is called once per frame
