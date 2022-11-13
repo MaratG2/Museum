@@ -89,14 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d34c2e5316d2b428f8cfec16dddd43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hallContent:
-    uid: 0
-    type: 
-    title: 
-    image_url: 
-    image_desc: 
-    pos_x: 0
-    pos_z: 0
   _doorColor:
     serializedVersion: 2
     rgba: 4280406874
@@ -106,6 +98,12 @@ MonoBehaviour:
   _infoColor:
     serializedVersion: 2
     rgba: 4293007492
+  _cupColor:
+    serializedVersion: 2
+    rgba: 4280084472
+  _medalColor:
+    serializedVersion: 2
+    rgba: 4278481589
   _rubberColor:
     serializedVersion: 2
     rgba: 4283790591

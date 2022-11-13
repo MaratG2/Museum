@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class AdminEditMode : MonoBehaviour
 {
-    [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _rubberColor;
+    [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _cupColor, _medalColor, _rubberColor;
     [SerializeField] private AdminViewMode _adminView;
     [SerializeField] private RectTransform _paintsParent;
     [SerializeField] private RectTransform _cursorTile;
@@ -27,21 +27,7 @@ public class AdminEditMode : MonoBehaviour
     private Vector2 _startTilePos = Vector2.zero;
     private List<Vector2> posToDelete = new List<Vector2>();
     private Tile _tileSelected;
-    
-    [System.Serializable]
-    public struct HallContent
-    {
-        public int onum;
-        public int cnum;
-        public string title;
-        public string image_url;
-        public int pos_x;
-        public int pos_z;
-        public string combined_pos;
-        public int type;
-        public string image_desc;
-    }
-    
+
     private void Start()
     {
         _nameText.text = "";
@@ -121,7 +107,7 @@ public class AdminEditMode : MonoBehaviour
         dbcmd.ExecuteNonQuery();
         ClearAll();
         _nameText.text = "";
-        _adminView.HallSelected = new AdminNewMode.HallOptions();
+        _adminView.HallSelected = new HallOptions();
         SelectTool(-1);
     }
 
@@ -289,14 +275,13 @@ public class AdminEditMode : MonoBehaviour
                     Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
                     if(tileChange && tileChange.hallContent.pos_x == tileRealPos.x && tileChange.hallContent.pos_z == tileRealPos.y)
                     {
-                        Debug.Log("tileChange " + i);
                         if (tileChange.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
                         {
-                            Debug.Log("Tile Change Door" + i);
+                            Debug.Log("Tile Change Door: " + i);
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.Picture.Id)
                         {
-                            Debug.Log("Tile Change Painting" + i);
+                            Debug.Log("Tile Change Painting: " + i);
                             _changePropertiesGroup.alpha = 1;
                             _changePropertiesGroup.interactable = true;
                             _changePropertiesGroup.blocksRaycasts = true;
@@ -307,7 +292,15 @@ public class AdminEditMode : MonoBehaviour
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.InfoBox.Id)
                         {
-                            Debug.Log("Tile Change Info" + i);
+                            Debug.Log("Tile Change Info: " + i);
+                        }
+                        if (tileChange.hallContent.type == ExhibitsConstants.Cup.Id)
+                        {
+                            Debug.Log("Tile Change Cup: " + i);
+                        }
+                        if (tileChange.hallContent.type == ExhibitsConstants.Medal.Id)
+                        {
+                            Debug.Log("Tile Change Medal: " + i);
                         }
                     }
                 }
@@ -326,7 +319,7 @@ public class AdminEditMode : MonoBehaviour
                     if(tileDelete && tileDelete.hallContent.pos_x == Mathf.FloorToInt(tiledPos.x - _startTilePos.x) 
                        && tileDelete.hallContent.pos_z == Mathf.FloorToInt(tiledPos.y - _startTilePos.y))
                     {
-                        Debug.Log("Delete " + i);
+                        Debug.Log("Delete: " + i);
                         posToDelete.Add(new Vector2(tileDelete.hallContent.pos_x, tileDelete.hallContent.pos_z));
                         Destroy(tileDelete.gameObject);
                     }
@@ -396,7 +389,6 @@ public class AdminEditMode : MonoBehaviour
         if (hasStruct)
         {
             tileInstance.hallContent = content;
-            Debug.Log("Has Struct Updated: " + tileInstance.hallContent.combined_pos);
         }
         tileInstance.Setup();
     }
@@ -430,6 +422,16 @@ public class AdminEditMode : MonoBehaviour
         if (_currentTool == ExhibitsConstants.InfoBox.Id)
         {
             _cursorTile.GetComponent<Image>().color = _infoColor;
+            return;
+        }
+        if (_currentTool == ExhibitsConstants.Cup.Id)
+        {
+            _cursorTile.GetComponent<Image>().color = _cupColor;
+            return;
+        }
+        if (_currentTool == ExhibitsConstants.Medal.Id)
+        {
+            _cursorTile.GetComponent<Image>().color = _medalColor;
             return;
         }
     }

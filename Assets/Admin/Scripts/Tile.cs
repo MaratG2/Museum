@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
-    public AdminEditMode.HallContent hallContent;
+    public HallContent hallContent;
     private Image _image;
-    [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _rubberColor;
+    [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _cupColor, _medalColor, _rubberColor;
 
     public void Setup()
     {
@@ -41,6 +41,16 @@ public class Tile : MonoBehaviour
         if (tool == ExhibitsConstants.InfoBox.Id)
         {
             _image.color = _infoColor;
+            return;
+        }
+        if (tool == ExhibitsConstants.Cup.Id)
+        {
+            _image.color = _cupColor;
+            return;
+        }
+        if (tool == ExhibitsConstants.Medal.Id)
+        {
+            _image.color = _medalColor;
             return;
         }
     }
