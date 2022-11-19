@@ -254,6 +254,8 @@ public class AdminEditMode : MonoBehaviour
            || _currentTool == ExhibitsConstants.InfoBox.Id
            || _currentTool == ExhibitsConstants.Cup.Id
            || _currentTool == ExhibitsConstants.Medal.Id
+           || _currentTool == ExhibitsConstants.Video.Id
+           || _currentTool == ExhibitsConstants.Decoration.Id
            && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
         {
             if (Input.GetMouseButtonDown(0))
@@ -300,6 +302,21 @@ public class AdminEditMode : MonoBehaviour
                         if (tileChange.hallContent.type == ExhibitsConstants.Medal.Id)
                         {
                             Debug.Log("Tile Change Medal: " + i);
+                        }
+                        if (tileChange.hallContent.type == ExhibitsConstants.Video.Id)
+                        {
+                            Debug.Log("Tile Change Video: " + i);
+                            _changePropertiesGroup.alpha = 1;
+                            _changePropertiesGroup.interactable = true;
+                            _changePropertiesGroup.blocksRaycasts = true;
+                            _propertiesName.text = tileChange.hallContent.title;
+                            _propertiesUrl.text = tileChange.hallContent.image_url;
+                            _propertiesDesc.text = tileChange.hallContent.image_desc;
+                            _tileSelected = tileChange;
+                        }
+                        if (tileChange.hallContent.type == ExhibitsConstants.Decoration.Id)
+                        {
+                            Debug.Log("Tile Change Decoration: " + i);
                         }
                     }
                 }
