@@ -6460,24 +6460,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88b8904da5b111e428a513806dbc1051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _doorColor:
-    serializedVersion: 2
-    rgba: 4280406874
-  _frameColor:
-    serializedVersion: 2
-    rgba: 4280594164
-  _infoColor:
-    serializedVersion: 2
-    rgba: 4293007492
-  _cupColor:
-    serializedVersion: 2
-    rgba: 4280084472
-  _medalColor:
-    serializedVersion: 2
-    rgba: 4278481589
-  _rubberColor:
-    serializedVersion: 2
-    rgba: 4283790591
+  _doorSprite: {fileID: 21300000, guid: 73a943850c9842a428d64d051b8abc8a, type: 3}
+  _frameSprite: {fileID: 21300000, guid: 10609b426bf565d4a858b5005d38653c, type: 3}
+  _infoSprite: {fileID: 21300000, guid: c795440f34d2084459e688b7855f4b5c, type: 3}
+  _cupSprite: {fileID: 21300000, guid: 117bc1df0e80c45408351bafe6f7129f, type: 3}
+  _medalSprite: {fileID: 21300000, guid: 28218d0048d11314fa5b569590b05d6a, type: 3}
+  _rubberSprite: {fileID: 21300000, guid: 2ca6d8057847365469f636108c247820, type: 3}
+  _videoSprite: {fileID: 21300000, guid: 435c96a3a95676a47ad69f7b1ba30990, type: 3}
+  _decorSprite: {fileID: 21300000, guid: 51728d160eecd71499e5e3fb2b76e43b, type: 3}
   _adminView: {fileID: 1756156831}
   _paintsParent: {fileID: 2144350238}
   _cursorTile: {fileID: 638487063}

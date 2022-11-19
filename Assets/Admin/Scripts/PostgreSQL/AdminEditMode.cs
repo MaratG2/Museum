@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class AdminEditMode : MonoBehaviour
 {
-    [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _cupColor, _medalColor, _rubberColor;
+    [SerializeField] private Sprite _doorSprite, _frameSprite, _infoSprite, _cupSprite, _medalSprite, _rubberSprite, _videoSprite, _decorSprite;
     [SerializeField] private AdminViewMode _adminView;
     [SerializeField] private RectTransform _paintsParent;
     [SerializeField] private RectTransform _cursorTile;
@@ -398,40 +398,29 @@ public class AdminEditMode : MonoBehaviour
         switch (_currentTool)
         {
             case -3:
-                _cursorTile.GetComponent<Image>().color = Color.clear;
+                _cursorTile.GetComponent<Image>().sprite = null;
                 _cursorTile.GetComponent<Image>().raycastTarget = false;
                 break;
             case -2:
-                _cursorTile.GetComponent<Image>().color = _rubberColor;
+                _cursorTile.GetComponent<Image>().sprite = _rubberSprite;
                 break;
             case -1:
-                _cursorTile.GetComponent<Image>().color = Color.clear;
+                _cursorTile.GetComponent<Image>().sprite = null;
                 break;
         }
         if (_currentTool == ExhibitsConstants.Picture.Id)
-        {
-            _cursorTile.GetComponent<Image>().color = _frameColor;
-            return;
-        }
-        if (_currentTool == ExhibitsConstants.SpawnPoint.Id)
-        {
-            _cursorTile.GetComponent<Image>().color = _doorColor;
-            return;
-        }
-        if (_currentTool == ExhibitsConstants.InfoBox.Id)
-        {
-            _cursorTile.GetComponent<Image>().color = _infoColor;
-            return;
-        }
-        if (_currentTool == ExhibitsConstants.Cup.Id)
-        {
-            _cursorTile.GetComponent<Image>().color = _cupColor;
-            return;
-        }
-        if (_currentTool == ExhibitsConstants.Medal.Id)
-        {
-            _cursorTile.GetComponent<Image>().color = _medalColor;
-            return;
-        }
+            _cursorTile.GetComponent<Image>().sprite = _frameSprite;
+        else if (_currentTool == ExhibitsConstants.SpawnPoint.Id)
+            _cursorTile.GetComponent<Image>().sprite = _doorSprite;
+        else if (_currentTool == ExhibitsConstants.InfoBox.Id)
+            _cursorTile.GetComponent<Image>().sprite = _infoSprite;
+        else if (_currentTool == ExhibitsConstants.Cup.Id)
+            _cursorTile.GetComponent<Image>().sprite = _cupSprite;
+        else if (_currentTool == ExhibitsConstants.Medal.Id)
+            _cursorTile.GetComponent<Image>().sprite = _medalSprite;
+        else if (_currentTool == ExhibitsConstants.Video.Id)
+            _cursorTile.GetComponent<Image>().sprite = _videoSprite;
+        else if (_currentTool == ExhibitsConstants.Decoration.Id)
+            _cursorTile.GetComponent<Image>().sprite = _decorSprite;
     }
 }

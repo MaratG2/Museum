@@ -9,11 +9,12 @@ public class Tile : MonoBehaviour
 {
     public HallContent hallContent;
     private Image _image;
-    [SerializeField] private Color32 _doorColor, _frameColor, _infoColor, _cupColor, _medalColor, _rubberColor;
+    [SerializeField] private Sprite _doorSprite, _frameSprite, _infoSprite, _cupSprite, _medalSprite, _rubberSprite, _videoSprite, _decorSprite;
 
     public void Setup()
     {
         _image = GetComponent<Image>();
+        _image.sprite = null;
         SelectTool(hallContent.type);
     }
     
@@ -22,36 +23,25 @@ public class Tile : MonoBehaviour
         switch (tool)
         {
             case -2:
-                _image.color = _rubberColor;
+                _image.sprite = _rubberSprite;
                 break;
             case -1:
-                _image.color = Color.clear;
+                _image.sprite = null;
                 break;
         }
         if (tool == ExhibitsConstants.Picture.Id)
-        {
-            _image.color = _frameColor;
-            return;
-        }
-        if (tool == ExhibitsConstants.SpawnPoint.Id)
-        {
-            _image.color = _doorColor;
-            return;
-        }
-        if (tool == ExhibitsConstants.InfoBox.Id)
-        {
-            _image.color = _infoColor;
-            return;
-        }
-        if (tool == ExhibitsConstants.Cup.Id)
-        {
-            _image.color = _cupColor;
-            return;
-        }
-        if (tool == ExhibitsConstants.Medal.Id)
-        {
-            _image.color = _medalColor;
-            return;
-        }
+            _image.sprite = _frameSprite;
+        else if (tool == ExhibitsConstants.SpawnPoint.Id)
+            _image.sprite = _doorSprite;
+        else if (tool == ExhibitsConstants.InfoBox.Id)
+            _image.sprite = _infoSprite;
+        else if (tool == ExhibitsConstants.Cup.Id)
+            _image.sprite = _cupSprite;
+        else if (tool == ExhibitsConstants.Medal.Id)
+            _image.sprite = _medalSprite;
+        else if (tool == ExhibitsConstants.Video.Id)
+            _image.sprite = _videoSprite;
+        else if (tool == ExhibitsConstants.Decoration.Id)
+            _image.sprite = _decorSprite;
     }
 }

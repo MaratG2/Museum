@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3529412, g: 0.82745105, b: 0.12941177, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -89,21 +89,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d34c2e5316d2b428f8cfec16dddd43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _doorColor:
-    serializedVersion: 2
-    rgba: 4280406874
-  _frameColor:
-    serializedVersion: 2
-    rgba: 4280594164
-  _infoColor:
-    serializedVersion: 2
-    rgba: 4293007492
-  _cupColor:
-    serializedVersion: 2
-    rgba: 4280084472
-  _medalColor:
-    serializedVersion: 2
-    rgba: 4278481589
-  _rubberColor:
-    serializedVersion: 2
-    rgba: 4283790591
+  _doorSprite: {fileID: 21300000, guid: 73a943850c9842a428d64d051b8abc8a, type: 3}
+  _frameSprite: {fileID: 21300000, guid: 10609b426bf565d4a858b5005d38653c, type: 3}
+  _infoSprite: {fileID: 21300000, guid: c795440f34d2084459e688b7855f4b5c, type: 3}
+  _cupSprite: {fileID: 21300000, guid: 117bc1df0e80c45408351bafe6f7129f, type: 3}
+  _medalSprite: {fileID: 21300000, guid: 28218d0048d11314fa5b569590b05d6a, type: 3}
+  _rubberSprite: {fileID: 21300000, guid: 2ca6d8057847365469f636108c247820, type: 3}
+  _videoSprite: {fileID: 21300000, guid: 435c96a3a95676a47ad69f7b1ba30990, type: 3}
+  _decorSprite: {fileID: 21300000, guid: 51728d160eecd71499e5e3fb2b76e43b, type: 3}
