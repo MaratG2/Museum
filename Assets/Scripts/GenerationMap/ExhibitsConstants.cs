@@ -48,6 +48,22 @@ namespace GenerationMap
             IsBlock = false
         };
         
+        public static ExhibitDto Video = new ExhibitDto()
+        {
+            Id = 5,
+            Icon = null,
+            Name = "Video",
+            IsBlock = false
+        };
+        
+        public static ExhibitDto Decoration = new ExhibitDto()
+        {
+            Id = 6,
+            Icon = null,
+            Name = "Decoration",
+            IsBlock = false
+        };
+        
         public static ExhibitDto Floor = new ExhibitDto()
         {
             Id = 101,
