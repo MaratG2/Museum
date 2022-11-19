@@ -32,8 +32,8 @@ public class AdminHallPreview : MonoBehaviour
         
         Vector2 windowSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
         int sizeX = _adminView.HallSelected.sizex, sizeZ = _adminView.HallSelected.sizez;
-        float heightScale = windowSize.y * 0.92f / sizeZ;
-        float widthScale = windowSize.x * 0.55f / sizeX;
+        float heightScale = windowSize.y * 0.85f / sizeZ;
+        float widthScale = windowSize.x * 0.25f / sizeX;
         
         float tileSize = _image.rectTransform.sizeDelta.x / _adminView.HallSelected.sizex;
         
