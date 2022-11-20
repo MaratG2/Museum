@@ -1,0 +1,4 @@
+host: ec2-54-77-40-202.eu-west-1.compute.amazonaws.com
+db: dp3oh4vja8l35
+user: eudqcffpovolpi
+password: 65f254f251471be22f035c26958c8cfad49fc31c9e8134febf4f4c165bd47665
