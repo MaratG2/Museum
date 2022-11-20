@@ -26,6 +26,7 @@ public class AdminEditMode : MonoBehaviour
     private Vector2 _startTilePos = Vector2.zero;
     private List<Vector2> posToDelete = new List<Vector2>();
     private Tile _tileSelected;
+    private bool _isCursorLock;
 
     private void Start()
     {
@@ -229,10 +230,13 @@ public class AdminEditMode : MonoBehaviour
                 isOverPreview = true;
         }
         
-        if (absoluteMousePos.x < 0.75f * windowSize.x && isOverPreview)
-            _cursorTile.anchoredPosition = tiledMousePos;
-        else
-            _cursorTile.anchoredPosition = -windowSize;
+        if(!_isCursorLock)
+        {
+            if (absoluteMousePos.x < 0.75f * windowSize.x && isOverPreview)
+                _cursorTile.anchoredPosition = tiledMousePos;
+            else
+                _cursorTile.anchoredPosition = -windowSize;
+        }
         
         if(_startTilePos == Vector2.zero)
         {
@@ -283,6 +287,7 @@ public class AdminEditMode : MonoBehaviour
                         if (tileChange.hallContent.type == ExhibitsConstants.Picture.Id)
                         {
                             Debug.Log("Tile Change Painting: " + i);
+                            _isCursorLock = true;
                             _changePropertiesGroup.alpha = 1;
                             _changePropertiesGroup.interactable = true;
                             _changePropertiesGroup.blocksRaycasts = true;
@@ -306,6 +311,7 @@ public class AdminEditMode : MonoBehaviour
                         if (tileChange.hallContent.type == ExhibitsConstants.Video.Id)
                         {
                             Debug.Log("Tile Change Video: " + i);
+                            _isCursorLock = true;
                             _changePropertiesGroup.alpha = 1;
                             _changePropertiesGroup.interactable = true;
                             _changePropertiesGroup.blocksRaycasts = true;
@@ -346,6 +352,7 @@ public class AdminEditMode : MonoBehaviour
 
     public void HidePropertiesGroup()
     {
+        _isCursorLock = false;
         _changePropertiesGroup.alpha = 0;
         _changePropertiesGroup.interactable = false;
         _changePropertiesGroup.blocksRaycasts = false;
