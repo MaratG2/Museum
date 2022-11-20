@@ -24,8 +24,10 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private TMP_InputField _propertiesName;
     [SerializeField] private TMP_InputField _propertiesUrl;
     [SerializeField] private TMP_InputField _propertiesDesc;
+    [SerializeField] private TMP_InputField _infoBoxName;
     [SerializeField] private TMP_Dropdown _decorationsDropdown;
-    
+
+    private InfoController _infoController;
     private int _currentTool = -999;
     private int[][] _hallPlan;
     private Vector2 _startTilePos = Vector2.zero;
@@ -35,6 +37,7 @@ public class AdminEditMode : MonoBehaviour
 
     private void Start()
     {
+        _infoController = FindObjectOfType<InfoController>();
         _nameText.text = "";
         SelectTool(-1);
     }
@@ -305,7 +308,8 @@ public class AdminEditMode : MonoBehaviour
                             _isCursorLock = true;
                             TurnCanvasGroupTo(ref _changePropertiesGroup, true);
                             TurnCanvasGroupTo(ref _infoGroup, true);
-                            
+                            _infoBoxName.text = tileChange.hallContent.title;
+                            _infoController.Setup(tileChange.hallContent.image_desc);
                             _tileSelected = tileChange;
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.Cup.Id)
@@ -388,6 +392,13 @@ public class AdminEditMode : MonoBehaviour
             _tileSelected.hallContent.image_url = _propertiesUrl.text;
             _tileSelected.hallContent.image_desc = _propertiesDesc.text;
         }
+        if (_tileSelected.hallContent.type == ExhibitsConstants.InfoBox.Id)
+        {
+            _infoController.InfoPartsChanged();
+            _tileSelected.hallContent.title = _infoBoxName.text;
+            _tileSelected.hallContent.image_url = "InfoBox";
+            _tileSelected.hallContent.image_desc = _infoController.AllJsonData;
+        }
         if (_tileSelected.hallContent.type == ExhibitsConstants.Decoration.Id)
         {
             _tileSelected.hallContent.title = _decorationsDropdown.value.ToString();
@@ -412,7 +423,6 @@ public class AdminEditMode : MonoBehaviour
            (Mathf.FloorToInt(tiledPos.x - _startTilePos.x) < _hallPlan.Length 
             && Mathf.FloorToInt(tiledPos.y - _startTilePos.y) >= _hallPlan[Mathf.FloorToInt(tiledPos.x - _startTilePos.x)].Length))
         {
-            Debug.Log("INDEX OUT OF RANGE: " + Mathf.FloorToInt(tiledPos.x - _startTilePos.x) + " | " + Mathf.FloorToInt(tiledPos.y - _startTilePos.y) + " | MAX: " + _hallPlan.Length);
             return;
         }
         
@@ -439,7 +449,6 @@ public class AdminEditMode : MonoBehaviour
         }
         if (tileInstance.hallContent.type == ExhibitsConstants.Decoration.Id)
         {
-            Debug.Log("Drew decoration");
             tileInstance.hallContent.title = _decorationsDropdown.value.ToString();
             tileInstance.hallContent.image_url = "Decoration";
             tileInstance.hallContent.image_desc = _decorationsDropdown.options[_decorationsDropdown.value].text;
