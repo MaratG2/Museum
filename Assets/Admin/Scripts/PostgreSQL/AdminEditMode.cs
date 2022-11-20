@@ -19,6 +19,7 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private CanvasGroup _changePropertiesGroup;
     [SerializeField] private CanvasGroup _photoVideoGroup;
     [SerializeField] private CanvasGroup _decorGroup;
+    [SerializeField] private CanvasGroup _infoGroup;
     [SerializeField] private TextMeshProUGUI _propertiesHeader;
     [SerializeField] private TMP_InputField _propertiesName;
     [SerializeField] private TMP_InputField _propertiesUrl;
@@ -301,7 +302,11 @@ public class AdminEditMode : MonoBehaviour
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.InfoBox.Id)
                         {
-                            Debug.Log("Tile Change Info: " + i);
+                            _isCursorLock = true;
+                            TurnCanvasGroupTo(ref _changePropertiesGroup, true);
+                            TurnCanvasGroupTo(ref _infoGroup, true);
+                            
+                            _tileSelected = tileChange;
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.Cup.Id)
                         {
@@ -362,6 +367,7 @@ public class AdminEditMode : MonoBehaviour
         TurnCanvasGroupTo(ref _changePropertiesGroup, false);
         TurnCanvasGroupTo(ref _photoVideoGroup, false);
         TurnCanvasGroupTo(ref _decorGroup, false);
+        TurnCanvasGroupTo(ref _infoGroup, false);
     }
 
     private void TurnCanvasGroupTo(ref CanvasGroup canvasGroup, bool turnTo)
