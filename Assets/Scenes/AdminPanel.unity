@@ -6237,7 +6237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd4c932b7c102049a6afc061ba56e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAuth: 1
+  _isAuth: 0
   _nameReg: {fileID: 1698157566}
   _emailReg: {fileID: 1727973589}
   _passwordReg: {fileID: 2028816083}
@@ -6465,9 +6465,10 @@ MonoBehaviour:
   _infoSprite: {fileID: 21300000, guid: c795440f34d2084459e688b7855f4b5c, type: 3}
   _cupSprite: {fileID: 21300000, guid: 117bc1df0e80c45408351bafe6f7129f, type: 3}
   _medalSprite: {fileID: 21300000, guid: 28218d0048d11314fa5b569590b05d6a, type: 3}
-  _rubberSprite: {fileID: 21300000, guid: 2ca6d8057847365469f636108c247820, type: 3}
+  _rubberSprite: {fileID: 21300000, guid: 0776f9846cdbe3742b48ec917dfa84b1, type: 3}
   _videoSprite: {fileID: 21300000, guid: 435c96a3a95676a47ad69f7b1ba30990, type: 3}
   _decorSprite: {fileID: 21300000, guid: 51728d160eecd71499e5e3fb2b76e43b, type: 3}
+  _selectSprite: {fileID: 21300000, guid: 12bfd7ef5ebfe354aa8aa3aba33135a7, type: 3}
   _adminView: {fileID: 1756156831}
   _paintsParent: {fileID: 2144350238}
   _cursorTile: {fileID: 638487063}

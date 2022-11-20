@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class AdminEditMode : MonoBehaviour
 {
-    [SerializeField] private Sprite _doorSprite, _frameSprite, _infoSprite, _cupSprite, _medalSprite, _rubberSprite, _videoSprite, _decorSprite;
+    [SerializeField] private Sprite _doorSprite, _frameSprite, _infoSprite, _cupSprite, _medalSprite, _rubberSprite, _videoSprite, _decorSprite, _selectSprite;
     [SerializeField] private AdminViewMode _adminView;
     [SerializeField] private RectTransform _paintsParent;
     [SerializeField] private RectTransform _cursorTile;
@@ -415,7 +415,7 @@ public class AdminEditMode : MonoBehaviour
         switch (_currentTool)
         {
             case -3:
-                _cursorTile.GetComponent<Image>().sprite = null;
+                _cursorTile.GetComponent<Image>().sprite = _selectSprite;
                 _cursorTile.GetComponent<Image>().raycastTarget = false;
                 break;
             case -2:
