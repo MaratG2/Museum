@@ -17,6 +17,9 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private Toggle _toggleMaintained, _toggleHidden;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private CanvasGroup _changePropertiesGroup;
+    [SerializeField] private CanvasGroup _photoVideoGroup;
+    [SerializeField] private CanvasGroup _decorGroup;
+    [SerializeField] private TextMeshProUGUI _propertiesHeader;
     [SerializeField] private TMP_InputField _propertiesName;
     [SerializeField] private TMP_InputField _propertiesUrl;
     [SerializeField] private TMP_InputField _propertiesDesc;
@@ -286,11 +289,10 @@ public class AdminEditMode : MonoBehaviour
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.Picture.Id)
                         {
-                            Debug.Log("Tile Change Painting: " + i);
+                            _propertiesHeader.text = "Редактирование фото";
                             _isCursorLock = true;
-                            _changePropertiesGroup.alpha = 1;
-                            _changePropertiesGroup.interactable = true;
-                            _changePropertiesGroup.blocksRaycasts = true;
+                            TurnCanvasGroupTo(ref _changePropertiesGroup, true);
+                            TurnCanvasGroupTo(ref _photoVideoGroup, true);
                             _propertiesName.text = tileChange.hallContent.title;
                             _propertiesUrl.text = tileChange.hallContent.image_url;
                             _propertiesDesc.text = tileChange.hallContent.image_desc;
@@ -310,11 +312,10 @@ public class AdminEditMode : MonoBehaviour
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.Video.Id)
                         {
-                            Debug.Log("Tile Change Video: " + i);
+                            _propertiesHeader.text = "Редактирование видео";
                             _isCursorLock = true;
-                            _changePropertiesGroup.alpha = 1;
-                            _changePropertiesGroup.interactable = true;
-                            _changePropertiesGroup.blocksRaycasts = true;
+                            TurnCanvasGroupTo(ref _changePropertiesGroup, true);
+                            TurnCanvasGroupTo(ref _photoVideoGroup, true);
                             _propertiesName.text = tileChange.hallContent.title;
                             _propertiesUrl.text = tileChange.hallContent.image_url;
                             _propertiesDesc.text = tileChange.hallContent.image_desc;
@@ -322,7 +323,8 @@ public class AdminEditMode : MonoBehaviour
                         }
                         if (tileChange.hallContent.type == ExhibitsConstants.Decoration.Id)
                         {
-                            Debug.Log("Tile Change Decoration: " + i);
+                            TurnCanvasGroupTo(ref _changePropertiesGroup, true);
+                            TurnCanvasGroupTo(ref _decorGroup, true);
                         }
                     }
                 }
@@ -353,9 +355,16 @@ public class AdminEditMode : MonoBehaviour
     public void HidePropertiesGroup()
     {
         _isCursorLock = false;
-        _changePropertiesGroup.alpha = 0;
-        _changePropertiesGroup.interactable = false;
-        _changePropertiesGroup.blocksRaycasts = false;
+        TurnCanvasGroupTo(ref _changePropertiesGroup, false);
+        TurnCanvasGroupTo(ref _photoVideoGroup, false);
+        TurnCanvasGroupTo(ref _decorGroup, false);
+    }
+
+    private void TurnCanvasGroupTo(ref CanvasGroup canvasGroup, bool turnTo)
+    {
+        canvasGroup.alpha = turnTo ? 1f : 0f;
+        canvasGroup.interactable = turnTo;
+        canvasGroup.blocksRaycasts = turnTo;
     }
 
     public void SaveProperties()
