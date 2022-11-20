@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour
 {
     public HallContent hallContent;
     private Image _image;
+
     [SerializeField] private Sprite _doorSprite, _frameSprite, _infoSprite, _cupSprite, _medalSprite, _rubberSprite, _videoSprite, _decorSprite;
 
     public void Setup()

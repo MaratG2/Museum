@@ -88,6 +88,7 @@ namespace GenerationMap
             IsBlock = true
         };
 
+
         public static ExhibitDto GetModelById(int id)
         {
             var models = typeof(ExhibitsConstants)
