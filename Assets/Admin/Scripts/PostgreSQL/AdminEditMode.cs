@@ -26,6 +26,7 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private TMP_InputField _propertiesDesc;
     [SerializeField] private TMP_InputField _infoBoxName;
     [SerializeField] private TMP_Dropdown _decorationsDropdown;
+    [SerializeField] private Button _doorTool;
 
     private InfoController _infoController;
     private int _currentTool = -999;
@@ -229,6 +230,15 @@ public class AdminEditMode : MonoBehaviour
             Mathf.FloorToInt((absoluteMousePos.x / windowSize.x) * (windowSize.x / tileSize)) * tileSize + tileSize/2,
             Mathf.FloorToInt(((absoluteMousePos.y + tileSize / 4) / windowSize.y) * (windowSize.y / tileSize)) * tileSize + tileSize/4
         );
+
+        bool turnToTrue = true;
+        for (int i = 0; i < _paintsParent.childCount; i++)
+        {
+            Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
+            if (tileChange.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
+                turnToTrue = false;
+        }
+        _doorTool.interactable = turnToTrue;
 
         bool isOverPreview = false;
         GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
@@ -468,7 +478,7 @@ public class AdminEditMode : MonoBehaviour
         tileInstance.Setup();
         if (tileInstance.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
         {
-            _currentTool = -1;
+            SelectTool(-3);
             _isDoorBlock = true;
             _tileSelected = null;
         }
