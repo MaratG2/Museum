@@ -34,6 +34,7 @@ public class AdminEditMode : MonoBehaviour
     private List<Vector2> posToDelete = new List<Vector2>();
     private Tile _tileSelected;
     private bool _isCursorLock;
+    private bool _isDoorBlock;
 
     private void Start()
     {
@@ -465,6 +466,12 @@ public class AdminEditMode : MonoBehaviour
             tileInstance.hallContent = content;
         }
         tileInstance.Setup();
+        if (tileInstance.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
+        {
+            _currentTool = -1;
+            _isDoorBlock = true;
+            _tileSelected = null;
+        }
     }
 
     public void SelectTool(int tool)
@@ -485,7 +492,7 @@ public class AdminEditMode : MonoBehaviour
         }
         if (_currentTool == ExhibitsConstants.Picture.Id)
             _cursorTile.GetComponent<Image>().sprite = _frameSprite;
-        else if (_currentTool == ExhibitsConstants.SpawnPoint.Id)
+        else if (_isDoorBlock && _currentTool == ExhibitsConstants.SpawnPoint.Id)
             _cursorTile.GetComponent<Image>().sprite = _doorSprite;
         else if (_currentTool == ExhibitsConstants.InfoBox.Id)
             _cursorTile.GetComponent<Image>().sprite = _infoSprite;
