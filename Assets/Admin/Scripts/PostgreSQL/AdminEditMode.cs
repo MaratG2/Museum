@@ -15,7 +15,7 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private RectTransform _cursorTile;
     [SerializeField] private RectTransform _imagePreview;
     [SerializeField] private Toggle _toggleMaintained, _toggleHidden;
-    [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private TMP_InputField _nameText;
     [SerializeField] private CanvasGroup _changePropertiesGroup;
     [SerializeField] private CanvasGroup _photoVideoGroup;
     [SerializeField] private CanvasGroup _decorGroup;
@@ -40,7 +40,6 @@ public class AdminEditMode : MonoBehaviour
     private void Start()
     {
         _infoController = FindObjectOfType<InfoController>();
-        _nameText.text = "";
         SelectTool(-1);
     }
 
@@ -125,8 +124,9 @@ public class AdminEditMode : MonoBehaviour
     {
         NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
         string sql = "UPDATE options"
-                     + " SET is_maintained = " + _toggleMaintained.isOn
+                     + " SET name = '" + _nameText.text + "'"
                      + ", is_hidden = " + _toggleHidden.isOn
+                     + ", is_maintained = " + _toggleMaintained.isOn
                      + ", operation = 'UPDATE'"
                      + " WHERE onum = " + _adminView.HallSelected.onum;
         dbcmd.Prepare();

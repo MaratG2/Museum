@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:redshift://server.redshift.amazonaws.com:5439</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="Museum Istu DB" uuid="d305da29-8f90-4698-96de-a5afa718e015">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-54-77-40-202.eu-west-1.compute.amazonaws.com:5432/dp3oh4vja8l35</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
