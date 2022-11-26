@@ -20,6 +20,7 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private CanvasGroup _photoVideoGroup;
     [SerializeField] private CanvasGroup _decorGroup;
     [SerializeField] private CanvasGroup _infoGroup;
+    [SerializeField] private CanvasGroup _confirmGroup;
     [SerializeField] private TextMeshProUGUI _propertiesHeader;
     [SerializeField] private TMP_InputField _propertiesName;
     [SerializeField] private TMP_InputField _propertiesUrl;
@@ -108,18 +109,27 @@ public class AdminEditMode : MonoBehaviour
 
     public void DeleteHall()
     {
+        SelectTool(-1);
+        TurnCanvasGroupTo(ref _confirmGroup, true);
+    }
+
+    public void DeleteHallConfirm()
+    {
         NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
         string sql = "DELETE FROM options "
-            + "WHERE onum = " + _adminView.HallSelected.onum;
+                     + "WHERE onum = " + _adminView.HallSelected.onum;
         dbcmd.Prepare();
         dbcmd.CommandText = sql;
         dbcmd.ExecuteNonQuery();
         ClearAll();
         _nameText.text = "";
         _adminView.HallSelected = new HallOptions();
-        SelectTool(-1);
+        DeleteHallBack();
     }
-
+    public void DeleteHallBack()
+    {
+        TurnCanvasGroupTo(ref _confirmGroup, false);
+    }
     public void SaveHall()
     {
         NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
@@ -487,6 +497,7 @@ public class AdminEditMode : MonoBehaviour
     public void SelectTool(int tool)
     {
         _currentTool = tool;
+        _cursorTile.GetComponent<Image>().color = Color.white;
         switch (_currentTool)
         {
             case -3:
@@ -498,6 +509,7 @@ public class AdminEditMode : MonoBehaviour
                 break;
             case -1:
                 _cursorTile.GetComponent<Image>().sprite = null;
+                _cursorTile.GetComponent<Image>().color = Color.clear;
                 break;
         }
         if (_currentTool == ExhibitsConstants.Picture.Id)
