@@ -150,7 +150,7 @@ public class AdminViewMode : MonoBehaviour
                 _hallListingsParent);
             newInstance.gameObject.name = (onum).ToString();
             newInstance.GetComponentInChildren<TextMeshProUGUI>().text = name;
-            newInstance.onClick.AddListener(() => SelectHall(onum));
+            newInstance.onClick.AddListener(() => SelectHallFromButton(onum, newInstance.gameObject));
         }
         
         reader.Close();
@@ -158,6 +158,24 @@ public class AdminViewMode : MonoBehaviour
         
         _textGORefreshing.SetActive(false);
         _hallPreview.SetActive(true);
+    }
+
+    private void SelectHallFromButton(int onum, GameObject linkGO)
+    {
+        for (int i = 0; i < _hallListingsParent.transform.childCount; i++)
+        {
+            if (_hallListingsParent.GetChild(i).gameObject == linkGO)
+            {
+                _hallListingsParent.GetChild(i).GetComponent<Image>().color = Color.green;
+                _hallListingsParent.GetChild(i).GetComponentInChildren<TextMeshProUGUI>().color = Color.black; 
+            }
+            else
+            {
+                _hallListingsParent.GetChild(i).GetComponent<Image>().color = Color.gray;
+                _hallListingsParent.GetChild(i).GetComponentInChildren<TextMeshProUGUI>().color = Color.white; 
+            }
+        }
+        SelectHall(onum);
     }
 
     private void SQLGetContentByOnum(int num)
