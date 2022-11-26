@@ -19,6 +19,12 @@ public class AdminNewMode : MonoBehaviour
 
     private bool _isOnCooldown;
 
+    private void Start()
+    {
+        _inputDateBegin.interactable = false;
+        _inputDateEnd.interactable = false;
+    }
+
     void Update()
     {
         int sizeX = 0, sizeZ;

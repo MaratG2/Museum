@@ -67,6 +67,12 @@ public class AdminAuth : MonoBehaviour
             _buttonAuth.interactable = false;
             Invoke(nameof(LateStart), 0.5f);
         }
+        else
+        {
+            var videoPlayer = FindObjectOfType<Video>();
+            if (videoPlayer)
+                Destroy(videoPlayer.gameObject);
+        }
     }
 
     private void LateStart()

@@ -8442,8 +8442,8 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 866332122}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
+  m_Alpha: 0
+  m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &866332125
@@ -8458,7 +8458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd4c932b7c102049a6afc061ba56e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAuth: 1
+  _isAuth: 0
   _nameReg: {fileID: 1698157566}
   _emailReg: {fileID: 1727973589}
   _passwordReg: {fileID: 2028816083}
@@ -15840,10 +15840,10 @@ RectTransform:
   m_Father: {fileID: 1047751915}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 278.29996, y: -33.643448}
-  m_SizeDelta: {x: 556.5999, y: 57.2869}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 57.2869}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1510953858
 MonoBehaviour:
