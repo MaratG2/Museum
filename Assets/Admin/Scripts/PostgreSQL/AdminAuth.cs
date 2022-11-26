@@ -8,6 +8,7 @@ using Npgsql;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class AdminAuth : MonoBehaviour
 {
@@ -236,6 +237,9 @@ public class AdminAuth : MonoBehaviour
                     _passwordAuth.text = "";
                     _errorAuth.text = "Авторизация прошла успешна";
                     _errorAuth.color = Color.green;
+                    var videoPlayer = FindObjectOfType<VideoPlayer>();
+                    if(videoPlayer)
+                        videoPlayer.Stop();
                     reader.Close();
                     dbcmd.Dispose();
                     reader = null;
