@@ -16,6 +16,8 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private RectTransform _hallListingsParent;
     [SerializeField] private GameObject _tilePrefab;
     [SerializeField] private GameObject _tilesParent;
+    [SerializeField] private Button _modeSwitchEdit;
+    [SerializeField] private Button _modeSwitchNew;
     
     private HallOptions _hallSelected;
     private List<HallOptions> _cachedHallOptions = new List<HallOptions>();
@@ -30,7 +32,9 @@ public class AdminViewMode : MonoBehaviour
     }
 
     private void Start()
-    { 
+    {
+        _modeSwitchEdit.gameObject.SetActive(false);
+        _modeSwitchNew.gameObject.SetActive(true);
         string connectionString =
             "Port = 5432;" +
             "Server= ec2-54-77-40-202.eu-west-1.compute.amazonaws.com;" +
@@ -69,6 +73,8 @@ public class AdminViewMode : MonoBehaviour
                 Destroy(_tilesParent.transform.GetChild(i).gameObject);
         }
         _hallSelected = currentOption;
+        _modeSwitchEdit.gameObject.SetActive(true);
+        _modeSwitchNew.gameObject.SetActive(false);
         StartCoroutine(FindLeftBottomTile(num));
     }
 
@@ -98,6 +104,8 @@ public class AdminViewMode : MonoBehaviour
             Destroy(_tilesParent.transform.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
         _hallPreview.SetActive(false);
+        _modeSwitchEdit.gameObject.SetActive(false);
+        _modeSwitchNew.gameObject.SetActive(true);
         SQLGetAllOptions();
     }
 
