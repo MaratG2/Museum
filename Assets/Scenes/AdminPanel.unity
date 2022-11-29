@@ -9901,7 +9901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd4c932b7c102049a6afc061ba56e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAuth: 0
+  _isAuth: 1
   _nameReg: {fileID: 1698157566}
   _emailReg: {fileID: 1727973589}
   _passwordReg: {fileID: 2028816083}
@@ -9915,6 +9915,7 @@ MonoBehaviour:
   _viewCGroup: {fileID: 1756156830}
   _editCGroup: {fileID: 881952650}
   _newCGroup: {fileID: 244376366}
+  _toggleSavePassword: {fileID: 1504268329}
 --- !u!1 &879956952
 GameObject:
   m_ObjectHideFlags: 0

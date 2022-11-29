@@ -26,6 +26,7 @@ public class AdminAuth : MonoBehaviour
     [SerializeField] private CanvasGroup _viewCGroup;
     [SerializeField] private CanvasGroup _editCGroup;
     [SerializeField] private CanvasGroup _newCGroup;
+    [SerializeField] private Toggle _toggleSavePassword;
 
     [System.Serializable]
     public struct User
@@ -83,6 +84,15 @@ public class AdminAuth : MonoBehaviour
 
     private void LateStart()
     {
+        if (PlayerPrefs.HasKey("SavedPassword"))
+        {
+            _emailAuth.text = PlayerPrefs.GetString("SavedEmail");
+            _toggleSavePassword.isOn = true;
+        }
+        else
+        {
+            _toggleSavePassword.isOn = false;
+        }
         _buttonReg.interactable = true;
         _buttonAuth.interactable = true;
     }
@@ -174,7 +184,7 @@ public class AdminAuth : MonoBehaviour
             _errorAuth.color = Color.red; 
             return;
         }
-        if (_passwordAuth.text.Length is < 8 or > 24)
+        if (_passwordAuth.text.Length is < 8 or > 24 && !PlayerPrefs.HasKey("SavedPassword"))
         {
             _errorAuth.text = "Пароль не может быть меньше 8 или больше 24 символов";
             _errorAuth.color = Color.red; 
@@ -208,7 +218,8 @@ public class AdminAuth : MonoBehaviour
 
             string securedPassword = Convert.ToBase64String(
                 new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
-
+            if(PlayerPrefs.HasKey("SavedPassword"))
+                securedPassword = PlayerPrefs.GetString("SavedPassword");
             dbcmd = AdminViewMode.dbcon.CreateCommand();
             string loginSql = "SELECT * from public.users " +
                               "WHERE email = '" + _emailAuth.text + "' AND password = '" + securedPassword + "'";
@@ -244,6 +255,16 @@ public class AdminAuth : MonoBehaviour
                 }
                 else
                 {
+                    if(_toggleSavePassword.isOn)
+                    {
+                        PlayerPrefs.SetString("SavedPassword", password);
+                        PlayerPrefs.SetString("SavedEmail", email);
+                    }
+                    else
+                    {
+                        PlayerPrefs.DeleteKey("SavedPassword");
+                        PlayerPrefs.DeleteKey("SavedEmail");
+                    }
                     CurrentUser = tempUser;
                     _emailAuth.text = "";
                     _passwordAuth.text = "";
