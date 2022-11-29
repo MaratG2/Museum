@@ -7,8 +7,6 @@ using UnityEngine.Video;
 public class Video : MonoBehaviour
 {
     [SerializeField] private string _videoUrl;
-    private const string CHerokuURL = "https://unity-youtube-dl-server.herokuapp.com";
-    private const string CHerokuEndURL = "&cli=yt-dlp";
     private RawImage _rawImage;
     private VideoPlayer _videoPlayer;
     
@@ -18,18 +16,7 @@ public class Video : MonoBehaviour
     {
         _rawImage = GetComponent<RawImage>();
         _videoPlayer = GetComponent<VideoPlayer>();
-        _videoUrl = GenerateUnityYoutubePlayerUrl(_videoUrl);
         StartCoroutine(PlayVideo());
-    }
-
-    private string GenerateUnityYoutubePlayerUrl(string url)
-    {
-        int indexLastSlash = url.LastIndexOf('/');
-        string ytUrl = url.Substring(indexLastSlash);
-        if (ytUrl.Length > 0 && ytUrl[0] != 'w')
-            ytUrl = string.Concat("/watch?v=", ytUrl.Substring(1));
-        
-        return CHerokuURL + ytUrl + CHerokuEndURL;
     }
 
     IEnumerator PlayVideo()
@@ -41,10 +28,10 @@ public class Video : MonoBehaviour
         _videoPlayer.renderMode = VideoRenderMode.APIOnly;
         _videoPlayer.Prepare();
         while (!_videoPlayer.isPrepared)
-            yield return new WaitForSeconds(1);
+            yield return new WaitForEndOfFrame();
  
         _rawImage.texture = _videoPlayer.texture;
         _videoPlayer.Play();
-        _videoPlayer.SetDirectAudioVolume(0, 0.05f);
+        _videoPlayer.SetDirectAudioVolume(0, 0.2f);
     }
 }
