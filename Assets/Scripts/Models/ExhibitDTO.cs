@@ -7,7 +7,7 @@ namespace GenerationMap
     {
         public string Name { get; set; }
         public int Id { get; set; }
-        public Image Icon { get; set; }
+        public UnityEngine.UI.Image Icon { get; set; }
         
         public bool IsBlock { get; set; }
         
