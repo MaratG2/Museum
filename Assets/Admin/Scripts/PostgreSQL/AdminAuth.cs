@@ -69,6 +69,12 @@ public class AdminAuth : MonoBehaviour
         }
         else
         {
+            _authCGroup.alpha = 0f;
+            _authCGroup.interactable = false;
+            _authCGroup.blocksRaycasts = false;
+            _viewCGroup.alpha = 1f;
+            _viewCGroup.interactable = true;
+            _viewCGroup.blocksRaycasts = true;
             var videoPlayer = FindObjectOfType<Video>();
             if (videoPlayer)
                 Destroy(videoPlayer.gameObject);
