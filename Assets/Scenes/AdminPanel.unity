@@ -16028,7 +16028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb422ca3933110488b97c484ed13b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _videoUrl: http://maratg2.me/MuseumIstuStorage/istu_song_360.mp4
+  _videoUrl: https://maratg2.github.io/istumuseumstorage/istu_song_360.mp4
 --- !u!222 &1350207718
 CanvasRenderer:
   m_ObjectHideFlags: 0
