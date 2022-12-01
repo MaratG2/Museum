@@ -16,10 +16,31 @@ public class PHPTestPSQL : MonoBehaviour
         //StartCoroutine(Calc(_urlRoot + "calc.php"));
         //StartCoroutine(Calc2(_urlRoot + "calc.php"));
         //StartCoroutine(Calc3(_urlRoot + "calc.php"));
-        //StartCoroutine(TestGet(_urlRoot + "test_get.php"));
-        StartCoroutine(Calc2(_urlRoot + "test_get.php"));
+        StartCoroutine(TestGet(_urlRoot + "test_get.php"));
+        //StartCoroutine(Calc2(_urlRoot + "test_get.php"));
+        //StartCoroutine(GetTextFromWWW(_urlRoot + "test_get.php"));
+        
+        //Works
+        //StartCoroutine(GetTextFromWWW("https://google.com/"));
+        //Empty
+        //StartCoroutine(GetTextFromWWW("https://museumistu.epizy.com/"));
     }
     
+    private IEnumerator GetTextFromWWW (string url)
+    {
+        WWW www = new WWW(url);
+         
+        yield return www;
+         
+        if (www.error != null)
+        {
+            Debug.Log("Ooops, something went wrong...");
+        }
+        else
+        {
+            Debug.Log(www.text);
+        }
+    }
     private IEnumerator GetRequest(string url)
     {
         using(UnityWebRequest www = UnityWebRequest.Get(url))
@@ -49,8 +70,7 @@ public class PHPTestPSQL : MonoBehaviour
             }
         }
     }
-    
-    
+
     private IEnumerator Calc3(string url)
     {
         yield return new WaitForSecondsRealtime(2f);
@@ -80,7 +100,6 @@ public class PHPTestPSQL : MonoBehaviour
             }
         }
     }
-    
     private IEnumerator Calc2(string url)
     {
         CustomCertificateHandler  certHandler = new CustomCertificateHandler();
