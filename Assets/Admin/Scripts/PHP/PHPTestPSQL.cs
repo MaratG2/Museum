@@ -12,7 +12,8 @@ public class PHPTestPSQL : MonoBehaviour
     
     private void Start()
     {
-        StartCoroutine(GetRequest(_urlRoot + "database.php"));
+        //StartCoroutine(GetRequest(_urlRoot + "database.php"));
+        StartCoroutine(GetRequest(_urlRoot + "database2.php"));
         StartCoroutine(GetRequest(_urlRoot + "test_get.php"));
         StartCoroutine(LoginQuantityEnumerator(_urlRoot + "loginq.php"));
         StartCoroutine(Calc(_urlRoot + "calc.php"));
