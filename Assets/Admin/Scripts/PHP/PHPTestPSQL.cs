@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class PHPTestPSQL : MonoBehaviour
 {
-    private string _urlRoot = "http://museumistu.epizy.com/PHP/";    
+    private string _urlRoot = "https://museumistu.epizy.com/PHP/";    
     
     private void Start()
     {
@@ -15,7 +15,9 @@ public class PHPTestPSQL : MonoBehaviour
         //StartCoroutine(LoginQuantityEnumerator(_urlRoot + "loginq.php"));
         //StartCoroutine(Calc(_urlRoot + "calc.php"));
         //StartCoroutine(Calc2(_urlRoot + "calc.php"));
-        StartCoroutine(Calc3(_urlRoot + "calc.php"));
+        //StartCoroutine(Calc3(_urlRoot + "calc.php"));
+        //StartCoroutine(TestGet(_urlRoot + "test_get.php"));
+        StartCoroutine(Calc2(_urlRoot + "test_get.php"));
     }
     
     private IEnumerator GetRequest(string url)
@@ -25,13 +27,30 @@ public class PHPTestPSQL : MonoBehaviour
             yield return www.SendWebRequest();
  
             if (www.result != UnityWebRequest.Result.Success) 
-                Debug.Log("Url: " + www.uri + " | Error: " + www.error);
+                Debug.Log("Url: " + www.uri + " | Error: " + www.error + " | " + www.downloadHandler?.text);
             else
             {
                 Debug.Log(www.downloadHandler.text);
             }
         }
     }
+    
+    private IEnumerator TestGet(string url)
+    {
+        using(UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+ 
+            if (www.result != UnityWebRequest.Result.Success) 
+                Debug.Log("Url: " + www.uri + " | Error: " + www.error + " | " + www.downloadHandler?.text);
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+            }
+        }
+    }
+    
+    
     private IEnumerator Calc3(string url)
     {
         yield return new WaitForSecondsRealtime(2f);
