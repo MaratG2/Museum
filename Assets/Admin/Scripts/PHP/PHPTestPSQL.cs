@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class PHPTestPSQL : MonoBehaviour
 {
-    //wokring, but no php ini edit - http://museumistu.atwebpages.com/PHP/
+    //working, but unknown error in web - http://museumistu.atwebpages.com/PHP/
     private string _urlRoot = "http://museumistu.atwebpages.com/PHP/";    
     
     private void Start()
