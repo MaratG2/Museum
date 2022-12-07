@@ -47,6 +47,7 @@ public class AdminAuth : MonoBehaviour
     }
 
     private bool _isLoginCRAble = true;
+    private bool _isRegistartionCRAble = true;
 
     void Start()
     {
@@ -102,6 +103,13 @@ public class AdminAuth : MonoBehaviour
 
     public void TryRegistration()
     {
+        if (_isRegistartionCRAble)
+            StartCoroutine(TryRegistrationCoroutine());
+        _isRegistartionCRAble = false;
+    }
+
+    private IEnumerator TryRegistrationCoroutine()
+    {
         _nameReg.text.Trim();
         _emailReg.text.Trim();
         _passwordReg.text.Trim();
@@ -109,61 +117,91 @@ public class AdminAuth : MonoBehaviour
         if (_nameReg.text == "")
         {
             _errorReg.text = "ФИО не может быть пустым";
-            _errorReg.color = Color.red; 
-            return;
+            _errorReg.color = Color.red;
+            _isRegistartionCRAble = true;
+            yield break;
         }
         if (_emailReg.text == "")
         {
             _errorReg.text = "Адрес почты не может быть пустым";
             _errorReg.color = Color.red; 
-            return;
+            _isRegistartionCRAble = true;
+            yield break;
         }
         if (_passwordReg.text.Length is < 8 or > 24)
         {
             _errorReg.text = "Пароль не может быть меньше 8 или больше 24 символов";
             _errorReg.color = Color.red; 
-            return;
+            _isRegistartionCRAble = true;
+            yield break;
         }
         Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
         Match match = regex.Match(_emailReg.text);
         if (match.Success)
         {
-            NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
-            string checkSql = "SELECT count(*) from public.users " +
-                             "WHERE email = '" + _emailReg.text + "'";
-            dbcmd.Prepare();
-            dbcmd.CommandText = checkSql;
-            NpgsqlDataReader reader = dbcmd.ExecuteReader();
-            while (reader.Read())
+            //---------------PHP_LoginEmailCount
+            WWWForm form = new WWWForm();
+            form.AddField ("email", _emailReg.text);
+            string url = PHPSettings.UrlRoot + "login_email_count.php";
+            using (UnityWebRequest www = UnityWebRequest.Post(url, form))
             {
-                int quantity = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
-                if (quantity > 0)
+                yield return www.SendWebRequest();
+                Debug.Log($"Login Email Count request ({url}): ");
+            
+                if (www.result != UnityWebRequest.Result.Success)
+                    Debug.Log("Url: " + www.uri + " | Error: " + www.error + " | " + www.downloadHandler?.text);
+                else
                 {
-                    _errorReg.text = "Пользователь с заданным электронным адресом уже существует";
-                    _errorReg.color = Color.red; 
-                    reader.Close();
-                    dbcmd.Dispose();
-                    reader = null;
-                    return;
+                    string responseText = www.downloadHandler.text;
+                    Debug.Log(responseText);
+                    if (Int32.TryParse(responseText, out int quantity))
+                    {
+                        if (quantity > 0)
+                        {
+                            _errorReg.text = "Пользователь с заданным электронным адресом уже существует";
+                            _errorReg.color = Color.red;
+                            _isRegistartionCRAble = true;
+                            yield break;
+                        }
+                    }
                 }
             }
-            reader.Close();
-            dbcmd.Dispose();
-            reader = null;
+            //-----------------------------------
             
             string securedPassword = Convert.ToBase64String(
                 new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordReg.text)));
             
-            dbcmd = AdminViewMode.dbcon.CreateCommand();
-            string regSql = "INSERT INTO public.users(name, email, password) " +
-                            "VALUES ('" + _nameReg.text + "', '" + _emailReg.text + "', '" + securedPassword + "')";
-            dbcmd.Prepare();
-            dbcmd.CommandText = regSql;
-            dbcmd.ExecuteNonQuery();
+            //---------------PHP_Registration
+            WWWForm formReg = new WWWForm();
+            formReg.AddField ("name", _nameReg.text);
+            formReg.AddField ("email", _emailReg.text);
+            formReg.AddField ("pass", securedPassword);
+            string urlReg = PHPSettings.UrlRoot + "registration.php";
+            using (UnityWebRequest www = UnityWebRequest.Post(urlReg, formReg))
+            {
+                yield return www.SendWebRequest();
+                Debug.Log($"Registration request ({urlReg}): ");
             
-            _errorReg.text = "Пользователь успешно зарегистрирован";
-            _errorReg.color = Color.green;
-
+                if (www.result != UnityWebRequest.Result.Success)
+                    Debug.Log("Url: " + www.uri + " | Error: " + www.error + " | " + www.downloadHandler?.text);
+                else
+                {
+                    string responseText = www.downloadHandler.text;
+                    Debug.Log(responseText);
+                    if (responseText.Split(' ')[0] == "Registered")
+                    {
+                        _errorReg.text = "Пользователь успешно зарегистрирован";
+                        _errorReg.color = Color.green;
+                    }
+                    else
+                    {
+                        _errorReg.text = "При регистрации на стороне PHP произошла ошибка (прологгирована";
+                        _errorReg.color = Color.red;
+                    }
+                }
+            }
+            //-----------------------------------
+            
             _nameReg.text = "";
             _emailReg.text = "";
             _passwordReg.text = "";
@@ -171,9 +209,9 @@ public class AdminAuth : MonoBehaviour
         else
         {
             _errorReg.text = "Адрес электронной почты не соответствует правилам ввода";
-            _errorReg.color = Color.red; 
-            return;
+            _errorReg.color = Color.red;
         }
+        _isRegistartionCRAble = true;
     }
 
     public void TryLogin()
@@ -206,7 +244,7 @@ public class AdminAuth : MonoBehaviour
         Match match = regex.Match(_emailAuth.text);
         if (match.Success)
         {
-            //---------------PHP
+            //---------------PHP_LoginEmailCount
             WWWForm form = new WWWForm();
             form.AddField ("email", _emailAuth.text);
             string url = PHPSettings.UrlRoot + "login_email_count.php";
@@ -233,6 +271,7 @@ public class AdminAuth : MonoBehaviour
                     }
                 }
             }
+            //-----------------------------------
             
             NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
             string checkSql = "SELECT count(*) from public.users " +
