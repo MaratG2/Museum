@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Npgsql;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -27,7 +28,7 @@ public class AdminAuth : MonoBehaviour
     [SerializeField] private CanvasGroup _editCGroup;
     [SerializeField] private CanvasGroup _newCGroup;
     [SerializeField] private Toggle _toggleSavePassword;
-
+    
     [System.Serializable]
     public struct User
     {
@@ -44,6 +45,8 @@ public class AdminAuth : MonoBehaviour
         get { return _currentUser; }
         set { _currentUser = value; }
     }
+
+    private bool _isLoginCRAble = true;
 
     void Start()
     {
@@ -172,8 +175,15 @@ public class AdminAuth : MonoBehaviour
             return;
         }
     }
-    
+
     public void TryLogin()
+    {
+        if(_isLoginCRAble)
+            StartCoroutine(TryLoginCoroutine());
+        _isLoginCRAble = false;
+    }
+    
+    private IEnumerator TryLoginCoroutine()
     {
         _emailAuth.text.Trim();
         _passwordAuth.text.Trim();
@@ -181,37 +191,55 @@ public class AdminAuth : MonoBehaviour
         if (_emailAuth.text == "")
         {
             _errorAuth.text = "Адрес почты не может быть пустым";
-            _errorAuth.color = Color.red; 
-            return;
+            _errorAuth.color = Color.red;
+            _isLoginCRAble = true;
+            yield break;
         }
         if (_passwordAuth.text.Length is < 8 or > 24 && !PlayerPrefs.HasKey("SavedPassword"))
         {
             _errorAuth.text = "Пароль не может быть меньше 8 или больше 24 символов";
-            _errorAuth.color = Color.red; 
-            return;
+            _errorAuth.color = Color.red;
+            _isLoginCRAble = true;
+            yield break;
         }
         Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
         Match match = regex.Match(_emailAuth.text);
         if (match.Success)
         {
+            //---------------PHP
+            WWWForm form = new WWWForm();
+            form.AddField ("email", _emailAuth.text);
+            string url = PHPSettings.UrlRoot + "login_email_count.php";
+            using (UnityWebRequest www = UnityWebRequest.Post(url, form))
+            {
+                yield return www.SendWebRequest();
+                Debug.Log($"Login Email Count request ({url}): ");
+            
+                if (www.result != UnityWebRequest.Result.Success)
+                    Debug.Log("Url: " + www.uri + " | Error: " + www.error + " | " + www.downloadHandler?.text);
+                else
+                {
+                    string responseText = www.downloadHandler.text;
+                    Debug.Log(responseText);
+                    if (Int32.TryParse(responseText, out int quantity))
+                    {
+                        if (quantity <= 0)
+                        {
+                            _errorAuth.text = "Пользователя с таким адресом электронной почты не существует";
+                            _errorAuth.color = Color.red;
+                            _isLoginCRAble = true;
+                            yield break;
+                        }
+                    }
+                }
+            }
+            
             NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
             string checkSql = "SELECT count(*) from public.users " +
                               "WHERE email = '" + _emailAuth.text + "'";
             dbcmd.Prepare();
             dbcmd.CommandText = checkSql;
             NpgsqlDataReader reader = dbcmd.ExecuteReader();
-            while (reader.Read())
-            {
-                int quantity = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
-                if (quantity <= 0)
-                {
-                    _errorAuth.text = "Пользователя с таким адресом электронной почты не существует";
-                    _errorAuth.color = Color.red;
-                    reader.Close();
-                    dbcmd.Dispose();
-                    reader = null;
-                }
-            }
             reader.Close();
             dbcmd.Dispose();
             reader = null;
@@ -251,7 +279,8 @@ public class AdminAuth : MonoBehaviour
                     reader.Close();
                     dbcmd.Dispose();
                     reader = null;
-                    return;
+                    _isLoginCRAble = true;
+                    yield break;
                 }
                 else
                 {
@@ -277,7 +306,8 @@ public class AdminAuth : MonoBehaviour
                     dbcmd.Dispose();
                     reader = null;
                     Invoke(nameof(LateLoginned), 0.5f);
-                    return;
+                    _isLoginCRAble = true;
+                    yield break;
                 }
             }
 
@@ -289,14 +319,14 @@ public class AdminAuth : MonoBehaviour
             reader.Close();
             dbcmd.Dispose();
             reader = null;
-            return;
         }
         else
         {
             _errorAuth.text = "Адрес электронной почты не соответствует правилам ввода";
-            _errorAuth.color = Color.red; 
-            return;
+            _errorAuth.color = Color.red;
         }
+
+        _isLoginCRAble = true;
     }
 
     private void LateLoginned()

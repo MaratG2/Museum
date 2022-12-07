@@ -5,18 +5,18 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class PHPTestPSQL : MonoBehaviour
+public class PHPSettings : MonoBehaviour
 {
     //working, but unknown error in web - http://museumistu.atwebpages.com/PHP/
-    private string _urlRoot = "https://istu-museum-admin.netlify.app/api/PHP/";    
+    public static string UrlRoot { get; private set; } = "https://istu-museum-admin.netlify.app/api/PHP/";    
     
     private void Start()
     {
         //StartCoroutine(GetRequest(_urlRoot + "database.php"));
-        StartCoroutine(GetRequest(_urlRoot + "database2.php"));
-        StartCoroutine(GetRequest(_urlRoot + "test_get.php"));
-        StartCoroutine(LoginQuantityEnumerator(_urlRoot + "loginq.php"));
-        StartCoroutine(Calc(_urlRoot + "calc.php"));
+        //StartCoroutine(GetRequest(UrlRoot + "database_connection.php"));
+        //StartCoroutine(GetRequest(UrlRoot + "test_get.php"));
+        //StartCoroutine(LoginQuantityEnumerator(UrlRoot + "loginq.php"));
+        //StartCoroutine(Calc(UrlRoot + "calc.php"));
     }
     private IEnumerator GetRequest(string url)
     {

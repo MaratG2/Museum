@@ -55,6 +55,7 @@ public class AdminViewMode : MonoBehaviour
             "sslmode=Prefer;" +
             "Trust Server Certificate=true";
             */
+        /*
         string connectionString =
             "Port = 5432;" +
             "Server= dpg-ce7op4h4rebbibivu030-a.frankfurt-postgres.render.com;" +
@@ -65,6 +66,7 @@ public class AdminViewMode : MonoBehaviour
             "Trust Server Certificate=true";
         dbcon = new NpgsqlConnection(connectionString);
         dbcon.Open();
+        */
         Refresh();
     }
 
