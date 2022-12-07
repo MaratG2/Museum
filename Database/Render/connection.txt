@@ -1,0 +1,7 @@
+postgres://maratg2:jVjNRxOEC2HxwANgA9WW4avOuA2zraiR@dpg-ce7op4h4rebbibivu030-a.frankfurt-postgres.render.com/museumistu_6g6y
+
+host: dpg-ce7op4h4rebbibivu030-a.frankfurt-postgres.render.com
+port: 5432
+db: museumistu_6g6y
+username: maratg2
+password: jVjNRxOEC2HxwANgA9WW4avOuA2zraiR

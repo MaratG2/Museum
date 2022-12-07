@@ -1,0 +1,5 @@
+host: fdb28.awardspace.net
+name: 4221494_museumistu
+port: 3306
+user: 4221494_museumistu
+password: t)s4+jV{91/ExlFt

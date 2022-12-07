@@ -5,14 +5,13 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time');
 
-	$host = "ec2-54-77-40-202.eu-west-1.compute.amazonaws.com"; // Host name 
-	$port = "5432"; //DB port
-	$db_name = "dp3oh4vja8l35"; // DB name 
-	$db_username = "eudqcffpovolpi"; // DB username 
-	$db_password = "65f254f251471be22f035c26958c8cfad49fc31c9e8134febf4f4c165bd47665"; // DB password 
-
-	$db = pg_connect("host=" . $host . " port=" . $port . " dbname=" . $db_name . " user=" . $db_username . "  password=" . $db_password) or die("Connection error");
-    if ($db)
+	$server = "fdb28.awardspace.net";
+	$db_name = "4221494_museumistu";
+	$db_username = "4221494_museumistu";
+	$db_password = "t)s4+jV{91/ExlFt";
+	
+	$conn = mysqli_connect($server, $db_username, $db_password, $db_name);
+    if ($conn)
     {
         echo 'Connection attempt succeeded.';
     }

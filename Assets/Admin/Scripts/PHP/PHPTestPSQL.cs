@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 public class PHPTestPSQL : MonoBehaviour
 {
     //working, but unknown error in web - http://museumistu.atwebpages.com/PHP/
-    private string _urlRoot = "http://museumistu.atwebpages.com/PHP/";    
+    private string _urlRoot = "https://istu-museum-admin.netlify.app/api/PHP/";    
     
     private void Start()
     {

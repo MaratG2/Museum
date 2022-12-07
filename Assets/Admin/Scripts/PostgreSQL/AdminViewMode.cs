@@ -35,12 +35,32 @@ public class AdminViewMode : MonoBehaviour
     {
         _modeSwitchEdit.gameObject.SetActive(false);
         _modeSwitchNew.gameObject.SetActive(true);
+        /*
         string connectionString =
             "Port = 5432;" +
             "Server= ec2-54-77-40-202.eu-west-1.compute.amazonaws.com;" +
             "Database= dp3oh4vja8l35;" +
             "User ID= eudqcffpovolpi;" +
             "Password= 65f254f251471be22f035c26958c8cfad49fc31c9e8134febf4f4c165bd47665;" +
+            "sslmode=Prefer;" +
+            "Trust Server Certificate=true";
+            */
+        /*
+        string connectionString =
+            "Port = 5432;" +
+            "Server= ep-silent-cherry-285079.eu-central-1.aws.neon.tech;" +
+            "Database= neondb;" +
+            "User ID= MaratG2;" +
+            "Password= S8F4QiPUWxcp;" +
+            "sslmode=Prefer;" +
+            "Trust Server Certificate=true";
+            */
+        string connectionString =
+            "Port = 5432;" +
+            "Server= dpg-ce7op4h4rebbibivu030-a.frankfurt-postgres.render.com;" +
+            "Database= museumistu_6g6y;" +
+            "User ID= maratg2;" +
+            "Password= jVjNRxOEC2HxwANgA9WW4avOuA2zraiR;" +
             "sslmode=Prefer;" +
             "Trust Server Certificate=true";
         dbcon = new NpgsqlConnection(connectionString);
