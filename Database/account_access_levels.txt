@@ -1,0 +1,5 @@
+0 - registered, unactivated guest, can't enter the admin panel
+1 - guest, can only view hall listing and their plan
+2 - editor, can create their own halls and edit (and delete) only them
+3 - super editor, can edit (and delete) any halls
+4 - administrator, can manage users, change their access level, delete them

@@ -18,7 +18,7 @@ if(!$result)
 }
 else
 {
-	$row = $result->fetch_assoc();
-	echo $row;
+	$row = $result->fetch_row();
+	echo $row[0].'|'.$row[1].'|'.$row[2].'|'.$row[3].'|'.$row[4];
 }
 ?>

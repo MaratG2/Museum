@@ -36,7 +36,7 @@ public class AdminAuth : MonoBehaviour
         public string name;
         public string email;
         public string password;
-        public bool is_activated;
+        public int access_level;
     }
 
     private User _currentUser;
@@ -272,52 +272,55 @@ public class AdminAuth : MonoBehaviour
                 }
             }
             //-----------------------------------
-            
-            NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
-            string checkSql = "SELECT count(*) from public.users " +
-                              "WHERE email = '" + _emailAuth.text + "'";
-            dbcmd.Prepare();
-            dbcmd.CommandText = checkSql;
-            NpgsqlDataReader reader = dbcmd.ExecuteReader();
-            reader.Close();
-            dbcmd.Dispose();
-            reader = null;
 
             string securedPassword = Convert.ToBase64String(
                 new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
             if(PlayerPrefs.HasKey("SavedPassword"))
                 securedPassword = PlayerPrefs.GetString("SavedPassword");
-            dbcmd = AdminViewMode.dbcon.CreateCommand();
-            string loginSql = "SELECT * from public.users " +
-                              "WHERE email = '" + _emailAuth.text + "' AND password = '" + securedPassword + "'";
-            dbcmd.Prepare();
-            dbcmd.CommandText = loginSql;
-            reader = dbcmd.ExecuteReader();
+            
+            //---------------PHP_Login
+            WWWForm formLogin = new WWWForm();
+            formLogin.AddField ("email", _emailAuth.text);
+            formLogin.AddField ("pass", securedPassword);
+            string urlLogin = PHPSettings.UrlRoot + "login_full.php";
             bool isIn = false;
-            while (reader.Read())
+            User tempUser = new User();
+            using (UnityWebRequest www = UnityWebRequest.Post(urlLogin, formLogin))
             {
-                if (!reader.IsDBNull(0))
-                    isIn = true;
+                yield return www.SendWebRequest();
+                Debug.Log($"Login request ({urlLogin}): ");
+            
+                if (www.result != UnityWebRequest.Result.Success)
+                    Debug.Log("Url: " + www.uri + " | Error: " + www.error + " | " + www.downloadHandler?.text);
+                else
+                {
+                    string responseText = www.downloadHandler.text;
+                    if (responseText.Length > 0 && responseText.Split(' ')[0] != "Query")
+                    {
+                        isIn = true;
+                        var datas = responseText.Split('|');
+                        
+                        int uid = Int32.Parse(datas[0]);
+                        string name = datas[1];
+                        string email = datas[2];
+                        string password = datas[3];
+                        int access_level = Int32.Parse(datas[4]);
+                        tempUser.uid = uid;
+                        tempUser.name = name;
+                        tempUser.email = email;
+                        tempUser.password = password;
+                        tempUser.access_level = access_level;
+                        
+                    }
+                }
+            }
 
-                User tempUser = new User();
-                int uid = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
-                string name = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1);
-                string email = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2);
-                string password = (reader.IsDBNull(3)) ? "NULL" : reader.GetString(3);
-                bool is_activated = (reader.IsDBNull(4)) ? false : reader.GetBoolean(4);
-                tempUser.uid = uid;
-                tempUser.name = name;
-                tempUser.email = email;
-                tempUser.password = password;
-                tempUser.is_activated = is_activated;
-
-                if (!tempUser.is_activated)
+            if (isIn)
+            {
+                if (tempUser.access_level == 0)
                 {
                     _errorAuth.text = "Пользователь не активирован администратором музея. Вход запрещен";
                     _errorAuth.color = Color.red;
-                    reader.Close();
-                    dbcmd.Dispose();
-                    reader = null;
                     _isLoginCRAble = true;
                     yield break;
                 }
@@ -325,8 +328,8 @@ public class AdminAuth : MonoBehaviour
                 {
                     if(_toggleSavePassword.isOn)
                     {
-                        PlayerPrefs.SetString("SavedPassword", password);
-                        PlayerPrefs.SetString("SavedEmail", email);
+                        PlayerPrefs.SetString("SavedPassword", tempUser.password);
+                        PlayerPrefs.SetString("SavedEmail", tempUser.email);
                     }
                     else
                     {
@@ -341,30 +344,17 @@ public class AdminAuth : MonoBehaviour
                     var videoPlayer = FindObjectOfType<VideoPlayer>();
                     if(videoPlayer)
                         videoPlayer.Stop();
-                    reader.Close();
-                    dbcmd.Dispose();
-                    reader = null;
                     Invoke(nameof(LateLoginned), 0.5f);
                     _isLoginCRAble = true;
                     yield break;
                 }
             }
-
-            if (!isIn)
-            {
-                _errorAuth.text = "Адрес электронной почты и пароль не совпадают";
-                _errorAuth.color = Color.red;
-            }
-            reader.Close();
-            dbcmd.Dispose();
-            reader = null;
         }
         else
         {
-            _errorAuth.text = "Адрес электронной почты не соответствует правилам ввода";
+            _errorAuth.text = "Адрес электронной почты и пароль не совпадают";
             _errorAuth.color = Color.red;
         }
-
         _isLoginCRAble = true;
     }
 
