@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -257,7 +257,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
   m_sharedMaterial: {fileID: 7325918636915973531, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
@@ -2504,7 +2504,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0430\u0432\u0442\u043E\u0440\u0438\u0437\u0430\u0446\u0438\u0438"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
   m_sharedMaterial: {fileID: 7325918636915973531, guid: c770534c86c5a3e4ba776df1dfe92aea, type: 2}
@@ -9847,6 +9847,10 @@ GameObject:
   - component: {fileID: 866332123}
   - component: {fileID: 866332124}
   - component: {fileID: 866332125}
+  - component: {fileID: 866332129}
+  - component: {fileID: 866332128}
+  - component: {fileID: 866332127}
+  - component: {fileID: 866332126}
   m_Layer: 5
   m_Name: Panel - Auth
   m_TagString: Untagged
@@ -9902,21 +9906,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd4c932b7c102049a6afc061ba56e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isAuth: 1
-  _nameReg: {fileID: 1698157566}
-  _emailReg: {fileID: 1727973589}
-  _passwordReg: {fileID: 2028816083}
-  _errorReg: {fileID: 19237659}
-  _buttonReg: {fileID: 1090637145}
-  _emailAuth: {fileID: 1001262752}
-  _passwordAuth: {fileID: 1287269699}
-  _errorAuth: {fileID: 247424951}
-  _buttonAuth: {fileID: 1780567623}
+  _isAuthEnabled: 1
+--- !u!114 &866332126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab1ccd35b0925b443a4acca393ab24e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _authCGroup: {fileID: 866332124}
   _viewCGroup: {fileID: 1756156830}
   _editCGroup: {fileID: 881952650}
   _newCGroup: {fileID: 244376366}
+--- !u!114 &866332127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc7126eccf94e248914f4d396b131e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nameReg: {fileID: 1698157566}
+  _emailReg: {fileID: 1727973589}
+  _passwordReg: {fileID: 2028816083}
+  _emailAuth: {fileID: 1001262752}
+  _passwordAuth: {fileID: 1287269699}
   _toggleSavePassword: {fileID: 1504268329}
+--- !u!114 &866332128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc259ed02b2db204199d0e9b66c5d6b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _emailAuth: {fileID: 1001262752}
+  _passwordAuth: {fileID: 1287269699}
+  _errorAuth: {fileID: 247424951}
+--- !u!114 &866332129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65746162624c4fc448f34bd843bf2534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nameReg: {fileID: 1698157566}
+  _emailReg: {fileID: 1727973589}
+  _passwordReg: {fileID: 2028816083}
+  _errorReg: {fileID: 19237659}
 --- !u!1 &879956952
 GameObject:
   m_ObjectHideFlags: 0
@@ -13159,13 +13214,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1090637146}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 866332125}
-        m_TargetAssemblyTypeName: AdminAuth, Assembly-CSharp
+      - m_Target: {fileID: 866332129}
+        m_TargetAssemblyTypeName: Registration, Assembly-CSharp
         m_MethodName: TryRegistration
         m_Mode: 1
         m_Arguments:
@@ -21548,8 +21603,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 866332125}
-        m_TargetAssemblyTypeName: AdminAuth, Assembly-CSharp
+      - m_Target: {fileID: 866332128}
+        m_TargetAssemblyTypeName: Login, Assembly-CSharp
         m_MethodName: TryLogin
         m_Mode: 1
         m_Arguments:
