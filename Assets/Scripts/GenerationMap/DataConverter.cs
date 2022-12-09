@@ -25,7 +25,7 @@ namespace GenerationMap
             return GenerateRoomByOnum(ConnectionDb.GetOptionByOnum(num));
         }
 
-        public Vector3 GenerateRoomByOnum(HallOptions roomOptions)
+        public Vector3 GenerateRoomByOnum(Hall roomOptions)
         {
             var room = GetRoomByResponse(roomOptions);
             generationScript.SpawnRoom(room);
@@ -51,16 +51,16 @@ namespace GenerationMap
             };
         }
         
-        public Room GetRoomByResponse(HallOptions roomOptions)
+        public Room GetRoomByResponse(Hall room)
         {
             var exhibitsData = ConnectionDb
-                .GetAllContentByOnum(roomOptions.onum)
+                .GetAllContentByOnum(room.hnum)
                 .Select(GetExhibitByResponse)
                 .ToList();
             Debug.Log($"{exhibitsData.Count}");
 
 
-            var exhibitsMap = new ExhibitDto[roomOptions.sizex, roomOptions.sizez];
+            var exhibitsMap = new ExhibitDto[room.sizex, room.sizez];
             for (var i = 0; i < exhibitsMap.GetLength(0); i++)
             {
                 for (var j = 0; j < exhibitsMap.GetLength(1); j++)

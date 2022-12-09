@@ -52,20 +52,20 @@ public class AdminNewMode : MonoBehaviour
             return;
         _isOnCooldown = true;
         Invoke(nameof(CooldoownOff), 1f);
-        HallOptions newOption = new HallOptions();
-        newOption.name = _inputName.text;
-        newOption.sizex = Int32.Parse(_inputSizeX.text);
-        newOption.sizez = Int32.Parse(_inputSizeZ.text);
-        newOption.is_date_b = _dateBegin.isOn;
-        newOption.is_date_e = _dateEnd.isOn;
-        newOption.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "CURRENT_TIMESTAMP";
-        newOption.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
-        newOption.is_maintained = true;
-        newOption.is_hidden = true;
-        SQLInsertOption(newOption);
+        Hall @new = new Hall();
+        @new.name = _inputName.text;
+        @new.sizex = Int32.Parse(_inputSizeX.text);
+        @new.sizez = Int32.Parse(_inputSizeZ.text);
+        @new.is_date_b = _dateBegin.isOn;
+        @new.is_date_e = _dateEnd.isOn;
+        @new.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "CURRENT_TIMESTAMP";
+        @new.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
+        @new.is_maintained = true;
+        @new.is_hidden = true;
+        SQLInsertOption(@new);
     }
 
-    private void SQLInsertOption(HallOptions option)
+    private void SQLInsertOption(Hall option)
     {
         NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
         string dateSql = "SET datestyle to DMY";

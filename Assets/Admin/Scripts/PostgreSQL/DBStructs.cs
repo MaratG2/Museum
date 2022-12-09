@@ -1,6 +1,8 @@
-public struct HallOptions
+using System;
+
+public struct Hall
 {
-    public int onum;
+    public int hnum;
     public string name;
     public int sizex;
     public int sizez;
@@ -10,6 +12,7 @@ public struct HallOptions
     public string date_end;
     public bool is_maintained;
     public bool is_hidden;
+    public string time_added;
 }
 
 public struct HallContent

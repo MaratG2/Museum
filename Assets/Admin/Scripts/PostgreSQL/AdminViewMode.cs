@@ -18,83 +18,65 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private GameObject _tilesParent;
     [SerializeField] private Button _modeSwitchEdit;
     [SerializeField] private Button _modeSwitchNew;
-    
-    private HallOptions _hallSelected;
-    private List<HallOptions> _cachedHallOptions = new List<HallOptions>();
+    private Action<string> _responseCallback;
+    private QueriesToPHP _queriesToPhp = new QueriesToPHP();
+    private string _responseText;
+    private Hall _hallSelected;
+    private List<Hall> _cachedHalls = new List<Hall>();
     private Vector2 _startTilePos;
-    
+
     public static NpgsqlConnection dbcon;
-    
-    public HallOptions HallSelected
+
+    public Hall HallSelected
     {
         get => _hallSelected;
         set => _hallSelected = value;
+    }
+
+    private void OnEnable()
+    {
+        _responseCallback += response => _responseText = response;
+    }
+
+    private void OnDisable()
+    {
+        _responseCallback -= response => _responseText = response;
     }
 
     private void Start()
     {
         _modeSwitchEdit.gameObject.SetActive(false);
         _modeSwitchNew.gameObject.SetActive(true);
-        /*
-        string connectionString =
-            "Port = 5432;" +
-            "Server= ec2-54-77-40-202.eu-west-1.compute.amazonaws.com;" +
-            "Database= dp3oh4vja8l35;" +
-            "User ID= eudqcffpovolpi;" +
-            "Password= 65f254f251471be22f035c26958c8cfad49fc31c9e8134febf4f4c165bd47665;" +
-            "sslmode=Prefer;" +
-            "Trust Server Certificate=true";
-            */
-        /*
-        string connectionString =
-            "Port = 5432;" +
-            "Server= ep-silent-cherry-285079.eu-central-1.aws.neon.tech;" +
-            "Database= neondb;" +
-            "User ID= MaratG2;" +
-            "Password= S8F4QiPUWxcp;" +
-            "sslmode=Prefer;" +
-            "Trust Server Certificate=true";
-            */
-        /*
-        string connectionString =
-            "Port = 5432;" +
-            "Server= dpg-ce7op4h4rebbibivu030-a.frankfurt-postgres.render.com;" +
-            "Database= museumistu_6g6y;" +
-            "User ID= maratg2;" +
-            "Password= jVjNRxOEC2HxwANgA9WW4avOuA2zraiR;" +
-            "sslmode=Prefer;" +
-            "Trust Server Certificate=true";
-        dbcon = new NpgsqlConnection(connectionString);
-        dbcon.Open();
-        */
         Refresh();
     }
 
     public void SelectHall(int num)
     {
-        HallOptions currentOption = new HallOptions();
+        Hall current = new Hall();
         bool hasFound = false;
-        foreach (var cho in _cachedHallOptions)
+        foreach (var cho in _cachedHalls)
         {
-            if (cho.onum == num)
+            if (cho.hnum == num)
             {
-                currentOption = cho;
+                current = cho;
                 hasFound = true;
             }
         }
+
         if (!hasFound)
         {
             Debug.LogError("NOT FOUND OPTION BY THAT ONUM");
             return;
         }
-        
-        if (_hallSelected.name != currentOption.name)
+
+        if (_hallSelected.name != current.name)
         {
             FindObjectOfType<AdminEditMode>().ClearAll();
             for (int i = 0; i < _tilesParent.transform.childCount; i++)
                 Destroy(_tilesParent.transform.GetChild(i).gameObject);
         }
-        _hallSelected = currentOption;
+
+        _hallSelected = current;
         _modeSwitchEdit.gameObject.SetActive(true);
         _modeSwitchNew.gameObject.SetActive(false);
         StartCoroutine(FindLeftBottomTile(num));
@@ -102,12 +84,14 @@ public class AdminViewMode : MonoBehaviour
 
     public void GoToWebInterface()
     {
-        Application.OpenURL("https://docs.google.com/spreadsheets/d/1cjU08lg0u6w_ys3M87C6UCgx8mWUjaUEwwSOsDuXm1k/edit#gid=756982139");
+        Application.OpenURL(
+            "https://docs.google.com/spreadsheets/d/1cjU08lg0u6w_ys3M87C6UCgx8mWUjaUEwwSOsDuXm1k/edit#gid=756982139");
     }
-    
+
     private void Paint(Vector2 tiledPos, Vector2 pos, HallContent content)
     {
-        var newTile = Instantiate(_tilePrefab.gameObject, Vector2.zero, Quaternion.identity, _tilesParent.GetComponent<RectTransform>());
+        var newTile = Instantiate(_tilePrefab.gameObject, Vector2.zero, Quaternion.identity,
+            _tilesParent.GetComponent<RectTransform>());
         newTile.GetComponent<RectTransform>().anchorMin = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchorMax = Vector2.zero;
         newTile.GetComponent<RectTransform>().anchoredPosition = pos;
@@ -116,73 +100,82 @@ public class AdminViewMode : MonoBehaviour
         float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
         newTile.GetComponent<RectTransform>().sizeDelta = new Vector2(tileSize, tileSize);
     }
-    
+
     public void Refresh()
     {
         for (int i = 0; i < _hallListingsParent.childCount; i++)
             Destroy(_hallListingsParent.GetChild(i).gameObject);
-        HallSelected = new HallOptions();
+        HallSelected = new Hall();
         for (int i = 0; i < _tilesParent.transform.childCount; i++)
             Destroy(_tilesParent.transform.GetChild(i).gameObject);
         _textGORefreshing.SetActive(true);
         _hallPreview.SetActive(false);
         _modeSwitchEdit.gameObject.SetActive(false);
         _modeSwitchNew.gameObject.SetActive(true);
-        SQLGetAllOptions();
+        StartCoroutine(InitializeAllHalls());
     }
 
-    private void SQLGetAllOptions()
+    private IEnumerator InitializeAllHalls()
     {
-        _cachedHallOptions = new List<HallOptions>();
-        
-        NpgsqlCommand dbcmd = dbcon.CreateCommand();
-        string sql =
-            "SELECT * FROM " +
-            "options_view";
-        dbcmd.CommandText = sql;
-        NpgsqlDataReader reader = dbcmd.ExecuteReader();
+        _cachedHalls = new List<Hall>();
 
-        while (reader.Read())
-        {
-            int onum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
-            string name = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1);
-            int sizex = (reader.IsDBNull(2)) ? 0 : reader.GetInt32(2);
-            int sizez = (reader.IsDBNull(3)) ? 0 : reader.GetInt32(3);
-            bool is_date_b = reader.GetBoolean(4);
-            bool is_date_e = reader.GetBoolean(5);
-            string date_begin = (reader.IsDBNull(6)) ? "NULL" : reader.GetDateTime(6).ToShortDateString();
-            string date_end = (reader.IsDBNull(7)) ? "NULL" : reader.GetDateTime(7).ToShortDateString();
-            bool is_maintained = reader.GetBoolean(8);
-            bool is_hidden = reader.GetBoolean(9);
-            
-            HallOptions newOption = new HallOptions();
-            newOption.onum = onum;
-            newOption.name = name;
-            newOption.sizex = sizex;
-            newOption.sizez = sizez;
-            newOption.is_date_b = is_date_b;
-            newOption.is_date_e = is_date_e;
-            newOption.date_begin = date_begin;
-            newOption.date_end = date_end;
-            newOption.is_maintained = is_maintained;
-            newOption.is_hidden = is_hidden;
-            _cachedHallOptions.Add(newOption);
-            
-            var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
-                _hallListingsParent);
-            newInstance.gameObject.name = (onum).ToString();
-            newInstance.GetComponentInChildren<TextMeshProUGUI>().text = name;
-            newInstance.onClick.AddListener(() => SelectHallFromButton(onum, newInstance.gameObject));
-        }
-        
-        reader.Close();
-        reader = null;
-        
+        yield return GetAllHalls();
+        ParseAllHallsIntoCache();
+        CreateAllHallListings();
+
         _textGORefreshing.SetActive(false);
         _hallPreview.SetActive(true);
     }
 
-    private void SelectHallFromButton(int onum, GameObject linkGO)
+    private IEnumerator GetAllHalls()
+    {
+        _responseText = "";
+        string phpFileName = "get_all_halls.php";
+        yield return _queriesToPhp.GetRequest(phpFileName, _responseCallback);
+    }
+
+    private void ParseAllHallsIntoCache()
+    {
+        if (string.IsNullOrEmpty(_responseText) || _responseText.Split(" ")[0] == "<br")
+            return;
+        Debug.Log(_responseText);
+        var hallsData = _responseText.Split(";");
+        foreach (var hall in hallsData)
+        {
+            if (string.IsNullOrEmpty(hall))
+                continue;
+            Hall newHall = new Hall();
+            var hallData = hall.Split("|");
+            newHall.hnum = Int32.Parse(hallData[0]);
+            newHall.name = hallData[1];
+            newHall.sizex = Int32.Parse(hallData[2]);
+            newHall.sizez = Int32.Parse(hallData[3]);
+            newHall.is_date_b = Int32.Parse(hallData[4]) == 1;
+            newHall.is_date_e = Int32.Parse(hallData[5]) == 1;
+            newHall.date_begin = hallData[6];
+            newHall.date_end = hallData[7];
+            newHall.is_maintained = Int32.Parse(hallData[8]) == 1;
+            newHall.is_hidden = Int32.Parse(hallData[9]) == 1;
+            newHall.time_added = hallData[10];
+            Debug.Log("Added new hall: " + newHall.name);
+            _cachedHalls.Add(newHall);
+        }
+    }
+
+    private void CreateAllHallListings()
+    {
+        foreach (var hall in _cachedHalls)
+        {
+            var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
+                _hallListingsParent);
+            newInstance.gameObject.name = hall.hnum + " - " + hall.name;
+            newInstance.GetComponentInChildren<TextMeshProUGUI>().text = hall.name;
+            newInstance.onClick.AddListener(() => SelectHallFromButton(hall.hnum, newInstance.gameObject));
+        }
+        
+    }
+
+private void SelectHallFromButton(int onum, GameObject linkGO)
     {
         for (int i = 0; i < _hallListingsParent.transform.childCount; i++)
         {

@@ -71,11 +71,11 @@ public class RoomsMenu : MonoBehaviour
             .ToList();
     }
 
-    private RoomInfo ConvertRoom(HallOptions rawData)
+    private RoomInfo ConvertRoom(Hall rawData)
     {
         var roomInfo = new RoomInfo()
         {
-            Id = rawData.onum,
+            Id = rawData.hnum,
             Name = rawData.name,
             IsAvailable = rawData.is_date_b && !rawData.is_date_e && !rawData.is_hidden
         };

@@ -117,13 +117,13 @@ public class AdminEditMode : MonoBehaviour
     {
         NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
         string sql = "DELETE FROM options "
-                     + "WHERE onum = " + _adminView.HallSelected.onum;
+                     + "WHERE onum = " + _adminView.HallSelected.hnum;
         dbcmd.Prepare();
         dbcmd.CommandText = sql;
         dbcmd.ExecuteNonQuery();
         ClearAll();
         _nameText.text = "";
-        _adminView.HallSelected = new HallOptions();
+        _adminView.HallSelected = new Hall();
         DeleteHallBack();
     }
     public void DeleteHallBack()
@@ -138,7 +138,7 @@ public class AdminEditMode : MonoBehaviour
                      + ", is_hidden = " + _toggleHidden.isOn
                      + ", is_maintained = " + _toggleMaintained.isOn
                      + ", operation = 'UPDATE'"
-                     + " WHERE onum = " + _adminView.HallSelected.onum;
+                     + " WHERE onum = " + _adminView.HallSelected.hnum;
         dbcmd.Prepare();
         dbcmd.CommandText = sql;
         dbcmd.ExecuteNonQuery();
@@ -146,7 +146,7 @@ public class AdminEditMode : MonoBehaviour
         for (int i = 0; i < _paintsParent.childCount; i++)
         {
             var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
-            c.onum = _adminView.HallSelected.onum;
+            c.onum = _adminView.HallSelected.hnum;
             string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type, operation)" +
                                " VALUES(" + c.onum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
                                c.combined_pos + "','" + c.image_desc + "'," + c.type + ", 'INSERT')" +
@@ -279,7 +279,7 @@ public class AdminEditMode : MonoBehaviour
             }
             posToDelete = new List<Vector2>();
             FindLeftBottomTile();
-            SQLGetOptionsContents(_adminView.HallSelected.onum);
+            SQLGetOptionsContents(_adminView.HallSelected.hnum);
         }
         
         if(_currentTool == ExhibitsConstants.SpawnPoint.Id 

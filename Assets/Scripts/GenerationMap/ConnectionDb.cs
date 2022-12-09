@@ -25,13 +25,13 @@ namespace GenerationMap
             Debug.Log("Open Connection");
         }
 
-        public static List<HallOptions> GetAllOptions()
+        public static List<Hall> GetAllOptions()
         {
             if (!_connectIsOpen)
             {
                 OpenConnection();
             }
-            var options = new List<HallOptions>();
+            var options = new List<Hall>();
 
             var command = _dbConnection.CreateCommand();
             var sqlRequest =
@@ -41,9 +41,9 @@ namespace GenerationMap
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var newOption = new HallOptions
+                var newOption = new Hall
                 {
-                    onum = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                    hnum = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                     name = reader.IsDBNull(1) ? "NULL" : reader.GetString(1),
                     sizex = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                     sizez = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
@@ -61,9 +61,9 @@ namespace GenerationMap
             return options;
         }
         
-        public static HallOptions GetOptionByOnum(int num)
+        public static Hall GetOptionByOnum(int num)
         {
-            var options = new List<HallOptions>();
+            var options = new List<Hall>();
 
             var command = _dbConnection.CreateCommand();
             var sqlRequest =
@@ -76,9 +76,9 @@ namespace GenerationMap
 
             while (reader.Read())
             {
-                var newOption = new HallOptions
+                var newOption = new Hall
                 {
-                    onum = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                    hnum = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                     name = reader.IsDBNull(1) ? "NULL" : reader.GetString(1),
                     sizex = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                     sizez = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
