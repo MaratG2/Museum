@@ -73,99 +73,109 @@ public class AdminAuth : MonoBehaviour
     public void TryRegistration()
     {
         if (_canRegister)
-            StartCoroutine(TryRegistrationCoroutine());
+        {
+            TrimAuthFields();
+            if (IsRegistrationInfoWrong())
+                return;
+            
+            StartCoroutine(RegistrationCoroutine());
+        }
         _canRegister = false;
     }
-    private IEnumerator TryRegistrationCoroutine()
+    private IEnumerator RegistrationCoroutine()
     {
-        TrimAuthFields();
-        if (IsRegistrationInfoWrong())
-        {
-            _canRegister = true;
-            yield break;
-        }
-
-        {
-            string phpFileName = "login_email_count.php";
-            WWWForm data = new WWWForm();
-            data.AddField("email", _emailReg.text);
-            yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
-        }
-        if (Int32.TryParse(_responseText, out int quantity))
-        {
-            if (quantity > 0)
+        yield return GetEmailMatchedQuantity(_emailReg.text);
+        if (Int32.TryParse(_responseText, out int emailMatchedQuantity))
+            if (emailMatchedQuantity > 0)
             {
                 MessageThrowUI(_errorReg, "Пользователя с таким адресом электронной почты уже существует", false);
                 _canRegister = true;
                 yield break;
             }
-        }
 
-        string securedPassword = Convert.ToBase64String(
-            new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordReg.text)));
+        string securedPassword = Convert.ToBase64String(new SHA256CryptoServiceProvider()
+            .ComputeHash(Encoding.UTF8.GetBytes(_passwordReg.text)));
 
-        {
-            string phpFileName = "registration.php";
-            WWWForm data = new WWWForm();
-            data.AddField("name", _nameReg.text);
-            data.AddField("email", _emailReg.text);
-            data.AddField("pass", securedPassword);
-            yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
-        }
+        yield return RegisterUser(securedPassword);
         if (_responseText.Split(' ')[0] == "Registered")
             MessageThrowUI(_errorReg, "Пользователь успешно зарегистрирован", true);
         else
-            MessageThrowUI(_errorReg, "При регистрации на стороне PHP произошла ошибка (прологгирована)", false);
+            MessageThrowUI(_errorReg, "При регистрации произошла непредвиденная ошибка", false);
 
         EmptyAuthFields();
         _canRegister = true;
+    }
+    private IEnumerator GetEmailMatchedQuantity(string email)
+    {
+        string phpFileName = "login_email_count.php";
+        WWWForm data = new WWWForm();
+        data.AddField("email", email);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+    }
+    private IEnumerator RegisterUser(string securedPassword)
+    {
+        string phpFileName = "registration.php";
+        WWWForm data = new WWWForm();
+        data.AddField("name", _nameReg.text);
+        data.AddField("email", _emailReg.text);
+        data.AddField("pass", securedPassword);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
     }
     
     public void TryLogin()
     {
         if(_canLogin)
+        {
+            TrimAuthFields();
+            if (IsLoginInfoWrong())
+                return;
+            
             StartCoroutine(TryLoginCoroutine());
+        }
         _canLogin = false;
     }
     private IEnumerator TryLoginCoroutine()
     {
-        TrimAuthFields();
-        if (IsLoginInfoWrong())
-        {
-            _canLogin = true;
-            yield break;
-        }
-
-       
-        {
-            string phpFileName = "login_email_count.php";
-            WWWForm data = new WWWForm();
-            data.AddField("email", _emailAuth.text);
-            yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
-        }
-        if (Int32.TryParse(_responseText, out int quantity))
-        {
-            if (quantity <= 0)
+        yield return GetEmailMatchedQuantity(_emailAuth.text);
+        if (Int32.TryParse(_responseText, out int emailMatchedQuantity))
+            if (emailMatchedQuantity == 0)
             {
-                MessageThrowUI(_errorAuth, "Пользователя с таким адресом электронной почты не существует", false);
+                MessageThrowUI(_errorAuth, "Пользоввателя с таким адресом электронной почты не существует", false);
                 _canLogin = true;
                 yield break;
             }
-        }
 
         string securedPassword = Convert.ToBase64String(
             new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
         if (PlayerPrefs.HasKey("SavedPassword"))
             securedPassword = PlayerPrefs.GetString("SavedPassword");
 
-        _responseText = "";
+        yield return LoginUser(securedPassword);
+        CurrentUser = ParseUser();
+        if (CurrentUser.email.Length > 0)
         {
-            string phpFileName = "login_full.php";
-            WWWForm data = new WWWForm();
-            data.AddField("email", _emailAuth.text);;
-            data.AddField("pass", securedPassword);;
-            yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+            if (CurrentUser.access_level == 0)
+                MessageThrowUI(_errorAuth, "Пользователь не активирован администратором музея. Вход запрещен", false);
+            else
+            {
+                SavePassword(CurrentUser);
+                EmptyAuthFields();
+                MoveToViewScreen();
+            }
         }
+        _canLogin = true;
+    }
+    private IEnumerator LoginUser(string securedPassword)
+    {
+        _responseText = "";
+        string phpFileName = "login_full.php";
+        WWWForm data = new WWWForm();
+        data.AddField("email", _emailAuth.text);;
+        data.AddField("pass", securedPassword);;
+        yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+    }
+    private User ParseUser()
+    {
         User tempUser = new User();
         if (_responseText.Length > 0 && _responseText.Split(' ')[0] != "Query")
         {
@@ -181,20 +191,7 @@ public class AdminAuth : MonoBehaviour
             tempUser.password = password;
             tempUser.access_level = access_level;
         }
-
-        if (tempUser.email.Length > 0)
-        {
-            if (tempUser.access_level == 0)
-                MessageThrowUI(_errorAuth, "Пользователь не активирован администратором музея. Вход запрещен", false);
-            else
-            {
-                CurrentUser = tempUser;
-                SavePassword(CurrentUser);
-                EmptyAuthFields();
-                MoveToViewScreen();
-            }
-        }
-        _canLogin = true;
+        return tempUser;
     }
     
     private bool IsRegistrationInfoWrong()
