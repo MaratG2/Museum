@@ -68,7 +68,7 @@ public class Login : MonoBehaviour
 
         string securedPassword = Convert.ToBase64String(
             new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
-        if (PlayerPrefs.HasKey("SavedPassword"))
+        if (PlayerPrefs.HasKey("SavedPassword") && _passwordAuth.text == "")
             securedPassword = PlayerPrefs.GetString("SavedPassword");
 
         yield return LoginUser(securedPassword);

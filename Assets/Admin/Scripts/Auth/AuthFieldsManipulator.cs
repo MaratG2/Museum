@@ -25,6 +25,28 @@ public class AuthFieldsManipulator : MonoBehaviour
             _toggleSavePassword.isOn = false;
         }
     }
+    public void SavePassword(User user)
+    {
+        if (_toggleSavePassword.isOn)
+        {
+            PlayerPrefs.SetString("SavedPassword", user.password);
+            PlayerPrefs.SetString("SavedEmail", user.email);
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey("SavedPassword");
+            PlayerPrefs.DeleteKey("SavedEmail");
+        }
+    }
+
+    public void SavePasswordToggleChanged(bool setTo)
+    {
+        if(!setTo)
+        {
+            PlayerPrefs.DeleteKey("SavedPassword");
+            PlayerPrefs.DeleteKey("SavedEmail");
+        }
+    }
     public void EmptyAuthFields()
     {
         _emailAuth.text = "";
@@ -40,19 +62,6 @@ public class AuthFieldsManipulator : MonoBehaviour
         _nameReg.text.Trim();
         _emailReg.text.Trim();
         _passwordReg.text.Trim();
-    }
-    public void SavePassword(User user)
-    {
-        if (_toggleSavePassword.isOn)
-        {
-            PlayerPrefs.SetString("SavedPassword", user.password);
-            PlayerPrefs.SetString("SavedEmail", user.email);
-        }
-        else
-        {
-            PlayerPrefs.DeleteKey("SavedPassword");
-            PlayerPrefs.DeleteKey("SavedEmail");
-        }
     }
 
     public void MessageThrowUI(TextMeshProUGUI textUI, string message, bool isGood)
