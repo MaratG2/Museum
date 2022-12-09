@@ -58,7 +58,6 @@ public class AdminAuth : MonoBehaviour
     {
         _responseCallback -= response => _responseText = response;
     }
-    
     private void Start()
     {
         if(_isAuth)
@@ -70,6 +69,7 @@ public class AdminAuth : MonoBehaviour
             MoveToViewScreen();
     }
     
+    //Class Registration
     public void TryRegistration()
     {
         if (_canRegister)
@@ -121,7 +121,36 @@ public class AdminAuth : MonoBehaviour
         data.AddField("pass", securedPassword);
         yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
     }
+    private bool IsRegistrationInfoWrong()
+    {
+        if (_nameReg.text == "")
+        {
+            MessageThrowUI(_errorReg, "ФИО не может быть пустым", false);
+            return true;
+        }
+        if (_emailReg.text == "")
+        {
+            MessageThrowUI(_errorReg, "Адрес почты не может быть пустым", false);
+            return true;
+        }
+        if (_passwordReg.text.Length is < 8 or > 24)
+        {
+            MessageThrowUI(_errorReg, "Пароль не может быть меньше 8 или больше 24 символов", false);
+            return true;
+        }
+        
+        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        Match match = regex.Match(_emailReg.text);
+        if (!match.Success)
+        {
+            MessageThrowUI(_errorReg, "Адрес электронной почты не соответствует правилам ввода", false);
+            return true;
+        }
+        
+        return false;
+    }
     
+    //Class Login
     public void TryLogin()
     {
         if(_canLogin)
@@ -193,35 +222,6 @@ public class AdminAuth : MonoBehaviour
         }
         return tempUser;
     }
-    
-    private bool IsRegistrationInfoWrong()
-    {
-        if (_nameReg.text == "")
-        {
-            MessageThrowUI(_errorReg, "ФИО не может быть пустым", false);
-            return true;
-        }
-        if (_emailReg.text == "")
-        {
-            MessageThrowUI(_errorReg, "Адрес почты не может быть пустым", false);
-            return true;
-        }
-        if (_passwordReg.text.Length is < 8 or > 24)
-        {
-            MessageThrowUI(_errorReg, "Пароль не может быть меньше 8 или больше 24 символов", false);
-            return true;
-        }
-        
-        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-        Match match = regex.Match(_emailReg.text);
-        if (!match.Success)
-        {
-            MessageThrowUI(_errorReg, "Адрес электронной почты не соответствует правилам ввода", false);
-            return true;
-        }
-        
-        return false;
-    }
     private bool IsLoginInfoWrong()
     {
         if (_emailAuth.text == "")
@@ -246,6 +246,7 @@ public class AdminAuth : MonoBehaviour
         return false;
     }
     
+    //Class AuthFieldsManipulator
     private void GetSavedPassword()
     {
         if (PlayerPrefs.HasKey("SavedPassword"))
@@ -287,12 +288,13 @@ public class AdminAuth : MonoBehaviour
             PlayerPrefs.DeleteKey("SavedEmail");
         }
     }
-    
     private void MessageThrowUI(TextMeshProUGUI _textUI, string message, bool isGood)
     {
         _textUI.text = message;
         _textUI.color = isGood ? Color.green : Color.red;
     }
+    
+    //Class AuthPanelMover
     private void MoveToAuthScreen()
     {
         _authCGroup.SetActive(true);
