@@ -15,7 +15,7 @@ public class Login : MonoBehaviour
     private Action<string> _responseCallback;
     private string _responseText = "";
     private bool _canLogin = true;
-    private QueriesToPHP _queriesToPhp = new QueriesToPHP();
+    private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private AuthFieldsManipulator _authFieldsManipulator;
     private AuthPanelMover _authPanelMover;
     private Registration _registration;

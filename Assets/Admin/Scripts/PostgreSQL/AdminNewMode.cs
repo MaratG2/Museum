@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Npgsql;
 using TMPro;
 using UnityEngine;
@@ -52,17 +50,17 @@ public class AdminNewMode : MonoBehaviour
             return;
         _isOnCooldown = true;
         Invoke(nameof(CooldoownOff), 1f);
-        Hall @new = new Hall();
-        @new.name = _inputName.text;
-        @new.sizex = Int32.Parse(_inputSizeX.text);
-        @new.sizez = Int32.Parse(_inputSizeZ.text);
-        @new.is_date_b = _dateBegin.isOn;
-        @new.is_date_e = _dateEnd.isOn;
-        @new.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "CURRENT_TIMESTAMP";
-        @new.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
-        @new.is_maintained = true;
-        @new.is_hidden = true;
-        SQLInsertOption(@new);
+        Hall newHall = new Hall();
+        newHall.name = _inputName.text;
+        newHall.sizex = Int32.Parse(_inputSizeX.text);
+        newHall.sizez = Int32.Parse(_inputSizeZ.text);
+        newHall.is_date_b = _dateBegin.isOn;
+        newHall.is_date_e = _dateEnd.isOn;
+        newHall.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "CURRENT_TIMESTAMP";
+        newHall.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
+        newHall.is_maintained = true;
+        newHall.is_hidden = true;
+        SQLInsertOption(newHall);
     }
 
     private void SQLInsertOption(Hall option)

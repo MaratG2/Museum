@@ -7,7 +7,13 @@ using UnityEngine.Networking;
 
 public class QueriesToPHP
 {
-    private string _urlRoot = "https://istu-museum-admin.netlify.app/api/PHP/";    
+    private string _urlRoot = "https://istu-museum-admin.netlify.app/api/PHP/";
+    private bool _isDebugOn;
+
+    public QueriesToPHP(bool isDebugOn)
+    {
+        _isDebugOn = isDebugOn;
+    }
 
     public IEnumerator GetRequest(string phpFileName, Action<string> responseCallback)
     {
@@ -15,10 +21,11 @@ public class QueriesToPHP
         using (UnityWebRequest www = UnityWebRequest.Get(fullUrl))
         {
             yield return www.SendWebRequest();
-            Debug.Log($"{phpFileName} GET request");
+            if (_isDebugOn)
+                Debug.Log($"{phpFileName} GET request");
             
             if (www.result != UnityWebRequest.Result.Success) 
-                Debug.Log($"Url: {www.uri} | Error: {www.error} | {www.downloadHandler?.text}");
+                Debug.LogError($"Url: {www.uri} | Error: {www.error} | {www.downloadHandler?.text}");
             else
                 responseCallback?.Invoke(www.downloadHandler.text);
         }
@@ -30,10 +37,11 @@ public class QueriesToPHP
         using (UnityWebRequest www = UnityWebRequest.Post(fullUrl, data))
         {
             yield return www.SendWebRequest();
-            Debug.Log($"{phpFileName} POST request");
+            if(_isDebugOn)
+                Debug.Log($"{phpFileName} POST request");
             
             if (www.result != UnityWebRequest.Result.Success) 
-                Debug.Log($"Url: {www.uri} | Error: {www.error} | {www.downloadHandler?.text}");
+                Debug.LogError($"Url: {www.uri} | Error: {www.error} | {www.downloadHandler?.text}");
             else
                 responseCallback?.Invoke(www.downloadHandler.text);
         }

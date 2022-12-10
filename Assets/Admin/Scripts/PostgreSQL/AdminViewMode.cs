@@ -19,7 +19,7 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private Button _modeSwitchEdit;
     [SerializeField] private Button _modeSwitchNew;
     private Action<string> _responseCallback;
-    private QueriesToPHP _queriesToPhp = new QueriesToPHP();
+    private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private string _responseText;
     private Hall _hallSelected;
     private List<Hall> _cachedHalls = new List<Hall>();

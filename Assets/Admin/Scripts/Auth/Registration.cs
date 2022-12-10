@@ -16,7 +16,7 @@ public class Registration : MonoBehaviour
     private Action<string> _responseCallback;
     private string _responseText = "";
     private bool _canRegister = true;
-    private QueriesToPHP _queriesToPhp = new QueriesToPHP();
+    private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private AuthFieldsManipulator _authFieldsManipulator;
     
     private void OnEnable()
