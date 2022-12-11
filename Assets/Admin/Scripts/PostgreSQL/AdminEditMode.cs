@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Admin.Utility;
 using GenerationMap;
 using Npgsql;
 using TMPro;
@@ -436,7 +436,7 @@ public class AdminEditMode : MonoBehaviour
         posToDelete = new List<Vector2>();
     }
 
-    private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new HallContent())
+    private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new())
     {
         if (_hallPlan == null)
             return;

@@ -9,26 +9,29 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class AuthPanel : MonoBehaviour
+namespace Admin.Auth
 {
-    [SerializeField] private bool _isAuthEnabled = true;
-    private AuthPanelMover _authPanelMover;
-    private AuthFieldsManipulator _authFieldsManipulator;
-    
-    private void Awake()
+    public class AuthPanel : MonoBehaviour
     {
-        _authPanelMover = GetComponent<AuthPanelMover>();
-        _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
-    }
+        [SerializeField] private bool _isAuthEnabled = true;
+        private AuthPanelMover _authPanelMover;
+        private AuthFieldsManipulator _authFieldsManipulator;
 
-    private void Start()
-    {
-        if(_isAuthEnabled)
+        private void Awake()
         {
-            _authPanelMover.MoveToAuthScreen();
-            _authFieldsManipulator.GetSavedPassword();
+            _authPanelMover = GetComponent<AuthPanelMover>();
+            _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
         }
-        else
-            _authPanelMover.MoveToViewScreen();
+
+        private void Start()
+        {
+            if (_isAuthEnabled)
+            {
+                _authPanelMover.MoveToAuthScreen();
+                _authFieldsManipulator.GetSavedPassword();
+            }
+            else
+                _authPanelMover.MoveToViewScreen();
+        }
     }
 }
