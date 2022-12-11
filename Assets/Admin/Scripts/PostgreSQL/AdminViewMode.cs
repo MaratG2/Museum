@@ -20,12 +20,12 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private GameObject _tilesParent;
     [SerializeField] private Button _modeSwitchEdit;
     [SerializeField] private Button _modeSwitchNew;
-    private HallContentQueries _hallContentQueries = new HallContentQueries();
+    private HallQueries _hallQueries = new ();
     private Action<string> _responseCallback;
     private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private string _responseText;
     private Hall _hallSelected;
-    private List<Hall> _cachedHalls = new ();
+    private List<Hall> _cachedHalls;
     private Vector2 _startTilePos;
     private List<HallContent> _currentHallContents;
 
@@ -37,21 +37,23 @@ public class AdminViewMode : MonoBehaviour
         set => _hallSelected = value;
     }
 
-    public HallContentQueries HallContentQueries
+    public HallQueries HallQueries
     {
-        get { return _hallContentQueries; }
+        get { return _hallQueries; }
     }
 
     private void OnEnable()
     {
         _responseCallback += response => _responseText = response;
-        _hallContentQueries.hallContentGotCallback += hallContents => _currentHallContents = hallContents;
+        _hallQueries.OnAllHallContentsGet += hallContents => _currentHallContents = hallContents;
+        _hallQueries.OnAllHallsGet += halls => _cachedHalls = halls;
     }
 
     private void OnDisable()
     {
         _responseCallback -= response => _responseText = response;
-        _hallContentQueries.hallContentGotCallback -= hallContents => _currentHallContents = hallContents;
+        _hallQueries.OnAllHallContentsGet -= hallContents => _currentHallContents = hallContents;
+        _hallQueries.OnAllHallsGet -= halls => _cachedHalls = halls;
     }
 
     private void Start()
@@ -124,49 +126,13 @@ public class AdminViewMode : MonoBehaviour
     {
         _cachedHalls = new List<Hall>();
 
-        yield return GetAllHalls();
-        ParseAllHallsIntoCache();
+        yield return _hallQueries.GetAllHalls();
         CreateAllHallListings();
 
         _textGORefreshing.SetActive(false);
         _hallPreview.SetActive(true);
     }
-
-    private IEnumerator GetAllHalls()
-    {
-        _responseText = "";
-        string phpFileName = "get_all_halls.php";
-        yield return _queriesToPhp.GetRequest(phpFileName, _responseCallback);
-    }
-
-    private void ParseAllHallsIntoCache()
-    {
-        if (string.IsNullOrEmpty(_responseText) || _responseText.Split(" ")[0] == "<br")
-            return;
-        Debug.Log(_responseText);
-        var hallsData = _responseText.Split(";");
-        foreach (var hall in hallsData)
-        {
-            if (string.IsNullOrEmpty(hall))
-                continue;
-            Hall newHall = new Hall();
-            var hallData = hall.Split("|");
-            newHall.hnum = Int32.Parse(hallData[0]);
-            newHall.name = hallData[1];
-            newHall.sizex = Int32.Parse(hallData[2]);
-            newHall.sizez = Int32.Parse(hallData[3]);
-            newHall.is_date_b = Int32.Parse(hallData[4]) == 1;
-            newHall.is_date_e = Int32.Parse(hallData[5]) == 1;
-            newHall.date_begin = hallData[6];
-            newHall.date_end = hallData[7];
-            newHall.is_maintained = Int32.Parse(hallData[8]) == 1;
-            newHall.is_hidden = Int32.Parse(hallData[9]) == 1;
-            newHall.time_added = hallData[10];
-            Debug.Log("Added new hall: " + newHall.name);
-            _cachedHalls.Add(newHall);
-        }
-    }
-
+    
     private void CreateAllHallListings()
     {
         foreach (var hall in _cachedHalls)
@@ -249,7 +215,7 @@ public class AdminViewMode : MonoBehaviour
                         i + 0.5f,
                         j + 0.25f
                     );
-                    yield return _hallContentQueries.GetContentsByHnum(num);
+                    yield return _hallQueries.GetAllContentsByHnum(num);
                     DrawTilesForGotHall();
                     yield break;
                 }
