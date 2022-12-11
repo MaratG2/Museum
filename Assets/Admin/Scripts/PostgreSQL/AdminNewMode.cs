@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using Admin.PHP;
 using Admin.Utility;
+using MaratG2.Extensions;
 using Npgsql;
 using TMPro;
 using UnityEngine;
@@ -15,22 +18,37 @@ public class AdminNewMode : MonoBehaviour
     [SerializeField] private TMP_InputField _inputDateBegin;
     [SerializeField] private TMP_InputField _inputDateEnd;
     [SerializeField] private Button _createHall;
-
+    [SerializeField] private CanvasGroup _newCanvasGroup;
+    [SerializeField] private CanvasGroup _viewCanvasGroup;
+    private AdminViewMode _adminViewMode;
+    private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
+    private Action<string> _responseCallback;
+    private string _responseText;
     private bool _isOnCooldown;
 
     private void Start()
     {
+        _adminViewMode = FindObjectOfType<AdminViewMode>();
         _inputDateBegin.interactable = false;
         _inputDateEnd.interactable = false;
     }
 
+    private void OnEnable()
+    {
+        _responseCallback += response => _responseText = response;
+    }
+    private void OnDisable()
+    {
+        _responseCallback -= response => _responseText = response;
+    }
+
     void Update()
     {
-        int sizeX = 0, sizeZ;
+        int sizeX, sizeZ;
         bool isX = Int32.TryParse(_inputSizeX.text, out sizeX);
         bool isZ = Int32.TryParse(_inputSizeZ.text, out sizeZ);
 
-        if (_inputName.text.Equals("") || !isX || !isZ || sizeX <= 0 || sizeZ <= 0)
+        if (string.IsNullOrWhiteSpace(_inputName.text) || !isX || !isZ || sizeX <= 0 || sizeZ <= 0)
         {
             _createHall.interactable = false;
             return;
@@ -41,7 +59,6 @@ public class AdminNewMode : MonoBehaviour
         if(_dateEnd.isOn)
             if (!ParseDate(_inputDateEnd.text))
                 return;
-        
         _createHall.interactable = true;
     }
 
@@ -50,7 +67,50 @@ public class AdminNewMode : MonoBehaviour
         if (_isOnCooldown)
             return;
         _isOnCooldown = true;
-        Invoke(nameof(CooldoownOff), 1f);
+        StartCoroutine(QueryInsertHall(ParseHall()));
+    }
+
+    public IEnumerator QueryInsertHall(Hall hall)
+    {
+        string phpFileName = "insert_hall.php";
+        WWWForm data = new WWWForm();
+        data.AddField(nameof(hall.name), hall.name);
+        data.AddField(nameof(hall.sizex), hall.sizex);
+        data.AddField(nameof(hall.sizez), hall.sizez);
+        data.AddField(nameof(hall.is_date_b), hall.is_date_b ? 1 : 0);
+        data.AddField(nameof(hall.is_date_e), hall.is_date_e ? 1 : 0);
+        data.AddField(nameof(hall.date_begin), hall.date_begin);
+        data.AddField(nameof(hall.date_end), hall.date_end);
+        data.AddField(nameof(hall.is_maintained), hall.is_maintained ? 1 : 0);
+        data.AddField(nameof(hall.is_hidden), hall.is_hidden ? 1 : 0);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+        FlushInputFields();
+        CooldoownOff();
+        MoveToViewWindow();
+    }
+
+    private void FlushInputFields()
+    {
+        _inputName.text = "";
+        _inputSizeX.text = "";
+        _inputSizeZ.text = "";
+        _dateBegin.isOn = false;
+        _dateEnd.isOn = false;
+        _inputDateBegin.text = "";
+        _inputDateEnd.text = "";
+    }
+
+    private void MoveToViewWindow()
+    {
+        _newCanvasGroup.SetActive(false);
+        _viewCanvasGroup.SetActive(true);
+        _adminViewMode.enabled = true;
+        _adminViewMode.Refresh();
+        this.enabled = false;
+    }
+
+    private Hall ParseHall()
+    {
         Hall newHall = new Hall();
         newHall.name = _inputName.text;
         newHall.sizex = Int32.Parse(_inputSizeX.text);
@@ -61,23 +121,7 @@ public class AdminNewMode : MonoBehaviour
         newHall.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
         newHall.is_maintained = true;
         newHall.is_hidden = true;
-        SQLInsertOption(newHall);
-    }
-
-    private void SQLInsertOption(Hall option)
-    {
-        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
-        string dateSql = "SET datestyle to DMY";
-        dbcmd.Prepare();
-        dbcmd.CommandText = dateSql;
-        dbcmd.ExecuteNonQuery();
-        string sql =
-            "INSERT INTO public.options (name, sizex, sizez, is_date_b, is_date_e, date_begin, date_end, is_maintained, is_hidden, operation) " +
-            "VALUES('" + option.name + "'," + option.sizex + ',' + option.sizez + ',' + option.is_date_b + ',' + option.is_date_e
-            + ',' + option.date_begin + ',' + option.date_end + ',' + option.is_maintained + ',' + option.is_hidden + ", 'INSERT')";
-        dbcmd.Prepare();
-        dbcmd.CommandText = sql;
-        dbcmd.ExecuteNonQuery();
+        return newHall;
     }
 
     private void CooldoownOff()
@@ -95,7 +139,6 @@ public class AdminNewMode : MonoBehaviour
         bool isYear = Int32.TryParse(input.Substring(6, 4), out year);
         bool isHour = Int32.TryParse(input.Substring(11, 2), out hour);
         bool isMinute = Int32.TryParse(input.Substring(14, 2), out minute);
-
         return isDay && isMonth && isYear && isHour && isMinute;
     }
 }

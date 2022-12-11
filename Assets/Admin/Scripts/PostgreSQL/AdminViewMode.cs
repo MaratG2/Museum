@@ -156,6 +156,9 @@ public class AdminViewMode : MonoBehaviour
 
     private void DrawTilesForGotHall()
     {
+        if (_currentHallContents == null)
+            return;
+        
         float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
         foreach (var hallContent in _currentHallContents)
         {
