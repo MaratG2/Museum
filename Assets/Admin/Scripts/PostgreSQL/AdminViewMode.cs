@@ -20,11 +20,13 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private Button _modeSwitchEdit;
     [SerializeField] private Button _modeSwitchNew;
     private Action<string> _responseCallback;
+    private Action<List<HallContent>> _hallContentGotCallback;
     private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private string _responseText;
     private Hall _hallSelected;
-    private List<Hall> _cachedHalls = new List<Hall>();
+    private List<Hall> _cachedHalls = new ();
     private Vector2 _startTilePos;
+    private List<HallContent> _currentHallContents;
 
     public static NpgsqlConnection dbcon;
 
@@ -37,11 +39,13 @@ public class AdminViewMode : MonoBehaviour
     private void OnEnable()
     {
         _responseCallback += response => _responseText = response;
+        _hallContentGotCallback += hallContents => _currentHallContents = hallContents;
     }
 
     private void OnDisable()
     {
         _responseCallback -= response => _responseText = response;
+        _hallContentGotCallback -= hallContents => _currentHallContents = hallContents;
     }
 
     private void Start()
@@ -81,12 +85,6 @@ public class AdminViewMode : MonoBehaviour
         _modeSwitchEdit.gameObject.SetActive(true);
         _modeSwitchNew.gameObject.SetActive(false);
         StartCoroutine(FindLeftBottomTile(num));
-    }
-
-    public void GoToWebInterface()
-    {
-        Application.OpenURL(
-            "https://docs.google.com/spreadsheets/d/1cjU08lg0u6w_ys3M87C6UCgx8mWUjaUEwwSOsDuXm1k/edit#gid=756982139");
     }
 
     private void Paint(Vector2 tiledPos, Vector2 pos, HallContent content)
@@ -176,7 +174,7 @@ public class AdminViewMode : MonoBehaviour
         
     }
 
-private void SelectHallFromButton(int onum, GameObject linkGO)
+    private void SelectHallFromButton(int onum, GameObject linkGO)
     {
         for (int i = 0; i < _hallListingsParent.transform.childCount; i++)
         {
@@ -194,51 +192,62 @@ private void SelectHallFromButton(int onum, GameObject linkGO)
         SelectHall(onum);
     }
 
-    private void SQLGetContentByOnum(int num)
+    private IEnumerator GetContentsByHnum(int num)
     {
-        NpgsqlCommand dbcmd = dbcon.CreateCommand();
-        string sql =
-            "SELECT c.cnum, c.title, c.image_desc, c.image_url, c.pos_x, c.pos_z, c.combined_pos, c.type " +
-            "FROM public.options AS o " +
-            "JOIN public.contents AS c ON " + num + " = c.onum";
-        dbcmd.CommandText = sql;
-        NpgsqlDataReader reader = dbcmd.ExecuteReader();
-
-        float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
-        while (reader.Read())
+        yield return QueryGetContentsByHnum(num);
+        if (string.IsNullOrWhiteSpace(_responseText))
         {
-            HallContent content = new HallContent();
-            int onum = num;
-            int cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
-            string title = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1);
-            string image_desc = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2);
-            string image_url = (reader.IsDBNull(3)) ? "NULL" : reader.GetString(3);
-            int pos_x = (reader.IsDBNull(4)) ? 0 : reader.GetInt32(4);
-            int pos_z = (reader.IsDBNull(5)) ? 0 : reader.GetInt32(5);
-            string combined_pos = (reader.IsDBNull(6)) ? "NULL" : reader.GetString(6);
-            int type = (reader.IsDBNull(7)) ? 0 : reader.GetInt32(7);
-
-            content.onum = onum;
-            content.cnum = cnum;
-            content.title = title;
-            content.image_desc = image_desc;
-            content.image_url = image_url;
-            content.pos_x = pos_x;
-            content.pos_z = pos_z;
-            content.combined_pos = combined_pos;
-            content.type = type;
+            yield break;
+        }
+        
+        var rawHallContents = _responseText.Split(';');
+        List<HallContent> newHallContents = new List<HallContent>();
+        foreach (var rawHallContent in rawHallContents)
+        {
+            if (string.IsNullOrWhiteSpace(rawHallContent))
+                continue;
             
-            Vector2 tilePos = _startTilePos + new Vector2(content.pos_x, content.pos_z);
+            var rawContent = rawHallContent.Split('|');
+            HallContent newHallContent = new HallContent();
+            newHallContent.hnum = num;
+            newHallContent.cnum = Int32.Parse(rawContent[0]);
+            newHallContent.title = rawContent[1];
+            newHallContent.image_url = rawContent[2];
+            newHallContent.image_desc = rawContent[3];
+            newHallContent.combined_pos = rawContent[4];
+            newHallContent.type = Int32.Parse(rawContent[5]);
+            newHallContent.date_added = rawContent[6];
+            newHallContent.operation = rawContent[7];
+            newHallContent.pos_x = Int32.Parse(newHallContent.combined_pos.Split('_')[0]);
+            newHallContent.pos_z = Int32.Parse(newHallContent.combined_pos.Split('_')[1]);
+
+            newHallContents.Add(newHallContent);
+        }
+        
+        _hallContentGotCallback?.Invoke(newHallContents);
+    }
+
+    private IEnumerator QueryGetContentsByHnum(int num)
+    {
+        string phpFileName = "get_contents_by_hnum.php";
+        WWWForm data = new WWWForm();
+        data.AddField("hnum", num);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+    }
+
+    private void DrawTilesForGotHall()
+    {
+        float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
+        foreach (var hallContent in _currentHallContents)
+        {
+            Vector2 tilePos = _startTilePos + new Vector2(hallContent.pos_x, hallContent.pos_z);
             Vector2 drawPos = new Vector2
             (
                 tilePos.x * tileSize,
                 tilePos.y * tileSize
             );
-            Paint(tilePos, drawPos, content);
+            Paint(tilePos, drawPos, hallContent);
         }
-        
-        reader.Close();
-        reader = null;
     }
     
     private IEnumerator FindLeftBottomTile(int num)
@@ -277,7 +286,8 @@ private void SelectHallFromButton(int onum, GameObject linkGO)
                         i + 0.5f,
                         j + 0.25f
                     );
-                    SQLGetContentByOnum(num);
+                    yield return GetContentsByHnum(num);
+                    DrawTilesForGotHall();
                     yield break;
                 }
             }

@@ -146,9 +146,9 @@ public class AdminEditMode : MonoBehaviour
         for (int i = 0; i < _paintsParent.childCount; i++)
         {
             var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
-            c.onum = _adminView.HallSelected.hnum;
+            c.hnum = _adminView.HallSelected.hnum;
             string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type, operation)" +
-                               " VALUES(" + c.onum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
+                               " VALUES(" + c.hnum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
                                c.combined_pos + "','" + c.image_desc + "'," + c.type + ", 'INSERT')" +
                                " ON CONFLICT ON CONSTRAINT combined_pos_onum_unique DO UPDATE" +
                                " SET title = EXCLUDED.title, image_url = EXCLUDED.image_url, pos_x = EXCLUDED.pos_x, pos_z = EXCLUDED.pos_z, " +
@@ -190,7 +190,7 @@ public class AdminEditMode : MonoBehaviour
             string image_desc = (reader.IsDBNull(8)) ? "NULL" : reader.GetString(8);
           
             HallContent newContent = new HallContent();
-            newContent.onum = onum;
+            newContent.hnum = onum;
             newContent.cnum = cnum;
             newContent.title = title;
             newContent.image_url = image_url;

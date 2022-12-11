@@ -112,7 +112,7 @@ namespace GenerationMap
             {
                 content = new HallContent()
                 {
-                    onum = num,
+                    hnum = num,
                     cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0),
                     title = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1),
                     image_desc = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2),
@@ -146,7 +146,7 @@ namespace GenerationMap
             {
                 var content = new HallContent()
                 {
-                    onum = num,
+                    hnum = num,
                     cnum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0),
                     title = (reader.IsDBNull(1)) ? "NULL" : reader.GetString(1),
                     image_desc = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2),
