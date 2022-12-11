@@ -28,8 +28,10 @@ namespace Admin.PHP
         {
             yield return QueryGetHallByHnum(hnum);
             if (string.IsNullOrWhiteSpace(_responseText))
+            {
+                OnHallGet?.Invoke(new Hall());
                 yield break;
-
+            }
             OnHallGet?.Invoke(ParseRawHall(_responseText));
         }
         private IEnumerator QueryGetHallByHnum(int hnum)
@@ -45,7 +47,10 @@ namespace Admin.PHP
         {
             yield return QueryGetAllHalls();
             if (string.IsNullOrWhiteSpace(_responseText))
+            {
+                OnAllHallsGet?.Invoke(new List<Hall>());
                 yield break;
+            }
             var rawHalls = _responseText.Split(";");
             List<Hall> newHalls = new List<Hall>();
             foreach (var rawHall in rawHalls)
@@ -88,7 +93,10 @@ namespace Admin.PHP
         {
             yield return QueryGetAllContentsByHnum(hnum);
             if (string.IsNullOrWhiteSpace(_responseText))
+            {
+                OnAllHallContentsGet?.Invoke(new List<HallContent>());
                 yield break;
+            }
 
             var rawHallContents = _responseText.Split(';');
             List<HallContent> newHallContents = new List<HallContent>();
@@ -99,7 +107,6 @@ namespace Admin.PHP
                 
                 newHallContents.Add(ParseRawHallContent(rawHallContent, hnum));
             }
-
             OnAllHallContentsGet?.Invoke(newHallContents);
         }
         private HallContent ParseRawHallContent(string rawHallContent, int hnum)

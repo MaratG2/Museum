@@ -158,10 +158,12 @@ public class AdminViewMode : MonoBehaviour
     {
         if (_currentHallContents == null)
             return;
-        
         float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
         foreach (var hallContent in _currentHallContents)
         {
+            if (hallContent.hnum == 0)
+                continue;
+            
             Vector2 tilePos = _startTilePos + new Vector2(hallContent.pos_x, hallContent.pos_z);
             Vector2 drawPos = new Vector2
             (
