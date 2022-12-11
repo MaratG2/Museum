@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Admin.PHP;
 using Admin.Utility;
 using TMPro;
 using Npgsql;
@@ -19,8 +20,8 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private GameObject _tilesParent;
     [SerializeField] private Button _modeSwitchEdit;
     [SerializeField] private Button _modeSwitchNew;
+    private HallContentQueries _hallContentQueries = new HallContentQueries();
     private Action<string> _responseCallback;
-    private Action<List<HallContent>> _hallContentGotCallback;
     private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private string _responseText;
     private Hall _hallSelected;
@@ -36,16 +37,21 @@ public class AdminViewMode : MonoBehaviour
         set => _hallSelected = value;
     }
 
+    public HallContentQueries HallContentQueries
+    {
+        get { return _hallContentQueries; }
+    }
+
     private void OnEnable()
     {
         _responseCallback += response => _responseText = response;
-        _hallContentGotCallback += hallContents => _currentHallContents = hallContents;
+        _hallContentQueries.hallContentGotCallback += hallContents => _currentHallContents = hallContents;
     }
 
     private void OnDisable()
     {
         _responseCallback -= response => _responseText = response;
-        _hallContentGotCallback -= hallContents => _currentHallContents = hallContents;
+        _hallContentQueries.hallContentGotCallback -= hallContents => _currentHallContents = hallContents;
     }
 
     private void Start()
@@ -192,49 +198,6 @@ public class AdminViewMode : MonoBehaviour
         SelectHall(onum);
     }
 
-    private IEnumerator GetContentsByHnum(int num)
-    {
-        yield return QueryGetContentsByHnum(num);
-        if (string.IsNullOrWhiteSpace(_responseText))
-        {
-            yield break;
-        }
-        
-        var rawHallContents = _responseText.Split(';');
-        List<HallContent> newHallContents = new List<HallContent>();
-        foreach (var rawHallContent in rawHallContents)
-        {
-            if (string.IsNullOrWhiteSpace(rawHallContent))
-                continue;
-            
-            var rawContent = rawHallContent.Split('|');
-            HallContent newHallContent = new HallContent();
-            newHallContent.hnum = num;
-            newHallContent.cnum = Int32.Parse(rawContent[0]);
-            newHallContent.title = rawContent[1];
-            newHallContent.image_url = rawContent[2];
-            newHallContent.image_desc = rawContent[3];
-            newHallContent.combined_pos = rawContent[4];
-            newHallContent.type = Int32.Parse(rawContent[5]);
-            newHallContent.date_added = rawContent[6];
-            newHallContent.operation = rawContent[7];
-            newHallContent.pos_x = Int32.Parse(newHallContent.combined_pos.Split('_')[0]);
-            newHallContent.pos_z = Int32.Parse(newHallContent.combined_pos.Split('_')[1]);
-
-            newHallContents.Add(newHallContent);
-        }
-        
-        _hallContentGotCallback?.Invoke(newHallContents);
-    }
-
-    private IEnumerator QueryGetContentsByHnum(int num)
-    {
-        string phpFileName = "get_contents_by_hnum.php";
-        WWWForm data = new WWWForm();
-        data.AddField("hnum", num);
-        yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
-    }
-
     private void DrawTilesForGotHall()
     {
         float tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
@@ -286,7 +249,7 @@ public class AdminViewMode : MonoBehaviour
                         i + 0.5f,
                         j + 0.25f
                     );
-                    yield return GetContentsByHnum(num);
+                    yield return _hallContentQueries.GetContentsByHnum(num);
                     DrawTilesForGotHall();
                     yield break;
                 }
