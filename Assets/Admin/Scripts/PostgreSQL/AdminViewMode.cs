@@ -21,9 +21,6 @@ public class AdminViewMode : MonoBehaviour
     [SerializeField] private Button _modeSwitchEdit;
     [SerializeField] private Button _modeSwitchNew;
     private HallQueries _hallQueries = new ();
-    private Action<string> _responseCallback;
-    private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
-    private string _responseText;
     private Hall _hallSelected;
     private List<Hall> _cachedHalls;
     private Vector2 _startTilePos;
@@ -37,21 +34,14 @@ public class AdminViewMode : MonoBehaviour
         set => _hallSelected = value;
     }
 
-    public HallQueries HallQueries
-    {
-        get { return _hallQueries; }
-    }
-
     private void OnEnable()
     {
-        _responseCallback += response => _responseText = response;
         _hallQueries.OnAllHallContentsGet += hallContents => _currentHallContents = hallContents;
         _hallQueries.OnAllHallsGet += halls => _cachedHalls = halls;
     }
 
     private void OnDisable()
     {
-        _responseCallback -= response => _responseText = response;
         _hallQueries.OnAllHallContentsGet -= hallContents => _currentHallContents = hallContents;
         _hallQueries.OnAllHallsGet -= halls => _cachedHalls = halls;
     }
@@ -181,34 +171,18 @@ public class AdminViewMode : MonoBehaviour
     
     private IEnumerator FindLeftBottomTile(int num)
     {
-        yield return new WaitForSecondsRealtime(0.1f);
         float tileSize = 0f;
         while (tileSize.Equals(0f))
         {
             tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
             yield return new WaitForEndOfFrame();
         }
-        float addPosX = 0, addPosY = tileSize / 4;
-        if(HallSelected.sizez % 2 == 0)
-            addPosY += -tileSize / 4;
-        if (HallSelected.sizex % 2 != 0)
-            addPosX += tileSize / 2;
-      
+        
         for(int i = 0; i < 1920 / tileSize; i++)
         {
             for (int j = 0; j < 1080 / tileSize; j++)
             {
-                bool isOverPreview = false;
-                GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
-                    AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(
-                        new Vector2(i * tileSize + tileSize/2, j * tileSize + tileSize/4)));
-                foreach (var c in casted)
-                {
-                    if (c.GetComponent<AdminHallPreview>())
-                        isOverPreview = true;
-                }
-                
-                if (isOverPreview)
+                if (CheckIsOverPreview(tileSize, i, j))
                 {
                     _startTilePos = new Vector2
                     (
@@ -221,5 +195,19 @@ public class AdminViewMode : MonoBehaviour
                 }
             }
         }
+    }
+    private bool CheckIsOverPreview(float tileSize, int i, int j)
+    {
+        bool isOverPreview = false;
+        GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
+            AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(
+                new Vector2(i * tileSize + tileSize/2, j * tileSize + tileSize/4)));
+        foreach (var c in casted)
+        {
+            if (c.GetComponent<AdminHallPreview>())
+                isOverPreview = true;
+        }
+
+        return isOverPreview;
     }
 }
