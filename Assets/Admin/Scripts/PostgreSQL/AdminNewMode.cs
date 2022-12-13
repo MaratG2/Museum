@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Admin.PHP;
+using Admin.UsersManagement;
 using Admin.Utility;
 using MaratG2.Extensions;
 using Npgsql;
@@ -20,6 +21,8 @@ public class AdminNewMode : MonoBehaviour
     [SerializeField] private Button _createHall;
     [SerializeField] private CanvasGroup _newCanvasGroup;
     [SerializeField] private CanvasGroup _viewCanvasGroup;
+    [SerializeField] private Button _goToViewMode;
+    [SerializeField] private Button _goToUsersMode;
     private AdminViewMode _adminViewMode;
     private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private Action<string> _responseCallback;
@@ -36,6 +39,17 @@ public class AdminNewMode : MonoBehaviour
     private void OnEnable()
     {
         _responseCallback += response => _responseText = response;
+        int accessLevel = FindObjectOfType<Login>().CurrentUser.access_level;
+        if(accessLevel < 4)
+        {
+            _goToViewMode.gameObject.SetActive(true);
+            _goToUsersMode.gameObject.SetActive(false);
+        }
+        else
+        {
+            _goToViewMode.gameObject.SetActive(false);
+            _goToUsersMode.gameObject.SetActive(true);
+        }
     }
     private void OnDisable()
     {

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Admin.PHP;
 using Admin.Utility;
 using GenerationMap;
-using Npgsql;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

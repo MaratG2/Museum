@@ -1,12 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Admin.PHP;
 using Admin.Utility;
 using TMPro;
-using Npgsql;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,9 +22,7 @@ public class AdminViewMode : MonoBehaviour
     private List<Hall> _cachedHalls;
     private Vector2 _startTilePos;
     private List<HallContent> _currentHallContents;
-
-    public static NpgsqlConnection dbcon;
-
+    
     public Hall HallSelected
     {
         get => _hallSelected;
