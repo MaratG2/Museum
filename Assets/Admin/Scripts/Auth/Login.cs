@@ -104,9 +104,7 @@ namespace Admin.Utility
             string phpFileName = "login_full.php";
             WWWForm data = new WWWForm();
             data.AddField("email", _emailAuth.text);
-            ;
             data.AddField("pass", securedPassword);
-            ;
             yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
         }
 
