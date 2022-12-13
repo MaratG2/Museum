@@ -40,6 +40,8 @@ public class AdminEditMode : MonoBehaviour
     private bool _isCursorLock;
     private bool _isDoorBlock;
     private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
+    private HallQueries _hallQueries = new HallQueries();
+    private List<HallContent> _cachedHallContents = new ();
     private Action<string> OnResponseCallback;
     private string _response;
 
@@ -52,10 +54,12 @@ public class AdminEditMode : MonoBehaviour
     private void OnEnable()
     {
         OnResponseCallback += response => _response = response;
+        _hallQueries.OnAllHallContentsGet += gotContent => _cachedHallContents = gotContent;
     }
     private void OnDisable()
     {
         OnResponseCallback -= response => _response = response;
+        _hallQueries.OnAllHallContentsGet -= gotContent => _cachedHallContents = gotContent;
     }
 
     public void Refresh()
@@ -154,74 +158,75 @@ public class AdminEditMode : MonoBehaviour
     }
     public void SaveHall()
     {
-        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
-        string sql = "UPDATE options"
-                     + " SET name = '" + _nameText.text + "'"
-                     + ", is_hidden = " + _toggleHidden.isOn
-                     + ", is_maintained = " + _toggleMaintained.isOn
-                     + ", operation = 'UPDATE'"
-                     + " WHERE onum = " + _adminView.HallSelected.hnum;
-        dbcmd.Prepare();
-        dbcmd.CommandText = sql;
-        dbcmd.ExecuteNonQuery();
+        StartCoroutine(SaveHallCR());
+    }
 
+    private IEnumerator SaveHallCR()
+    {
+        yield return UpdateHallQuery(_adminView.HallSelected.hnum);
+        
         for (int i = 0; i < _paintsParent.childCount; i++)
         {
             var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
             c.hnum = _adminView.HallSelected.hnum;
-            string sqlInsert = "INSERT INTO contents (onum, title, image_url, pos_x, pos_z, combined_pos, image_desc, type, operation)" +
-                               " VALUES(" + c.hnum + ",'" + c.title + "','" + c.image_url + "'," + c.pos_x + ',' + c.pos_z + ",'" +
-                               c.combined_pos + "','" + c.image_desc + "'," + c.type + ", 'INSERT')" +
-                               " ON CONFLICT ON CONSTRAINT combined_pos_onum_unique DO UPDATE" +
-                               " SET title = EXCLUDED.title, image_url = EXCLUDED.image_url, pos_x = EXCLUDED.pos_x, pos_z = EXCLUDED.pos_z, " +
-                               "combined_pos = EXCLUDED.combined_pos, image_desc = EXCLUDED.image_desc, type = EXCLUDED.type, operation = 'UPDATE'";
-            dbcmd.Prepare();
-            dbcmd.CommandText = sqlInsert;
-            dbcmd.ExecuteNonQuery();
+            yield return InsertOrUpdateContentQuery(c);
         }
 
         foreach (var posDel in posToDelete)
-        {
-            string sqlDelete = "DELETE FROM contents"
-                               + " WHERE combined_pos = '" + posDel.x + "_" + posDel.y + "'";
-            dbcmd.Prepare();
-            dbcmd.CommandText = sqlDelete;
-            dbcmd.ExecuteNonQuery();
-        }
+            yield return DeleteContentQuery(posDel.x + "_" + posDel.y);
     }
 
-    private void SQLGetOptionsContents(int on)
+    private IEnumerator InsertOrUpdateContentQuery(HallContent c)
     {
-        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
-        string sql =
-            "SELECT * FROM public.contents c" +
-            " WHERE c.onum = " + on;
-        dbcmd.CommandText = sql;
-        NpgsqlDataReader reader = dbcmd.ExecuteReader();
-        float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
-        while (reader.Read())
+        string phpFileName = "insert_or_update_content.php";
+        WWWForm data = new WWWForm();
+        data.AddField("hnum", c.hnum);
+        data.AddField("title", string.IsNullOrWhiteSpace(c.title) ? "" : c.title);
+        data.AddField("image_url", string.IsNullOrWhiteSpace(c.image_url) ? "" : c.image_url);
+        data.AddField("image_desc", string.IsNullOrWhiteSpace(c.image_desc) ? "" : c.image_desc);
+        data.AddField("combined_pos", string.IsNullOrWhiteSpace(c.combined_pos) ? "" : c.combined_pos);
+        data.AddField("type", c.type);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
+        if(_response == "Query completed")
         {
-            int onum = (reader.IsDBNull(0)) ? 0 : reader.GetInt32(0);
-            int cnum = (reader.IsDBNull(1)) ? 0 : reader.GetInt32(1);
-            string title = (reader.IsDBNull(2)) ? "NULL" : reader.GetString(2);
-            string image_url = (reader.IsDBNull(3)) ? "NULL" : reader.GetString(3);
-            int pos_x = (reader.IsDBNull(4)) ? 0 : reader.GetInt32(4);
-            int pos_z = (reader.IsDBNull(5)) ? 0 : reader.GetInt32(5);
-            string combined_pos = (reader.IsDBNull(6)) ? "NULL" : reader.GetString(6);
-            int type = (reader.IsDBNull(7)) ? 0 : reader.GetInt32(7);
-            string image_desc = (reader.IsDBNull(8)) ? "NULL" : reader.GetString(8);
-          
-            HallContent newContent = new HallContent();
-            newContent.hnum = onum;
-            newContent.cnum = cnum;
-            newContent.title = title;
-            newContent.image_url = image_url;
-            newContent.pos_x = pos_x;
-            newContent.pos_z = pos_z;
-            newContent.combined_pos = combined_pos;
-            newContent.type = type;
-            newContent.image_desc = image_desc;
+        }
+        else
+            Debug.LogError("Insert or update hall query: " + _response);
+    }
+    private IEnumerator DeleteContentQuery(string combined_pos)
+    {
+        string phpFileName = "delete_content.php";
+        WWWForm data = new WWWForm();
+        data.AddField("combined_pos", combined_pos);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
+        if(_response == "Query completed")
+        {
+        }
+        else
+            Debug.LogError("Update hall query: " + _response);
+    }
+    private IEnumerator UpdateHallQuery(int hnum)
+    {
+        string phpFileName = "update_hall.php";
+        WWWForm data = new WWWForm();
+        data.AddField("name", _nameText.text);
+        data.AddField("is_hidden", _toggleHidden.isOn ? "1" : "0");
+        data.AddField("is_maintained", _toggleMaintained.isOn ? "1" : "0");
+        data.AddField("hnum", hnum);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
+        if(_response == "Query completed")
+        {
+        }
+        else
+            Debug.LogError("Update hall query: " + _response);
+    }
 
+    private IEnumerator GetAndDrawHallContents(int hnum)
+    {
+        yield return _hallQueries.GetAllContentsByHnum(hnum);
+        float tileSize = _imagePreview.sizeDelta.x / _adminView.HallSelected.sizex;
+        foreach (var newContent in _cachedHallContents)
+        {
             SelectTool(newContent.type);
             Vector2 tilePos = _startTilePos + new Vector2(newContent.pos_x, newContent.pos_z);
             Vector2 drawPos = new Vector2
@@ -231,9 +236,6 @@ public class AdminEditMode : MonoBehaviour
             );
             Paint(tilePos, drawPos, true, newContent);
         }
-        
-        reader.Close();
-        reader = null;
     }
 
     void Update()
@@ -301,7 +303,7 @@ public class AdminEditMode : MonoBehaviour
             }
             posToDelete = new List<Vector2>();
             FindLeftBottomTile();
-            SQLGetOptionsContents(_adminView.HallSelected.hnum);
+            StartCoroutine(GetAndDrawHallContents(_adminView.HallSelected.hnum));
         }
         
         if(_currentTool == ExhibitsConstants.SpawnPoint.Id 
