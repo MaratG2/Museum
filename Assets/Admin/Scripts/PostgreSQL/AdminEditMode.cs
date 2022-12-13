@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Admin.PHP;
 using Admin.Utility;
 using GenerationMap;
 using Npgsql;
@@ -37,11 +39,23 @@ public class AdminEditMode : MonoBehaviour
     private Tile _tileSelected;
     private bool _isCursorLock;
     private bool _isDoorBlock;
+    private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
+    private Action<string> OnResponseCallback;
+    private string _response;
 
     private void Start()
     {
         _infoController = FindObjectOfType<InfoController>();
         SelectTool(-1);
+    }
+
+    private void OnEnable()
+    {
+        OnResponseCallback += response => _response = response;
+    }
+    private void OnDisable()
+    {
+        OnResponseCallback -= response => _response = response;
     }
 
     public void Refresh()
@@ -115,16 +129,24 @@ public class AdminEditMode : MonoBehaviour
 
     public void DeleteHallConfirm()
     {
-        NpgsqlCommand dbcmd = AdminViewMode.dbcon.CreateCommand();
-        string sql = "DELETE FROM options "
-                     + "WHERE onum = " + _adminView.HallSelected.hnum;
-        dbcmd.Prepare();
-        dbcmd.CommandText = sql;
-        dbcmd.ExecuteNonQuery();
-        ClearAll();
-        _nameText.text = "";
-        _adminView.HallSelected = new Hall();
-        DeleteHallBack();
+        StartCoroutine(DeleteHallQuery(_adminView.HallSelected.hnum));
+    }
+
+    private IEnumerator DeleteHallQuery(int hnum)
+    {
+        string phpFileName = "delete_hall.php";
+        WWWForm data = new WWWForm();
+        data.AddField("hnum", hnum);
+        yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
+        if(_response == "Query completed")
+        {
+            ClearAll();
+            _nameText.text = "";
+            _adminView.HallSelected = new Hall();
+            DeleteHallBack();
+        }
+        else
+            Debug.LogError("Delete hall query: " + _response);
     }
     public void DeleteHallBack()
     {
