@@ -71,7 +71,7 @@ public class AdminViewMode : MonoBehaviour
             Debug.LogError("NOT FOUND OPTION BY THAT ONUM");
             return;
         }
-
+        
         if (_hallSelected.name != current.name)
         {
             FindObjectOfType<AdminEditMode>().ClearAll();
@@ -82,6 +82,7 @@ public class AdminViewMode : MonoBehaviour
         _hallSelected = current;
         _modeSwitchEdit.gameObject.SetActive(true);
         _modeSwitchNew.gameObject.SetActive(false);
+      
         StartCoroutine(FindLeftBottomTile(num));
     }
 

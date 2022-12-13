@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Admin.Auth
+namespace Admin.Utility
 {
     public class AuthFieldsManipulator : MonoBehaviour
     {

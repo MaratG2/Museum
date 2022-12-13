@@ -8,7 +8,7 @@ using Admin.Utility;
 using TMPro;
 using UnityEngine;
 
-namespace Admin.Auth
+namespace Admin.Utility
 {
     public class Login : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace Admin.Auth
         private bool _canLogin = true;
         private QueriesToPHP _queriesToPhp = new(isDebugOn: true);
         private AuthFieldsManipulator _authFieldsManipulator;
-        private AuthPanelMover _authPanelMover;
+        private PanelChanger _panelChanger;
         private Registration _registration;
 
         private User _currentUser;
@@ -45,7 +45,7 @@ namespace Admin.Auth
         {
             _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
             _registration = GetComponent<Registration>();
-            _authPanelMover = GetComponent<AuthPanelMover>();
+            _panelChanger = FindObjectOfType<PanelChanger>();
         }
 
         public void TryLogin()
@@ -90,7 +90,7 @@ namespace Admin.Auth
                 {
                     _authFieldsManipulator.SavePassword(CurrentUser);
                     _authFieldsManipulator.EmptyAuthFields();
-                    _authPanelMover.MoveToViewScreen();
+                    _panelChanger.MoveToCanvasPanel(Panel.View);
                 }
             }
 

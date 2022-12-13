@@ -8,7 +8,7 @@ using Admin.PHP;
 using TMPro;
 using UnityEngine;
 
-namespace Admin.Auth
+namespace Admin.Utility
 {
     public class Registration : MonoBehaviour
     {
