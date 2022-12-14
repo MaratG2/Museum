@@ -48,6 +48,15 @@ public class AdminViewMode : MonoBehaviour
         Refresh();
     }
 
+    private void Update()
+    {
+        if (FindObjectOfType<Login>().CurrentUser.access_level == AccessLevel.Guest)
+        {
+            _modeSwitchEdit.gameObject.SetActive(false);
+            _modeSwitchNew.gameObject.SetActive(false);
+        }
+    }
+
     public void SelectHall(int num)
     {
         Hall current = new Hall();

@@ -84,7 +84,7 @@ namespace Admin.Utility
             CurrentUser = ParseUser();
             if (!string.IsNullOrEmpty(CurrentUser.email))
             {
-                if (CurrentUser.access_level == 0)
+                if (CurrentUser.access_level == AccessLevel.Registered)
                     _authFieldsManipulator.MessageThrowUI(_errorAuth,
                         "Пользователь не активирован администратором музея. Вход запрещен", false);
                 else
@@ -137,7 +137,7 @@ namespace Admin.Utility
             tempUser.name = name;
             tempUser.email = email;
             tempUser.password = password;
-            tempUser.access_level = access_level;
+            tempUser.access_level = (AccessLevel)access_level;
 
             return tempUser;
         }

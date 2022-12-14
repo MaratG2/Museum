@@ -6,6 +6,6 @@
         public string name;
         public string email;
         public string password;
-        public int access_level;
+        public AccessLevel access_level;
     }
 }

@@ -39,16 +39,16 @@ public class AdminNewMode : MonoBehaviour
     private void OnEnable()
     {
         _responseCallback += response => _responseText = response;
-        int accessLevel = FindObjectOfType<Login>().CurrentUser.access_level;
-        if(accessLevel < 4)
-        {
-            _goToViewMode.gameObject.SetActive(true);
-            _goToUsersMode.gameObject.SetActive(false);
-        }
-        else
+        var accessLevel = FindObjectOfType<Login>().CurrentUser.access_level;
+        if(accessLevel == AccessLevel.Administrator)
         {
             _goToViewMode.gameObject.SetActive(false);
             _goToUsersMode.gameObject.SetActive(true);
+        }
+        else
+        {
+            _goToViewMode.gameObject.SetActive(true);
+            _goToUsersMode.gameObject.SetActive(false);
         }
     }
     private void OnDisable()

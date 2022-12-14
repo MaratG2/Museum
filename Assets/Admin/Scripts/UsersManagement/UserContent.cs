@@ -36,7 +36,7 @@ namespace Admin.UsersManagement
             _saveUserButton.onClick.AddListener(SaveUserFromButton);
             _nameText.text = _user.name;
             _emailText.text = _user.email;
-            _roleDropdown.value = _user.access_level;
+            _roleDropdown.value = (int)_user.access_level;
         }
 
         private void OnEnable()
@@ -82,7 +82,7 @@ namespace Admin.UsersManagement
                     new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordInput.text)));
                 _user.password = securedPassword;
             }
-            _user.access_level = _roleDropdown.value;
+            _user.access_level = (AccessLevel)_roleDropdown.value;
         }
 
         private IEnumerator UpdateUserQuery()
@@ -92,7 +92,7 @@ namespace Admin.UsersManagement
             data.AddField("name", _user.name);
             data.AddField("email", _user.email);
             data.AddField("password", _user.password);
-            data.AddField("access_level", _user.access_level);
+            data.AddField("access_level", (int)_user.access_level);
             yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
             if (_response == "Query completed")
             {
