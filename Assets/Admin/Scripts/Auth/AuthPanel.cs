@@ -21,6 +21,7 @@ namespace Admin.Utility
         {
             _panelChanger = FindObjectOfType<PanelChanger>();
             _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
+            Screen.fullScreen = true;
         }
 
         private void Start()

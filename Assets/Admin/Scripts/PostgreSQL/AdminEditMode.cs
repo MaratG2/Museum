@@ -299,7 +299,7 @@ public class AdminEditMode : MonoBehaviour
                 turnToTrue = false;
         }
         _doorTool.interactable = turnToTrue;
-
+        _isDoorBlock = !turnToTrue;
         bool isOverPreview = false;
         GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
             AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(absoluteMousePos));
@@ -591,7 +591,7 @@ public class AdminEditMode : MonoBehaviour
         }
         if (_currentTool == ExhibitsConstants.Picture.Id)
             _cursorTile.GetComponent<Image>().sprite = _frameSprite;
-        else if (_isDoorBlock && _currentTool == ExhibitsConstants.SpawnPoint.Id)
+        else if (!_isDoorBlock && _currentTool == ExhibitsConstants.SpawnPoint.Id)
             _cursorTile.GetComponent<Image>().sprite = _doorSprite;
         else if (_currentTool == ExhibitsConstants.InfoBox.Id)
             _cursorTile.GetComponent<Image>().sprite = _infoSprite;
