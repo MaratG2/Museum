@@ -203,7 +203,6 @@ public class AdminViewMode : MonoBehaviour
             tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / HallSelected.sizex;
             yield return new WaitForEndOfFrame();
         }
-        
         for(int i = 0; i < 1920 / tileSize; i++)
         {
             for (int j = 0; j < 1080 / tileSize; j++)

@@ -1,3 +1,0 @@
-UPDATE users
-    SET is_activated = true
-    WHERE uid = <число айди для активации>;

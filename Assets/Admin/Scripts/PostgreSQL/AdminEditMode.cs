@@ -28,6 +28,9 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private TMP_InputField _propertiesDesc;
     [SerializeField] private TMP_InputField _infoBoxName;
     [SerializeField] private TMP_Dropdown _decorationsDropdown;
+    [SerializeField] private TMP_Dropdown _wallDropdown;
+    [SerializeField] private TMP_Dropdown _floorDropdown;
+    [SerializeField] private TMP_Dropdown _roofDropdown;
     [SerializeField] private Button _doorTool;
 
     private InfoController _infoController;
@@ -84,6 +87,9 @@ public class AdminEditMode : MonoBehaviour
         _nameText.text = _adminView.HallSelected.name;
         _toggleMaintained.isOn = Convert.ToBoolean(_adminView.HallSelected.is_maintained);
         _toggleHidden.isOn = Convert.ToBoolean(_adminView.HallSelected.is_hidden);
+        _wallDropdown.value = _adminView.HallSelected.wall;
+        _floorDropdown.value = _adminView.HallSelected.floor;
+        _roofDropdown.value = _adminView.HallSelected.roof;
         _startTilePos = Vector2.zero;
     }
 
@@ -212,6 +218,9 @@ public class AdminEditMode : MonoBehaviour
         data.AddField("is_hidden", _toggleHidden.isOn ? "1" : "0");
         data.AddField("is_maintained", _toggleMaintained.isOn ? "1" : "0");
         data.AddField("hnum", hnum);
+        data.AddField("wall", _wallDropdown.value);
+        data.AddField("floor", _floorDropdown.value);
+        data.AddField("roof", _roofDropdown.value);
         yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
         if(_response == "Query completed")
         {
