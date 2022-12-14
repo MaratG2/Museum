@@ -14,5 +14,8 @@ namespace Admin.Utility
         public bool is_hidden;
         public string time_added;
         public string author;
+        public int wall;
+        public int floor;
+        public int roof;
     }
 }

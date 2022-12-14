@@ -18,6 +18,9 @@ public class AdminNewMode : MonoBehaviour
     [SerializeField] private Toggle _dateEnd;
     [SerializeField] private TMP_InputField _inputDateBegin;
     [SerializeField] private TMP_InputField _inputDateEnd;
+    [SerializeField] private TMP_Dropdown _wallDropdown;
+    [SerializeField] private TMP_Dropdown _floorDropdown;
+    [SerializeField] private TMP_Dropdown _roofDropdown;
     [SerializeField] private Button _createHall;
     [SerializeField] private CanvasGroup _newCanvasGroup;
     [SerializeField] private CanvasGroup _viewCanvasGroup;
@@ -98,6 +101,9 @@ public class AdminNewMode : MonoBehaviour
         data.AddField(nameof(hall.is_maintained), hall.is_maintained ? 1 : 0);
         data.AddField(nameof(hall.is_hidden), hall.is_hidden ? 1 : 0);
         data.AddField(nameof(hall.author), string.IsNullOrWhiteSpace(hall.author) ? "maratg2develop@gmail.com" : hall.author);
+        data.AddField(nameof(hall.wall), hall.wall);
+        data.AddField(nameof(hall.floor), hall.floor);
+        data.AddField(nameof(hall.roof), hall.roof);
         yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
         FlushInputFields();
         CooldoownOff();
@@ -137,6 +143,9 @@ public class AdminNewMode : MonoBehaviour
         newHall.is_maintained = true;
         newHall.is_hidden = true;
         newHall.author = FindObjectOfType<Login>().CurrentUser.email;
+        newHall.wall = _wallDropdown.value;
+        newHall.floor = _floorDropdown.value;
+        newHall.roof = _roofDropdown.value;
         return newHall;
     }
 
