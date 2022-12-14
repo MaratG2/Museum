@@ -31,6 +31,8 @@ public class AdminEditMode : MonoBehaviour
     [SerializeField] private TMP_Dropdown _wallDropdown;
     [SerializeField] private TMP_Dropdown _floorDropdown;
     [SerializeField] private TMP_Dropdown _roofDropdown;
+    [SerializeField] private TMP_InputField _dateBegin;
+    [SerializeField] private TMP_InputField _dateEnd;
     [SerializeField] private Button _doorTool;
 
     private InfoController _infoController;
@@ -62,6 +64,9 @@ public class AdminEditMode : MonoBehaviour
     {
         OnResponseCallback -= response => _response = response;
         _hallQueries.OnAllHallContentsGet -= gotContent => _cachedHallContents = gotContent;
+        _dateBegin.text = "";
+        _dateEnd.text = "";
+        SelectTool(-1);
     }
 
     public void Refresh()
@@ -90,6 +95,15 @@ public class AdminEditMode : MonoBehaviour
         _wallDropdown.value = _adminView.HallSelected.wall;
         _floorDropdown.value = _adminView.HallSelected.floor;
         _roofDropdown.value = _adminView.HallSelected.roof;
+        if (!_adminView.HallSelected.is_date_b)
+            _dateBegin.placeholder.GetComponent<TextMeshProUGUI>().text = "0000-12-31 23:59:59";
+        else
+            _dateBegin.placeholder.GetComponent<TextMeshProUGUI>().text = _adminView.HallSelected.date_begin;
+        if (!_adminView.HallSelected.is_date_e)
+            _dateEnd.placeholder.GetComponent<TextMeshProUGUI>().text = "0000-12-31 23:59:59";
+        else
+            _dateEnd.placeholder.GetComponent<TextMeshProUGUI>().text = _adminView.HallSelected.date_end;
+        
         _startTilePos = Vector2.zero;
     }
 
@@ -221,6 +235,10 @@ public class AdminEditMode : MonoBehaviour
         data.AddField("wall", _wallDropdown.value);
         data.AddField("floor", _floorDropdown.value);
         data.AddField("roof", _roofDropdown.value);
+        data.AddField("is_date_b", GetDate(true) == "" ? 0 : 1);
+        data.AddField("is_date_e", GetDate(false) == "" ? 0 : 1);
+        data.AddField("time_begin", GetDate(true));
+        data.AddField("time_end", GetDate(false));
         yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
         if(_response == "Query completed")
         {
@@ -416,6 +434,33 @@ public class AdminEditMode : MonoBehaviour
                 }
             }
         }
+    }
+
+    private string GetDate(bool isBegin)
+    {
+        string date;
+        if (isBegin)
+            date = _dateBegin.text;
+        else
+            date = _dateEnd.text;
+        if (string.IsNullOrWhiteSpace(date))
+            return "";
+
+        bool isCorrectDate = date.Length == 19;
+        if (!isCorrectDate || date[0] == '0')
+            return "";
+ 
+        int day, month, year, hour, minute, second;
+        bool isDay = Int32.TryParse(date.Substring(0, 4), out year);
+        bool isMonth = Int32.TryParse(date.Substring(5, 2), out month);
+        bool isYear = Int32.TryParse(date.Substring(8, 2), out day);
+        bool isHour = Int32.TryParse(date.Substring(11, 2), out hour);
+        bool isMinute = Int32.TryParse(date.Substring(14, 2), out minute);
+        bool isSecond = Int32.TryParse(date.Substring(17, 2), out second);
+        isCorrectDate =  isDay && isMonth && isYear && isHour && isMinute && isSecond;
+        if (!isCorrectDate)
+            return "";
+        return date;
     }
 
     public void HidePropertiesGroup()

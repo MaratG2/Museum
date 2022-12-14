@@ -138,8 +138,8 @@ public class AdminNewMode : MonoBehaviour
         newHall.sizez = Int32.Parse(_inputSizeZ.text);
         newHall.is_date_b = _dateBegin.isOn;
         newHall.is_date_e = _dateEnd.isOn;
-        newHall.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "CURRENT_TIMESTAMP";
-        newHall.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
+        newHall.date_begin = _dateBegin.isOn ? "'" + _inputDateBegin.text + "'" : "'0000-00-00 00:00:00'";
+        newHall.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "'0000-00-00 00:00:00'";
         newHall.is_maintained = true;
         newHall.is_hidden = true;
         newHall.author = FindObjectOfType<Login>().CurrentUser.email;
@@ -156,14 +156,15 @@ public class AdminNewMode : MonoBehaviour
     
     private bool ParseDate(string input)
     {
-        if (input.Length != 16)
+        if (input.Length != 19)
             return false;
-        int day, month, year, hour, minute;
-        bool isDay = Int32.TryParse(input.Substring(0, 2), out day);
-        bool isMonth = Int32.TryParse(input.Substring(3, 2), out month);
-        bool isYear = Int32.TryParse(input.Substring(6, 4), out year);
+        int day, month, year, hour, minute, second;
+        bool isDay = Int32.TryParse(input.Substring(0, 4), out year);
+        bool isMonth = Int32.TryParse(input.Substring(5, 2), out month);
+        bool isYear = Int32.TryParse(input.Substring(8, 2), out day);
         bool isHour = Int32.TryParse(input.Substring(11, 2), out hour);
         bool isMinute = Int32.TryParse(input.Substring(14, 2), out minute);
-        return isDay && isMonth && isYear && isHour && isMinute;
+        bool isSecond = Int32.TryParse(input.Substring(17, 2), out second);
+        return isDay && isMonth && isYear && isHour && isMinute && isSecond;
     }
 }
