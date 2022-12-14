@@ -19,7 +19,6 @@ namespace Admin.PHP
         {
             _responseCallback += response => _responseText = response;
         }
-
         ~HallQueries()
         {
             _responseCallback -= response => _responseText = response;
