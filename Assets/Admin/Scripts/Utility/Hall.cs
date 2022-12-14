@@ -13,5 +13,6 @@ namespace Admin.Utility
         public bool is_maintained;
         public bool is_hidden;
         public string time_added;
+        public string author;
     }
 }

@@ -27,7 +27,7 @@ namespace Admin.UsersManagement
         public void Initialize(User user)
         {
             this._user = user;
-            if (user.email == FindObjectOfType<Login>().CurrentUser.email)
+            if (user.email == FindObjectOfType<Login>().CurrentUser.email || user.access_level == AccessLevel.Administrator)
             {
                 _deleteUserButton.interactable = false;
                 _roleDropdown.interactable = false;

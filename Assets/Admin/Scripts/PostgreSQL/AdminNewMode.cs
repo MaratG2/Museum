@@ -97,6 +97,7 @@ public class AdminNewMode : MonoBehaviour
         data.AddField(nameof(hall.date_end), hall.date_end);
         data.AddField(nameof(hall.is_maintained), hall.is_maintained ? 1 : 0);
         data.AddField(nameof(hall.is_hidden), hall.is_hidden ? 1 : 0);
+        data.AddField(nameof(hall.author), string.IsNullOrWhiteSpace(hall.author) ? "maratg2develop@gmail.com" : hall.author);
         yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
         FlushInputFields();
         CooldoownOff();
@@ -135,6 +136,7 @@ public class AdminNewMode : MonoBehaviour
         newHall.date_end = _dateEnd.isOn ? "'" + _inputDateEnd.text + "'" : "CURRENT_TIMESTAMP";
         newHall.is_maintained = true;
         newHall.is_hidden = true;
+        newHall.author = FindObjectOfType<Login>().CurrentUser.email;
         return newHall;
     }
 

@@ -84,9 +84,25 @@ public class AdminViewMode : MonoBehaviour
         }
 
         _hallSelected = current;
-        _modeSwitchEdit.gameObject.SetActive(true);
-        _modeSwitchNew.gameObject.SetActive(false);
-      
+        var user = FindObjectOfType<Login>().CurrentUser;
+        if(user.access_level == AccessLevel.Editor)
+        {
+            if(_hallSelected.author == user.email)
+            {
+                _modeSwitchEdit.gameObject.SetActive(true);
+                _modeSwitchNew.gameObject.SetActive(false);
+            }
+            else
+            {
+                _modeSwitchEdit.gameObject.SetActive(false);
+                _modeSwitchNew.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            _modeSwitchEdit.gameObject.SetActive(true);
+            _modeSwitchNew.gameObject.SetActive(false);
+        }
         StartCoroutine(FindLeftBottomTile(num));
     }
 

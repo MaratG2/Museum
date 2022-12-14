@@ -80,6 +80,7 @@ namespace Admin.PHP
             newHall.is_maintained = Int32.Parse(hallData[8]) == 1;
             newHall.is_hidden = Int32.Parse(hallData[9]) == 1;
             newHall.time_added = hallData[10];
+            newHall.author = hallData[11];
             return newHall;
         }
         private IEnumerator QueryGetAllHalls()

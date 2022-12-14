@@ -16,12 +16,13 @@ $date_begin = $_POST['date_begin'];
 $date_end = $_POST['date_end'];
 $is_maintained = $_POST['is_maintained'];
 $is_hidden = $_POST['is_hidden'];
+$author = $_POST['author'];
 
 $conn = OpenCon();
 $result = mysqli_query($conn, 
-"INSERT INTO halls (name, sizex, sizez, is_date_b, is_date_e, time_begin, time_end, is_maintained, is_hidden)
+"INSERT INTO halls (name, sizex, sizez, is_date_b, is_date_e, time_begin, time_end, is_maintained, is_hidden, author)
  VALUES('".$name."',".$sizex.",".$sizez.",".$is_date_b.",".$is_date_e.",".$date_begin.",".$date_end.",".
- $is_maintained.",".$is_hidden.")");
+ $is_maintained.",".$is_hidden.",'".$author."')");
  
 if(!$result)
 {
