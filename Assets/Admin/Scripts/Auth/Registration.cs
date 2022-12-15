@@ -8,19 +8,16 @@ using Admin.PHP;
 using TMPro;
 using UnityEngine;
 
-namespace Admin.Utility
+namespace Admin.Auth
 {
     public class Registration : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField _nameReg;
-        [SerializeField] private TMP_InputField _emailReg;
-        [SerializeField] private TMP_InputField _passwordReg;
-        [SerializeField] private TextMeshProUGUI _errorReg;
+        private RegistrationFieldsProvider _registrationFields;
         private Action<string> _responseCallback;
         private string _responseText = "";
         private bool _canRegister = true;
         private QueriesToPHP _queriesToPhp = new(isDebugOn: true);
-        private AuthFieldsManipulator _authFieldsManipulator;
+        private ILoggable _loggerUI;
 
         private void OnEnable()
         {
@@ -34,14 +31,15 @@ namespace Admin.Utility
 
         private void Awake()
         {
-            _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
+            _loggerUI = GetComponent<ILoggable>();
+            _registrationFields = GetComponent<RegistrationFieldsProvider>();
         }
 
         public void TryRegistration()
         {
             if (_canRegister)
             {
-                _authFieldsManipulator.TrimAuthFields();
+                _registrationFields.Trim();
                 if (IsRegistrationInfoWrong())
                     return;
 
@@ -53,27 +51,26 @@ namespace Admin.Utility
 
         private IEnumerator RegistrationCoroutine()
         {
-            yield return GetEmailMatchedQuantity(_emailReg.text);
+            yield return GetEmailMatchedQuantity(_registrationFields.EmailField.text);
             if (Int32.TryParse(_responseText, out int emailMatchedQuantity))
                 if (emailMatchedQuantity > 0)
                 {
-                    _authFieldsManipulator.MessageThrowUI(_errorReg,
-                        "Пользователя с таким адресом электронной почты уже существует", false);
+                    _loggerUI.LogBad(_registrationFields.ErrorText,
+                        "Пользователя с таким адресом электронной почты уже существует");
                     _canRegister = true;
                     yield break;
                 }
 
             string securedPassword = Convert.ToBase64String(new SHA256CryptoServiceProvider()
-                .ComputeHash(Encoding.UTF8.GetBytes(_passwordReg.text)));
+                .ComputeHash(Encoding.UTF8.GetBytes(_registrationFields.PasswordField.text)));
 
             yield return RegisterUser(securedPassword);
             if (_responseText.Split(' ')[0] == "Registered")
-                _authFieldsManipulator.MessageThrowUI(_errorReg, "Пользователь успешно зарегистрирован", true);
+                _loggerUI.LogGood(_registrationFields.ErrorText, "Пользователь успешно зарегистрирован");
             else
-                _authFieldsManipulator.MessageThrowUI(_errorReg, "При регистрации произошла непредвиденная ошибка",
-                    false);
+                _loggerUI.LogBad(_registrationFields.ErrorText, "При регистрации произошла непредвиденная ошибка");
 
-            _authFieldsManipulator.EmptyAuthFields();
+            _registrationFields.Empty();
             _canRegister = true;
         }
 
@@ -89,39 +86,38 @@ namespace Admin.Utility
         {
             string phpFileName = "registration.php";
             WWWForm data = new WWWForm();
-            data.AddField("name", _nameReg.text);
-            data.AddField("email", _emailReg.text);
+            data.AddField("name", _registrationFields.NameField.text);
+            data.AddField("email", _registrationFields.EmailField.text);
             data.AddField("pass", securedPassword);
             yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
         }
 
         private bool IsRegistrationInfoWrong()
         {
-            if (_nameReg.text == "")
+            if (_registrationFields.NameField.text == "")
             {
-                _authFieldsManipulator.MessageThrowUI(_errorReg, "ФИО не может быть пустым", false);
+                _loggerUI.LogBad(_registrationFields.ErrorText, "ФИО не может быть пустым");
                 return true;
             }
 
-            if (_emailReg.text == "")
+            if (_registrationFields.EmailField.text == "")
             {
-                _authFieldsManipulator.MessageThrowUI(_errorReg, "Адрес почты не может быть пустым", false);
+                _loggerUI.LogBad(_registrationFields.ErrorText, "Адрес почты не может быть пустым");
                 return true;
             }
 
-            if (_passwordReg.text.Length is < 8 or > 24)
+            if (_registrationFields.PasswordField.text.Length is < 8 or > 24)
             {
-                _authFieldsManipulator.MessageThrowUI(_errorReg, "Пароль не может быть меньше 8 или больше 24 символов",
-                    false);
+                _loggerUI.LogBad(_registrationFields.ErrorText, "Пароль не может быть меньше 8 или больше 24 символов");
                 return true;
             }
 
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(_emailReg.text);
+            Match match = regex.Match(_registrationFields.EmailField.text);
             if (!match.Success)
             {
-                _authFieldsManipulator.MessageThrowUI(_errorReg,
-                    "Адрес электронной почты не соответствует правилам ввода", false);
+                _loggerUI.LogBad(_registrationFields.ErrorText,
+                    "Адрес электронной почты не соответствует правилам ввода");
                 return true;
             }
 

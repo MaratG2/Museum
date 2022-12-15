@@ -9,18 +9,17 @@ using Admin.Utility;
 using TMPro;
 using UnityEngine;
 
-namespace Admin.Utility
+namespace Admin.Auth
 {
     public class Login : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField _emailAuth;
-        [SerializeField] private TMP_InputField _passwordAuth;
-        [SerializeField] private TextMeshProUGUI _errorAuth;
+        private LoginFieldsProvider _loginFields;
         private Action<string> _responseCallback;
         private string _responseText = "";
         private bool _canLogin = true;
         private QueriesToPHP _queriesToPhp = new(isDebugOn: true);
-        private AuthFieldsManipulator _authFieldsManipulator;
+        private ILoggable _loggerUI;
+        private PasswordSaver _passwordSaver;
         private PanelChanger _panelChanger;
         private Registration _registration;
 
@@ -44,16 +43,19 @@ namespace Admin.Utility
 
         private void Awake()
         {
-            _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
+            _loggerUI = GetComponent<ILoggable>();
+            _passwordSaver = GetComponent<PasswordSaver>();
             _registration = GetComponent<Registration>();
+            _loginFields = GetComponent<LoginFieldsProvider>();
             _panelChanger = FindObjectOfType<PanelChanger>();
+            _loginFields.EmailField.text = PlayerPrefs.HasKey("SavedEmail") ? PlayerPrefs.GetString("SavedEmail") : "";
         }
 
         public void TryLogin()
         {
             if (_canLogin)
             {
-                _authFieldsManipulator.TrimAuthFields();
+                _loginFields.Trim();
                 if (IsLoginInfoWrong())
                     return;
 
@@ -65,19 +67,19 @@ namespace Admin.Utility
 
         private IEnumerator TryLoginCoroutine()
         {
-            yield return _registration.GetEmailMatchedQuantity(_emailAuth.text);
+            yield return _registration.GetEmailMatchedQuantity(_loginFields.EmailField.text);
             if (Int32.TryParse(_responseText, out int emailMatchedQuantity))
                 if (emailMatchedQuantity == 0)
                 {
-                    _authFieldsManipulator.MessageThrowUI(_errorAuth,
-                        "Пользоввателя с таким адресом электронной почты не существует", false);
+                    _loggerUI.LogBad(_loginFields.ErrorText,
+                        "Пользователя с таким адресом электронной почты не существует");
                     _canLogin = true;
                     yield break;
                 }
 
             string securedPassword = Convert.ToBase64String(
-                new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_passwordAuth.text)));
-            if (PlayerPrefs.HasKey("SavedPassword") && _passwordAuth.text == "")
+                new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_loginFields.PasswordField.text)));
+            if (PlayerPrefs.HasKey("SavedPassword") && _loginFields.PasswordField.text == "")
                 securedPassword = PlayerPrefs.GetString("SavedPassword");
 
             yield return LoginUser(securedPassword);
@@ -85,12 +87,12 @@ namespace Admin.Utility
             if (!string.IsNullOrEmpty(CurrentUser.email))
             {
                 if (CurrentUser.access_level == AccessLevel.Registered)
-                    _authFieldsManipulator.MessageThrowUI(_errorAuth,
-                        "Пользователь не активирован администратором музея. Вход запрещен", false);
+                    _loggerUI.LogBad(_loginFields.ErrorText,
+                        "Пользователь не активирован администратором музея. Вход запрещен");
                 else
                 {
-                    _authFieldsManipulator.SavePassword(CurrentUser);
-                    _authFieldsManipulator.EmptyAuthFields();
+                    _passwordSaver.SavePassword(CurrentUser);
+                    _loginFields.Empty();
                     _panelChanger.MoveToCanvasPanel(Panel.View);
                 }
             }
@@ -103,7 +105,7 @@ namespace Admin.Utility
             _responseText = "";
             string phpFileName = "login_full.php";
             WWWForm data = new WWWForm();
-            data.AddField("email", _emailAuth.text);
+            data.AddField("email", _loginFields.EmailField.text);
             data.AddField("pass", securedPassword);
             yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
         }
@@ -117,13 +119,13 @@ namespace Admin.Utility
             string firstWord = _responseText.Split(' ')[0];
             if (firstWord == "<br")
             {
-                _authFieldsManipulator.MessageThrowUI(_errorAuth, "Неправильный пароль", false);
+                _loggerUI.LogBad(_loginFields.ErrorText, "Неправильный пароль");
                 return tempUser;
             }
 
             if (firstWord == "Query")
             {
-                _authFieldsManipulator.MessageThrowUI(_errorAuth, "Непредвиденная ошибка", false);
+                _loggerUI.LogBad(_loginFields.ErrorText, "Непредвиденная ошибка");
                 return tempUser;
             }
 
@@ -144,25 +146,25 @@ namespace Admin.Utility
 
         private bool IsLoginInfoWrong()
         {
-            if (_emailAuth.text == "")
+            if (_loginFields.EmailField.text == "")
             {
-                _authFieldsManipulator.MessageThrowUI(_errorAuth, "Адрес почты не может быть пустым", false);
+                _loggerUI.LogBad(_loginFields.ErrorText, "Адрес почты не может быть пустым");
                 return true;
             }
 
-            if (_passwordAuth.text.Length is < 8 or > 24 && !PlayerPrefs.HasKey("SavedPassword"))
+            if (_loginFields.PasswordField.text.Length is < 8 or > 24 && !PlayerPrefs.HasKey("SavedPassword"))
             {
-                _authFieldsManipulator.MessageThrowUI(_errorAuth,
-                    "Пароль не может быть меньше 8 или больше 24 символов", false);
+                _loggerUI.LogBad(_loginFields.ErrorText,
+                    "Пароль не может быть меньше 8 или больше 24 символов");
                 return true;
             }
 
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(_emailAuth.text);
+            Match match = regex.Match(_loginFields.EmailField.text);
             if (!match.Success)
             {
-                _authFieldsManipulator.MessageThrowUI(_errorAuth,
-                    "Адрес электронной почты не соответствует правилам ввода", false);
+                _loggerUI.LogBad(_loginFields.ErrorText,
+                    "Адрес электронной почты не соответствует правилам ввода");
                 return true;
             }
 

@@ -11727,7 +11727,10 @@ GameObject:
   - component: {fileID: 866332125}
   - component: {fileID: 866332129}
   - component: {fileID: 866332128}
-  - component: {fileID: 866332127}
+  - component: {fileID: 866332131}
+  - component: {fileID: 866332130}
+  - component: {fileID: 866332132}
+  - component: {fileID: 866332133}
   m_Layer: 5
   m_Name: Panel - Auth
   m_TagString: Untagged
@@ -11767,9 +11770,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 866332122}
   m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &866332125
 MonoBehaviour:
@@ -11784,24 +11787,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isAuthEnabled: 1
---- !u!114 &866332127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 866332122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbc7126eccf94e248914f4d396b131e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _nameReg: {fileID: 1698157566}
-  _emailReg: {fileID: 1727973589}
-  _passwordReg: {fileID: 2028816083}
-  _emailAuth: {fileID: 1001262752}
-  _passwordAuth: {fileID: 1287269699}
-  _toggleSavePassword: {fileID: 1504268329}
 --- !u!114 &866332128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11814,9 +11799,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc259ed02b2db204199d0e9b66c5d6b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _emailAuth: {fileID: 1001262752}
-  _passwordAuth: {fileID: 1287269699}
-  _errorAuth: {fileID: 247424951}
 --- !u!114 &866332129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11829,10 +11811,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65746162624c4fc448f34bd843bf2534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nameReg: {fileID: 1698157566}
-  _emailReg: {fileID: 1727973589}
-  _passwordReg: {fileID: 2028816083}
-  _errorReg: {fileID: 19237659}
+--- !u!114 &866332130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a1c657e6ce87ef4a8d640f5593b64e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nameField: {fileID: 1698157566}
+  _emailField: {fileID: 1727973589}
+  _passwordField: {fileID: 2028816083}
+  _errorText: {fileID: 19237659}
+--- !u!114 &866332131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35dcbbba477af90429afdc656254f772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _emailField: {fileID: 1001262752}
+  _passwordField: {fileID: 1287269699}
+  _errorText: {fileID: 247424951}
+--- !u!114 &866332132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84504583bca9c7c45be248e884b75a3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggleSavePassword: {fileID: 1504268329}
+--- !u!114 &866332133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866332122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbc7126eccf94e248914f4d396b131e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &879956952
 GameObject:
   m_ObjectHideFlags: 0
@@ -21075,8 +21109,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 866332127}
-        m_TargetAssemblyTypeName: AuthFieldsManipulator, Assembly-CSharp
+      - m_Target: {fileID: 866332132}
+        m_TargetAssemblyTypeName: Admin.Auth.PasswordSaver, Assembly-CSharp
         m_MethodName: SavePasswordToggleChanged
         m_Mode: 0
         m_Arguments:
@@ -21392,10 +21426,10 @@ RectTransform:
   m_Father: {fileID: 1047751915}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 278.29996, y: -33.643448}
-  m_SizeDelta: {x: 556.5999, y: 57.2869}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 57.2869}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1510953858
 MonoBehaviour:

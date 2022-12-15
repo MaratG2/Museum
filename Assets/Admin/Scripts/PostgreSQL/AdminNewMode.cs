@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Admin.Auth;
 using Admin.PHP;
 using Admin.UsersManagement;
 using Admin.Utility;

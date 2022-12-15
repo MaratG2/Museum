@@ -3,34 +3,30 @@ using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Admin.Utility;
 using MaratG2.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace Admin.Utility
+namespace Admin.Auth
 {
     public class AuthPanel : MonoBehaviour
     {
         [SerializeField] private bool _isAuthEnabled = true;
         private PanelChanger _panelChanger;
-        private AuthFieldsManipulator _authFieldsManipulator;
 
         private void Awake()
         {
             _panelChanger = FindObjectOfType<PanelChanger>();
-            _authFieldsManipulator = GetComponent<AuthFieldsManipulator>();
             Screen.fullScreen = true;
         }
 
         private void Start()
         {
             if (_isAuthEnabled)
-            {
                 _panelChanger.MoveToCanvasPanel(Panel.Auth);
-                _authFieldsManipulator.GetSavedPassword();
-            }
             else
                 _panelChanger.MoveToCanvasPanel(Panel.View);
         }
