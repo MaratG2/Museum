@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Admin.Auth;
@@ -28,11 +27,11 @@ namespace Admin.UsersManagement
         public void Initialize(User user)
         {
             this._user = user;
-            if (user.email == FindObjectOfType<Login>().CurrentUser.email || user.access_level == AccessLevel.Administrator)
-            {
+            if (user.access_level == AccessLevel.Administrator)
                 _deleteUserButton.interactable = false;
+            if(user.email == FindObjectOfType<Login>().CurrentUser.email)
                 _roleDropdown.interactable = false;
-            }
+            
             _deleteUserButton.onClick.AddListener(DeleteUserFromButton);
             _saveUserButton.onClick.AddListener(SaveUserFromButton);
             _nameText.text = _user.name;
@@ -62,9 +61,7 @@ namespace Admin.UsersManagement
             data.AddField("email", _user.email);
             yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
             if (_response == "Query completed")
-            {
                 FindObjectOfType<UsersParser>().ParseUsers();
-            }
             else
                 Debug.LogError("Delete user query: " + _response);
         }
@@ -95,10 +92,7 @@ namespace Admin.UsersManagement
             data.AddField("password", _user.password);
             data.AddField("access_level", (int)_user.access_level);
             yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
-            if (_response == "Query completed")
-            {
-            }
-            else
+            if (_response != "Query completed")
                 Debug.LogError("Update user query: " + _response);
         }
     }

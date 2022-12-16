@@ -4,32 +4,23 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Admin.PHP;
-using Admin.UsersManagement;
 using Admin.Utility;
-using TMPro;
 using UnityEngine;
 
 namespace Admin.Auth
 {
     public class Login : MonoBehaviour
     {
-        private LoginFieldsProvider _loginFields;
+        private QueriesToPHP _queriesToPhp = new(isDebugOn: true);
         private Action<string> _responseCallback;
         private string _responseText = "";
+        private LoginFieldsProvider _loginFields;
         private bool _canLogin = true;
-        private QueriesToPHP _queriesToPhp = new(isDebugOn: true);
-        private ILoggable _loggerUI;
         private PasswordSaver _passwordSaver;
         private PanelChanger _panelChanger;
         private Registration _registration;
-
-        private User _currentUser;
-
-        public User CurrentUser
-        {
-            get { return _currentUser; }
-            set { _currentUser = value; }
-        }
+        private ILoggable _loggerUI;
+        public User CurrentUser { get; set; }
 
         private void OnEnable()
         {
@@ -59,13 +50,36 @@ namespace Admin.Auth
                 if (IsLoginInfoWrong())
                     return;
 
-                StartCoroutine(TryLoginCoroutine());
+                StartCoroutine(LoginCR());
             }
 
             _canLogin = false;
         }
 
-        private IEnumerator TryLoginCoroutine()
+        private IEnumerator LoginCR()
+        {
+            yield return CheckIfUserNotRegistered();
+
+            string securedPassword = GetUserPassword();
+            yield return LoginUser(securedPassword);
+            CurrentUser = ParseUser();
+            
+            _canLogin = true;
+            if (string.IsNullOrEmpty(CurrentUser.email))
+                yield break;
+            if (CurrentUser.access_level == AccessLevel.Registered)
+            {
+                _loggerUI.LogBad(_loginFields.ErrorText,
+                    "Пользователь не активирован администратором музея. Вход запрещен");
+                yield break;
+            }
+            
+            _passwordSaver.SaveOrDeletePassword(CurrentUser);
+            _loginFields.Empty();
+            _panelChanger.MoveToCanvasPanel(Panel.View);
+        }
+
+        private IEnumerator CheckIfUserNotRegistered()
         {
             yield return _registration.GetEmailMatchedQuantity(_loginFields.EmailField.text);
             if (Int32.TryParse(_responseText, out int emailMatchedQuantity))
@@ -74,30 +88,18 @@ namespace Admin.Auth
                     _loggerUI.LogBad(_loginFields.ErrorText,
                         "Пользователя с таким адресом электронной почты не существует");
                     _canLogin = true;
-                    yield break;
+                    StopCoroutine(LoginCR());
                 }
+        }
 
-            string securedPassword = Convert.ToBase64String(
+        private string GetUserPassword()
+        {
+            string securedPassword = 
+            Convert.ToBase64String(
                 new SHA256CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(_loginFields.PasswordField.text)));
             if (PlayerPrefs.HasKey("SavedPassword") && _loginFields.PasswordField.text == "")
                 securedPassword = PlayerPrefs.GetString("SavedPassword");
-
-            yield return LoginUser(securedPassword);
-            CurrentUser = ParseUser();
-            if (!string.IsNullOrEmpty(CurrentUser.email))
-            {
-                if (CurrentUser.access_level == AccessLevel.Registered)
-                    _loggerUI.LogBad(_loginFields.ErrorText,
-                        "Пользователь не активирован администратором музея. Вход запрещен");
-                else
-                {
-                    _passwordSaver.SavePassword(CurrentUser);
-                    _loginFields.Empty();
-                    _panelChanger.MoveToCanvasPanel(Panel.View);
-                }
-            }
-
-            _canLogin = true;
+            return securedPassword;
         }
 
         private IEnumerator LoginUser(string securedPassword)
@@ -129,17 +131,12 @@ namespace Admin.Auth
                 return tempUser;
             }
 
-            var datas = _responseText.Split('|');
-            int uid = Int32.Parse(datas[0]);
-            string name = datas[1];
-            string email = datas[2];
-            string password = datas[3];
-            int access_level = Int32.Parse(datas[4]);
-            tempUser.uid = uid;
-            tempUser.name = name;
-            tempUser.email = email;
-            tempUser.password = password;
-            tempUser.access_level = (AccessLevel)access_level;
+            var rawUserData = _responseText.Split('|');
+            tempUser.uid = Int32.Parse(rawUserData[0]);
+            tempUser.name = rawUserData[1];
+            tempUser.email = rawUserData[2];
+            tempUser.password = rawUserData[3];
+            tempUser.access_level = (AccessLevel)Int32.Parse(rawUserData[4]);
 
             return tempUser;
         }

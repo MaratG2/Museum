@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Admin.PHP;
-using TMPro;
 using UnityEngine;
 
 namespace Admin.Auth
@@ -43,13 +41,35 @@ namespace Admin.Auth
                 if (IsRegistrationInfoWrong())
                     return;
 
-                StartCoroutine(RegistrationCoroutine());
+                StartCoroutine(RegistrationCR());
             }
 
             _canRegister = false;
         }
 
-        private IEnumerator RegistrationCoroutine()
+        private IEnumerator RegistrationCR()
+        {
+            yield return CheckIfUserAlreadyRegistered();
+
+            string securedPassword = EncodePassword(_registrationFields.PasswordField.text);
+            yield return RegisterUser(securedPassword);
+            
+            if (_responseText.Split(' ')[0] == "Registered")
+                _loggerUI.LogGood(_registrationFields.ErrorText, "Пользователь успешно зарегистрирован");
+            else
+                _loggerUI.LogBad(_registrationFields.ErrorText, "При регистрации произошла непредвиденная ошибка");
+
+            _registrationFields.Empty();
+            _canRegister = true;
+        }
+
+        private string EncodePassword(string password)
+        {
+            return Convert.ToBase64String(new SHA256CryptoServiceProvider()
+                .ComputeHash(Encoding.UTF8.GetBytes(password)));
+        }
+
+        private IEnumerator CheckIfUserAlreadyRegistered()
         {
             yield return GetEmailMatchedQuantity(_registrationFields.EmailField.text);
             if (Int32.TryParse(_responseText, out int emailMatchedQuantity))
@@ -58,20 +78,8 @@ namespace Admin.Auth
                     _loggerUI.LogBad(_registrationFields.ErrorText,
                         "Пользователя с таким адресом электронной почты уже существует");
                     _canRegister = true;
-                    yield break;
+                    StopCoroutine(RegistrationCR());
                 }
-
-            string securedPassword = Convert.ToBase64String(new SHA256CryptoServiceProvider()
-                .ComputeHash(Encoding.UTF8.GetBytes(_registrationFields.PasswordField.text)));
-
-            yield return RegisterUser(securedPassword);
-            if (_responseText.Split(' ')[0] == "Registered")
-                _loggerUI.LogGood(_registrationFields.ErrorText, "Пользователь успешно зарегистрирован");
-            else
-                _loggerUI.LogBad(_registrationFields.ErrorText, "При регистрации произошла непредвиденная ошибка");
-
-            _registrationFields.Empty();
-            _canRegister = true;
         }
 
         public IEnumerator GetEmailMatchedQuantity(string email)

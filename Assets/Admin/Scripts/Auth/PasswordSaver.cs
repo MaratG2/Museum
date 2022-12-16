@@ -15,7 +15,7 @@ namespace Admin.Auth
             _toggleSavePassword.isOn = PlayerPrefs.HasKey("SavedPassword");
         }
 
-        public void SavePassword(User user)
+        public void SaveOrDeletePassword(User user)
         {
             if (_toggleSavePassword.isOn)
             {
