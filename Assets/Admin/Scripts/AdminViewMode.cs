@@ -107,7 +107,7 @@ public class AdminViewMode : MonoBehaviour
         StartCoroutine(FindLeftBottomTile(num));
     }
 
-    private void Paint(Vector2 tiledPos, Vector2 pos, HallContent content)
+    private void Paint(Vector2 pos, HallContent content)
     {
         var newTile = Instantiate(_tilePrefab.gameObject, Vector2.zero, Quaternion.identity,
             _tilesParent.GetComponent<RectTransform>());
@@ -192,7 +192,7 @@ public class AdminViewMode : MonoBehaviour
                 tilePos.x * tileSize,
                 tilePos.y * tileSize
             );
-            Paint(tilePos, drawPos, hallContent);
+            Paint(drawPos, hallContent);
         }
     }
     
