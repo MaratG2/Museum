@@ -8,6 +8,7 @@ public class ActiveAction : MonoBehaviour
     float rayLength = 2f;
     [SerializeField]
     private Camera camera;
+    public Camera Camera => camera;
     
     void Update()
     {

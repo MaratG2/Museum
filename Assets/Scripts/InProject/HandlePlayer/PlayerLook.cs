@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerLook : MonoBehaviour
 {
     [SerializeField] private string mouseXInputName, mouseYInputName;
-    
-
     [SerializeField] private Transform playerBody;
+    private ActiveAction _activeAction;
 
     private float xAxisClamp;
 
     private void Awake()
     {
+        _activeAction = GetComponent<ActiveAction>();
         LockCursor();
         xAxisClamp = 0.0f;
     }
@@ -26,7 +26,10 @@ public class PlayerLook : MonoBehaviour
     private void Update()
     {
         if(!State.Frozen)
+        {
             CameraRotation();
+            RaycastToUI();
+        }
     }
 
     private void CameraRotation()
@@ -53,6 +56,11 @@ public class PlayerLook : MonoBehaviour
         playerBody.Rotate(Vector3.up * mouseX);
     }
 
+    private void RaycastToUI()
+    {
+        Ray ray = new Ray(_activeAction.Camera.transform.position, _activeAction.Camera.transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
+    }
     private void ClampXAxisRotationToValue(float value)
     {
         Vector3 eulerRotation = transform.eulerAngles;
