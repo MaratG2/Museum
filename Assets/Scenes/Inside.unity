@@ -3989,6 +3989,9 @@ MonoBehaviour:
   mouseXInputName: Mouse X
   mouseYInputName: Mouse Y
   playerBody: {fileID: 802700441}
+  _uiLayerMask:
+    serializedVersion: 2
+    m_Bits: 32
 --- !u!114 &1180624270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5112,6 +5115,7 @@ GameObject:
   - component: {fileID: 1891221628}
   - component: {fileID: 1891221627}
   - component: {fileID: 1891221626}
+  - component: {fileID: 1891221629}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -5222,6 +5226,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891221624}
   m_CullTransparentMesh: 1
+--- !u!65 &1891221629
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891221624}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 460, y: 100, z: 0.05}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1957306609
 GameObject:
   m_ObjectHideFlags: 0

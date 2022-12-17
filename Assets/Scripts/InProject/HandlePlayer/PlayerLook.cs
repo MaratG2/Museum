@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
 #pragma warning disable 0649
 public class PlayerLook : MonoBehaviour
 {
     [SerializeField] private string mouseXInputName, mouseYInputName;
     [SerializeField] private Transform playerBody;
+    [SerializeField] private LayerMask _uiLayerMask;
     private ActiveAction _activeAction;
 
     private float xAxisClamp;
@@ -28,7 +33,8 @@ public class PlayerLook : MonoBehaviour
         if(!State.Frozen)
         {
             CameraRotation();
-            RaycastToUI();
+            if (Input.GetMouseButtonDown(0))
+                RaycastToUI();
         }
     }
 
@@ -59,7 +65,17 @@ public class PlayerLook : MonoBehaviour
     private void RaycastToUI()
     {
         Ray ray = new Ray(_activeAction.Camera.transform.position, _activeAction.Camera.transform.forward);
-        Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
+        RaycastHit[] hits = Physics.RaycastAll(ray.origin, ray.direction * 1000f, 1000f, layerMask: _uiLayerMask);
+        if (hits.Length == 0)
+            return;
+        foreach (var hit in hits)
+        {
+            Button button = hit.collider.gameObject.GetComponent<Button>();
+            if (button == null)
+                continue;
+            ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+        }
+        
     }
     private void ClampXAxisRotationToValue(float value)
     {
