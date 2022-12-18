@@ -12,8 +12,7 @@ $arg_hnum = $_POST['hnum'];
 $conn = OpenCon();
 $result = mysqli_query($conn, 
 "SELECT c.cnum, c.title, c.image_url, c.image_desc, c.combined_pos, c.type, c.date_added, c.operation
- FROM halls AS h
- JOIN contents AS c ON ".$arg_hnum." = c.hnum");
+ FROM contents AS c WHERE c.hnum = ".$arg_hnum);
 if(!$result)
 {
 	echo "Query failed: " . $conn -> error;
