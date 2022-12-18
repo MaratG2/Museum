@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,12 +8,21 @@ namespace GenerationMap
     public class GenerationScript : MonoBehaviour
     {
         [SerializeField] public GameObject picture;
+        //public RoomsContainer RoomsContainer = new();
         [SerializeField] public GameObject pedestal;
+        [SerializeField] private GameObject floor;
+
+        public void Start()
+        {
+            
+        }
 
         public void SpawnRoom(Room room)
         {
-            var floorBlocs = SpawnPlace(room.PositionRoom, room.Width, room.Length, room.Prefabs.PrefabFloor);
-            var height = room.Prefabs.PrefabWall.GetComponent<BoxCollider>().size.y;
+            Debug.Log($"{room.Length} {room.Width}");
+            //var floorBlocs = SpawnPlace(room.PositionRoom, room.Width, room.Length,floor /*room.Prefabs.PrefabFloor*/);
+            SpawnPlace(new Vector3(100, 0, 100), 5, 5, floor);
+            /*var height = room.Prefabs.PrefabWall.GetComponent<BoxCollider>().size.y;
             var cellingBlocs = SpawnPlace(room.PositionRoom + new Vector3(0, height, 0), room.Width, room.Length,
                 room.Prefabs.PrefabCeiling);
             var wallBlocs = SpawnWalls(room.PositionRoom, room.Width, room.Length, room.Prefabs.PrefabWall,
@@ -21,7 +31,7 @@ namespace GenerationMap
             room.WallBlocs = wallBlocs;
             room.CellingBlocs = cellingBlocs;
 
-            room.ExhibitsGO = SpawnExhibits(room);
+            room.ExhibitsGO = SpawnExhibits(room);*/
         }
 
         private List<GameObject> SpawnExhibits(Room room)
@@ -35,16 +45,13 @@ namespace GenerationMap
                     if (exhibitDto.Id == ExhibitsConstants.Picture.Id)
                     {
                         exhibits.Add(SpawnWallExhibit(i, j, exhibitDto, room.WallBlocs, picture));
-                        
                     }
 
                     if (exhibitDto.Id == ExhibitsConstants.Cup.Id)
                     {
                         exhibits.Add(SpawnExhibit(i, j, exhibitDto.HeightSpawn, exhibitDto, room.WallBlocs,
                             room.FloorBlocs, picture));
-                        
                     }
-                   
                 }
             }
 
@@ -139,10 +146,12 @@ namespace GenerationMap
         private GameObject[,] SpawnPlace(Vector3 positionRoom, int roomWidth, int roomLength, GameObject prefab)
         {
             var blocs = new GameObject[roomLength, roomWidth];
-            var scale = prefab.GetComponent<BoxCollider>().size;
+            //var scale = prefab.GetComponent<BoxCollider>().size;
+            var scale = new Vector3(1, 1, 1);
             //находим крайнюю точку исзодя из центра комнаты
             positionRoom = new Vector3(scale.x / 2 + positionRoom.x - (float) roomLength / 2 * scale.x, positionRoom.y,
                 scale.x / 2 + positionRoom.z - (float) roomWidth / 2 * scale.z);
+            Debug.Log($"{positionRoom} {roomLength} {roomWidth} ");
 
             for (int i = 0; i < blocs.GetLength(0); i++)
             {
@@ -150,6 +159,7 @@ namespace GenerationMap
                 {
                     var tempPos = new Vector3(positionRoom.x + i * scale.x, positionRoom.y,
                         positionRoom.z + j * scale.z);
+                    Debug.Log("GeneratePlace");
                     blocs[i, j] = SpawnChunk(prefab, tempPos);
                 }
             }

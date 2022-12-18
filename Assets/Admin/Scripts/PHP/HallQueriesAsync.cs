@@ -7,68 +7,57 @@ using UnityEngine;
 
 namespace Admin.PHP
 {
-    public class HallQueries
+    public class HallQueriesAsync
     {
-        public Action<Hall> OnHallGet;
-        public Action<List<Hall>> OnAllHallsGet;
-        public Action<List<HallContent>> OnAllHallContentsGet;
-        private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
-        private Action<string> _responseCallback;
-        private string _responseText;
+        private ClientPhpAsync _phpClient = new(isDebugOn: true);
 
-        public HallQueries()
+        
+        public async Task<Hall> GetHallByHnumAsync(int hnum)
         {
-            _responseCallback += response => _responseText = response;
-        }
-        ~HallQueries()
-        {
-            _responseCallback -= response => _responseText = response;
-        }
-        public IEnumerator GetHallByHnum(int hnum)
-        {
-            yield return QueryGetHallByHnum(hnum);
-            if (string.IsNullOrWhiteSpace(_responseText))
+            var getHall = await QueryGetHallByHnumAsync(hnum).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(getHall))
             {
-                OnHallGet?.Invoke(new Hall());
-                yield break;
+                Debug.Log($"Get empty data for request 'getHallByHnum' Hnum = {hnum}");
+                return new Hall();
             }
-            OnHallGet?.Invoke(ParseRawHall(_responseText));
+
+            return ParseRawHall(getHall);
         }
-        private IEnumerator QueryGetHallByHnum(int hnum)
+        private async Task<string> QueryGetHallByHnumAsync(int hnum)
         {
-            _responseText = "";
-            string phpFileName = "get_hall_by_hnum.php";
-            WWWForm data = new WWWForm();
+            var phpFileName = "get_hall_by_hnum.php";
+            var data = new WWWForm();
             data.AddField("hnum", hnum);
-            yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+            return await _phpClient.PostRequestAsync(phpFileName, data);
         }
         
-        public IEnumerator GetAllHalls()
+        public async Task<List<Hall>> GetAllHalls()
         {
-            yield return QueryGetAllHalls();
-            if (string.IsNullOrWhiteSpace(_responseText))
+            var getAllHalls =  await QueryGetAllHalls().ConfigureAwait(false);
+            if (string.IsNullOrEmpty(getAllHalls) || getAllHalls.Split(" ")[0] == "<br")
             {
-                OnAllHallsGet?.Invoke(new List<Hall>());
-                yield break;
+                Debug.Log("Get empty data for request 'getAllHalls'");
+                return new List<Hall>();
             }
-            var rawHalls = _responseText.Split(";");
-            List<Hall> newHalls = new List<Hall>();
+            
+            var rawHalls = getAllHalls.Split(";");
+            var newHalls = new List<Hall>();
             foreach (var rawHall in rawHalls)
             {
                 if (string.IsNullOrWhiteSpace(rawHall))
                     continue;
-                
                 newHalls.Add(ParseRawHall(rawHall));
             }
-            OnAllHallsGet?.Invoke(newHalls);
+
+            return newHalls;
         }
         
         private Hall ParseRawHall(string rawHall)
         {
-            if (string.IsNullOrEmpty(rawHall) || _responseText.Split(" ")[0] == "<br")
+            if (string.IsNullOrEmpty(rawHall))
                 return new Hall();
 
-            Hall newHall = new Hall();
+            var newHall = new Hall();
             var hallData = rawHall.Split("|");
             newHall.hnum = Int32.Parse(hallData[0]);
             newHall.name = hallData[1];
@@ -87,25 +76,27 @@ namespace Admin.PHP
             newHall.roof = Int32.Parse(hallData[14]);
             return newHall;
         }
-        
-        private IEnumerator QueryGetAllHalls()
+
+        private async Task<string> QueryGetAllHalls()
         {
-            _responseText = "";
-            string phpFileName = "get_all_halls.php";
-            yield return _queriesToPhp.GetRequest(phpFileName, _responseCallback);
+            var phpFileName = "get_all_halls.php";
+            return await _phpClient.GetRequestAsync(phpFileName).ConfigureAwait(false);
         }
-        
-        public IEnumerator GetAllContentsByHnum(int hnum)
+
+        public async Task<List<HallContent>> GetAllContentsByHnumAsync(int hnum, WWWForm form)
         {
-            yield return QueryGetAllContentsByHnum(hnum);
-            if (string.IsNullOrWhiteSpace(_responseText))
+            var allContentsByHnum = await QueryGetAllContentsByHnumAsync(hnum,form).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(allContentsByHnum) || allContentsByHnum.Split(" ")[0] == "<br")
             {
-                OnAllHallContentsGet?.Invoke(new List<HallContent>());
-                yield break;
+                Debug.Log($"Get empty data for request 'getAllContentsByHnum' Hnum = {hnum}");
+                return new List<HallContent>();
             }
 
-            var rawHallContents = _responseText.Split(';');
-            List<HallContent> newHallContents = new List<HallContent>();
+            var rawHallContents = allContentsByHnum.Split(';');
+            
+            var newHallContents = new List<HallContent>();
+            
             foreach (var rawHallContent in rawHallContents)
             {
                 if (string.IsNullOrWhiteSpace(rawHallContent))
@@ -113,15 +104,16 @@ namespace Admin.PHP
                 
                 newHallContents.Add(ParseRawHallContent(rawHallContent, hnum));
             }
-            OnAllHallContentsGet?.Invoke(newHallContents);
+
+            return newHallContents;
         }
-        
         private HallContent ParseRawHallContent(string rawHallContent, int hnum)
         {
-            if (string.IsNullOrEmpty(rawHallContent) || _responseText.Split(" ")[0] == "<br")
+            if (string.IsNullOrEmpty(rawHallContent))
                 return new HallContent();
             
             var rawContent = rawHallContent.Split('|');
+            
             HallContent newHallContent = new HallContent();
             newHallContent.hnum = hnum;
             newHallContent.cnum = Int32.Parse(rawContent[0]);
@@ -136,12 +128,14 @@ namespace Admin.PHP
             newHallContent.pos_z = Int32.Parse(newHallContent.combined_pos.Split('_')[1]);
             return newHallContent;
         }
-        private IEnumerator QueryGetAllContentsByHnum(int hnum)
+
+        private async Task<string> QueryGetAllContentsByHnumAsync(int hnum,WWWForm form)
         {
-            string phpFileName = "get_contents_by_hnum.php";
-            WWWForm data = new WWWForm();
-            data.AddField("hnum", hnum);
-            yield return _queriesToPhp.PostRequest(phpFileName, data, _responseCallback);
+            var phpFileName = "get_contents_by_hnum.php";
+            Debug.Log("start");
+            Debug.Log("finish");
+            form.AddField("hnum", hnum);
+            return await _phpClient.PostRequestAsync(phpFileName, form).ConfigureAwait(false);
         }
     }
 }

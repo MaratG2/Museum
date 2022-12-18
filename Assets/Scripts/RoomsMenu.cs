@@ -1,6 +1,8 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Admin.PHP;
 using Admin.Utility;
 using GenerationMap;
 using UnityEngine;
@@ -11,34 +13,76 @@ public class RoomsMenu : MonoBehaviour
 
     [SerializeField] private Canvas canvas;
     [SerializeField] private Font font;
+    [SerializeField] private Button next;
+    [SerializeField] private Button back;
+    [SerializeField] private Button goToHall;
+    [SerializeField] private Text goToHallText;
+    [SerializeField] private GenerationScript generationScript;
+    [SerializeField] private RoomsContainer _roomsContainer;
+    
+    
     [SerializeField] private DataConverter converter;
     [SerializeField] private GameObject player;
-    private List<GameObject> buttons; 
+    private List<GameObject> buttons;
+    private int currentHall = 0;
+    
+    
+    public void Start()
+    {
+        if(_roomsContainer.CachedHallsInfo.Count == 0)
+            return;
+        goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+    }
 
-    private void OnEnable()
+    public void NextHall()
+    {
+        if (currentHall == _roomsContainer.CachedHallsInfo.Count - 1)
+            currentHall = 0;
+        else currentHall++;
+        goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+    }
+    
+    public void PreviewHall()
+    {
+        if (currentHall == 0)
+            currentHall = _roomsContainer.CachedHallsInfo.Count - 1;
+        else
+            currentHall--;
+        goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+    }
+
+    public void LoadHall()
+    {
+        var room = converter.GetRoomByRoomDto(_roomsContainer.CachedRooms[currentHall]);
+        var pos = converter.GenerateRoomWithContens(room);
+        player.transform.position = pos;
+    }
+
+
+    /*private void OnEnable()
     {
         var rooms = GetAllowsRooms();
-        Debug.Log(rooms.Count);
         buttons = CreateButtons(rooms);
-    }
-    private List<GameObject> CreateButtons(List<RoomInfo> rooms)
+    }*/
+
+    /*private async Task<List<GameObject>> CreateButtons(List<Hall> rooms)
     {
         return rooms
-            .Select(CreateButton)
+            .Select(async x=>await CreateButton(x).ConfigureAwait(false))
             .ToList();
-    }
+    }*/
 
-    private GameObject CreateButton (RoomInfo room)
+    /*private async Task<GameObject> CreateButton (Hall room)
     {
-        var newButton = new GameObject($"button: {room.Name}", typeof(Image), typeof(Button), typeof(LayoutElement));
+        var newButton = new GameObject($"button: {room.name}", typeof(Image), typeof(Button), typeof(LayoutElement));
         newButton.transform.SetParent(gameObject.transform);
         newButton.GetComponent<LayoutElement>().minHeight = 35;
         newButton.GetComponent<LayoutElement>().minWidth = 100;
         
         
-        var newText = new GameObject($"text: {room.Name}", typeof(Text));
+        var newText = new GameObject($"text: {room.name}", typeof(Text));
         newText.transform.SetParent(newButton.transform);
-        newText.GetComponent<Text>().text = $"{room.Name}";
+        newText.GetComponent<Text>().text = $"{room.name}";
         newText.GetComponent<Text>().font = font;
         var rt = newText.GetComponent<RectTransform>();
         rt.anchorMin = new Vector2(0, 0);
@@ -47,41 +91,18 @@ public class RoomsMenu : MonoBehaviour
         rt.sizeDelta = new Vector2(0, 0);
         newText.GetComponent<Text>().color = new Color(0, 0, 0);
         newText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-        newButton.GetComponent<Button>().onClick.AddListener(delegate { GetActionPressButton(room.Id); });
+        newButton.GetComponent<Button>().onClick.AddListener(delegate { await GetActionPressButton(room); });
         return newButton;
-    }
+    }*/
 
-    public void GetActionPressButton(int num)
+    /*public async Task GetActionPressButton(Hall hall)
     {
-        var pos = converter.GenerateRoomByOnum(num);
+        var pos = await converter.GenerateRoomByOnum(hall).ConfigureAwait(false);
         player.transform.position = pos;
         foreach (var t in buttons)
         {
             Destroy(t);
         }
         buttons.Clear();
-    }
-
-
-    private List<RoomInfo> GetAllowsRooms()
-    {
-        var roomsRaw = ConnectionDb.GetAllOptions();
-        return roomsRaw
-            .Select(ConvertRoom)
-            /*.Where(x => x.IsAvailable)*/
-            .ToList();
-    }
-
-    private RoomInfo ConvertRoom(Hall rawData)
-    {
-        var roomInfo = new RoomInfo()
-        {
-            Id = rawData.hnum,
-            Name = rawData.name,
-            IsAvailable = rawData.is_date_b && !rawData.is_date_e && !rawData.is_hidden
-        };
-        return roomInfo;
-    }
-
-
+    }*/
 }

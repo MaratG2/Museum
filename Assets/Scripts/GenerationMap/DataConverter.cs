@@ -1,7 +1,12 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
+using Admin.PHP;
 using Admin.Utility;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace GenerationMap
@@ -15,24 +20,15 @@ namespace GenerationMap
         [SerializeField] public GameObject cellingBlock;
         [SerializeField] public Vector3 positionForSpawn = new Vector3(100,0,100);
         public List<Room> Rooms = new List<Room>();
+        private readonly HallQueriesAsync _hallQueriesAsync = new();
 
-        public void Start()
+        public Vector3 GenerateRoomWithContens(Room roomOptions)
         {
-            ConnectionDb.OpenConnection();
+            generationScript.SpawnRoom(roomOptions);
+            Rooms.Add(roomOptions);
+            return roomOptions.GetSpawnPosition();
         }
-
-        public Vector3 GenerateRoomByOnum(int num)
-        {
-            return GenerateRoomByOnum(ConnectionDb.GetOptionByOnum(num));
-        }
-
-        public Vector3 GenerateRoomByOnum(Hall roomOptions)
-        {
-            var room = GetRoomByResponse(roomOptions);
-            generationScript.SpawnRoom(room);
-            Rooms.Add(room);
-            return room.GetSpawnPosition();
-        }
+        
 
 
         public ExhibitDto GetExhibitByResponse(HallContent content)
@@ -51,23 +47,16 @@ namespace GenerationMap
 
             };
         }
-        
-        public Room GetRoomByResponse(Hall room)
+
+        public Room GetRoomByRoomDto(RoomDto roomDto)
         {
-            var exhibitsData = ConnectionDb
-                .GetAllContentByOnum(room.hnum)
-                .Select(GetExhibitByResponse)
-                .ToList();
-            Debug.Log($"{exhibitsData.Count}");
-
-
-            var exhibitsMap = new ExhibitDto[room.sizex, room.sizez];
+            var exhibitsData = roomDto.Contents.Select(GetExhibitByResponse).ToList();
+            var exhibitsMap = new ExhibitDto[roomDto.HallOptions.sizex, roomDto.HallOptions.sizez];
+            
             for (var i = 0; i < exhibitsMap.GetLength(0); i++)
             {
                 for (var j = 0; j < exhibitsMap.GetLength(1); j++)
-                {
                     exhibitsMap[i, j] = ExhibitsConstants.Floor;
-                }
             }
 
             var localSpawnPoint = new Vector2Int();

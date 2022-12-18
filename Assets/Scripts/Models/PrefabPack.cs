@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GenerationMap
 {
-    public class PrefabPack : MonoBehaviour
+    public class PrefabPack
     {
         public readonly GameObject PrefabWall;
         public readonly GameObject PrefabFloor;
@@ -13,7 +13,6 @@ namespace GenerationMap
             PrefabWall = prefabWall;
             PrefabFloor = prefabFloor;
             PrefabCeiling = prefabCeiling;
-            
         }
     }
 }

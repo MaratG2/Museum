@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -45,7 +46,10 @@ namespace Admin.PHP
                 if (www.result != UnityWebRequest.Result.Success)
                     Debug.LogError($"Url: {www.uri} | Error: {www.error} | {www.downloadHandler?.text}");
                 else
+                {
                     responseCallback?.Invoke(www.downloadHandler.text);
+                    Debug.Log(www.downloadHandler.text);
+                }
             }
         }
     }
