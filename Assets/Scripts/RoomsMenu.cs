@@ -1,9 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Admin.PHP;
-using Admin.Utility;
 using GenerationMap;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,10 +12,8 @@ public class RoomsMenu : MonoBehaviour
     [SerializeField] private Button back;
     [SerializeField] private Button goToHall;
     [SerializeField] private Text goToHallText;
-    [SerializeField] private GenerationScript generationScript;
     [SerializeField] private RoomsContainer _roomsContainer;
-    
-    
+
     [SerializeField] private DataConverter converter;
     [SerializeField] private GameObject player;
     private List<GameObject> buttons;
@@ -32,6 +25,7 @@ public class RoomsMenu : MonoBehaviour
         if(_roomsContainer.CachedHallsInfo.Count == 0)
             return;
         goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+        
     }
 
     public void NextHall()
@@ -40,6 +34,11 @@ public class RoomsMenu : MonoBehaviour
             currentHall = 0;
         else currentHall++;
         goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+        
+        foreach (var info in _roomsContainer.CachedHallsInfo)
+        {
+            Debug.Log($"{info.name} {info.sizex} {info.sizez}");
+        }
     }
     
     public void PreviewHall()
@@ -54,8 +53,9 @@ public class RoomsMenu : MonoBehaviour
     public void LoadHall()
     {
         var room = converter.GetRoomByRoomDto(_roomsContainer.CachedRooms[currentHall]);
-        var pos = converter.GenerateRoomWithContens(room);
-        player.transform.position = pos;
+        converter.GenerateRoomWithContens(room);
+        var posForSpawn = room.GetSpawnPosition();
+        player.transform.position = posForSpawn;
     }
 
 

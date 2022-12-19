@@ -18,19 +18,14 @@ namespace GenerationMap
         [SerializeField] public GameObject wallBlock;
         [SerializeField] public GameObject floorBlock;
         [SerializeField] public GameObject cellingBlock;
-        [SerializeField] public Vector3 positionForSpawn = new Vector3(100,0,100);
-        public List<Room> Rooms = new List<Room>();
-        private readonly HallQueriesAsync _hallQueriesAsync = new();
+        [SerializeField] public Vector3 positionForSpawn = new(100,0,100);
+        private Room _lastSpawnedRoom;
 
-        public Vector3 GenerateRoomWithContens(Room roomOptions)
+        public void GenerateRoomWithContens(Room roomOptions)
         {
             generationScript.SpawnRoom(roomOptions);
-            Rooms.Add(roomOptions);
-            return roomOptions.GetSpawnPosition();
         }
         
-
-
         public ExhibitDto GetExhibitByResponse(HallContent content)
         {
             var constExhibit = ExhibitsConstants.GetModelById(content.type);
@@ -50,6 +45,7 @@ namespace GenerationMap
 
         public Room GetRoomByRoomDto(RoomDto roomDto)
         {
+            Debug.Log($"{roomDto.HallOptions.sizex} {roomDto.HallOptions.sizez}");
             var exhibitsData = roomDto.Contents.Select(GetExhibitByResponse).ToList();
             var exhibitsMap = new ExhibitDto[roomDto.HallOptions.sizex, roomDto.HallOptions.sizez];
             
@@ -67,9 +63,22 @@ namespace GenerationMap
                 exhibitsMap[exibit.LocalPosition.X, exibit.LocalPosition.Y] = exibit;
             }
 
-            return new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock), localSpawnPoint,
-                positionForSpawn);
+            var tempSpawnPosition = positionForSpawn;
+
+            positionForSpawn *= -1;
+            DestroyLastRoom();
+            var newRoom = new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock), localSpawnPoint,
+                tempSpawnPosition);
+            _lastSpawnedRoom = newRoom;
+            return newRoom;
         }
+
+        private void DestroyLastRoom()
+        {
+            if (_lastSpawnedRoom == null) return;
+            StartCoroutine(generationScript.DestroyRoom(_lastSpawnedRoom));
+        }
+        
         
     }
 }

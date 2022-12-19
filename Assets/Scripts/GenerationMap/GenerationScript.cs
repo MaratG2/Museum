@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,21 +9,31 @@ namespace GenerationMap
     public class GenerationScript : MonoBehaviour
     {
         [SerializeField] public GameObject picture;
-        //public RoomsContainer RoomsContainer = new();
         [SerializeField] public GameObject pedestal;
-        [SerializeField] private GameObject floor;
 
         public void Start()
         {
             
         }
 
+        public IEnumerator DestroyRoom(Room room)
+        {
+            foreach (var exhibit in room.ExhibitsGO)
+                Destroy(exhibit);
+            foreach (var floor in room.FloorBlocs)
+                Destroy(floor);
+            foreach (var cell in room.CellingBlocs)
+                Destroy(cell);
+            foreach (var wall in room.WallBlocs)
+                Destroy(wall);
+            yield return null;
+        }
+
         public void SpawnRoom(Room room)
         {
-            Debug.Log($"{room.Length} {room.Width}");
-            //var floorBlocs = SpawnPlace(room.PositionRoom, room.Width, room.Length,floor /*room.Prefabs.PrefabFloor*/);
-            SpawnPlace(new Vector3(100, 0, 100), 5, 5, floor);
-            /*var height = room.Prefabs.PrefabWall.GetComponent<BoxCollider>().size.y;
+            
+            var floorBlocs = SpawnPlace(room.PositionRoom, room.Width, room.Length, room.Prefabs.PrefabFloor);
+            var height = room.Prefabs.PrefabWall.GetComponent<BoxCollider>().size.y;
             var cellingBlocs = SpawnPlace(room.PositionRoom + new Vector3(0, height, 0), room.Width, room.Length,
                 room.Prefabs.PrefabCeiling);
             var wallBlocs = SpawnWalls(room.PositionRoom, room.Width, room.Length, room.Prefabs.PrefabWall,
@@ -31,7 +42,7 @@ namespace GenerationMap
             room.WallBlocs = wallBlocs;
             room.CellingBlocs = cellingBlocs;
 
-            room.ExhibitsGO = SpawnExhibits(room);*/
+            room.ExhibitsGO = SpawnExhibits(room);
         }
 
         private List<GameObject> SpawnExhibits(Room room)
@@ -98,7 +109,7 @@ namespace GenerationMap
         private GameObject[,] SpawnWalls(Vector3 positionRoom, int roomWidth, int roomLength, GameObject prefabWall,
             GameObject floorPrefab)
         {
-            var walls = new GameObject[roomLength, roomWidth];
+            var walls = new GameObject[roomLength+2, roomWidth+2];
             var axis = new Vector3(0, 1, 0);
             var scaleFloor = floorPrefab.GetComponent<BoxCollider>().size;
             //вычисление стартовой точки
@@ -106,37 +117,40 @@ namespace GenerationMap
                 scaleFloor.z / 2 + positionRoom.z - (float) roomWidth / 2 * scaleFloor.z);
 
             //параллельно оси z
-            for (int i = 0; i < roomWidth; i++)
+            for (int i = 1; i <= roomWidth; i++)
             {
                 walls[0, i] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(90, axis));
-                if (roomWidth - i > 1)
+                
+                if (roomWidth - i > 0)
                     positionRoom += new Vector3(0, 0, scaleFloor.z);
             }
 
             positionRoom += new Vector3(scaleFloor.x / 2, 0, scaleFloor.z / 2);
             //параллельно оси x
-            for (var i = 0; i < roomLength; i++)
+            for (var i = 1; i <= roomLength; i++)
             {
-                walls[i, roomWidth - 1] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(180, axis));
-                if (roomLength - i > 1)
+                walls[i, roomWidth + 1] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(180, axis));
+               
+                if (roomLength - i > 0)
                     positionRoom += new Vector3(scaleFloor.x, 0, 0);
             }
 
             positionRoom += new Vector3(scaleFloor.x / 2, 0, -scaleFloor.z / 2);
             //параллельно оси -z
-            for (var i = roomWidth - 1; i >= 0; i--)
+            for (var i = roomWidth; i >= 1; i--)
             {
-                walls[roomLength - 1, i] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(270, axis));
-                if (i > 0)
+                walls[roomLength + 1, i] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(270, axis));
+                
+                if (i > 1)
                     positionRoom += new Vector3(0, 0, -scaleFloor.z);
             }
 
             positionRoom += new Vector3(-scaleFloor.x / 2, 0, -scaleFloor.z / 2);
             //параллельно оси -x
-            for (var i = roomLength - 1; i >= 0; i--)
+            for (var i = roomLength; i >= 1; i--)
             {
                 walls[i, 0] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(0, axis));
-                if (i > 0)
+                if (i > 1)
                     positionRoom += new Vector3(-scaleFloor.x, 0, 0);
             }
 
@@ -146,12 +160,11 @@ namespace GenerationMap
         private GameObject[,] SpawnPlace(Vector3 positionRoom, int roomWidth, int roomLength, GameObject prefab)
         {
             var blocs = new GameObject[roomLength, roomWidth];
-            //var scale = prefab.GetComponent<BoxCollider>().size;
-            var scale = new Vector3(1, 1, 1);
+            var scale = prefab.GetComponent<BoxCollider>().size;
+            
             //находим крайнюю точку исзодя из центра комнаты
             positionRoom = new Vector3(scale.x / 2 + positionRoom.x - (float) roomLength / 2 * scale.x, positionRoom.y,
                 scale.x / 2 + positionRoom.z - (float) roomWidth / 2 * scale.z);
-            Debug.Log($"{positionRoom} {roomLength} {roomWidth} ");
 
             for (int i = 0; i < blocs.GetLength(0); i++)
             {
@@ -159,7 +172,7 @@ namespace GenerationMap
                 {
                     var tempPos = new Vector3(positionRoom.x + i * scale.x, positionRoom.y,
                         positionRoom.z + j * scale.z);
-                    Debug.Log("GeneratePlace");
+                    
                     blocs[i, j] = SpawnChunk(prefab, tempPos);
                 }
             }
