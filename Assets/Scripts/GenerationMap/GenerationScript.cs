@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using Admin.Utility;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace GenerationMap
 {
@@ -10,11 +9,9 @@ namespace GenerationMap
     {
         [SerializeField] public GameObject picture;
         [SerializeField] public GameObject pedestal;
-
-        public void Start()
-        {
-            
-        }
+        [SerializeField] public GameObject videoFrame;
+        [SerializeField] public GameObject[] decorations;
+        
 
         public IEnumerator DestroyRoom(Room room)
         {
@@ -55,13 +52,25 @@ namespace GenerationMap
                     var exhibitDto = room.Exhibits[i, j];
                     if (exhibitDto.Id == ExhibitsConstants.Picture.Id)
                     {
-                        exhibits.Add(SpawnWallExhibit(i, j, exhibitDto, room.WallBlocs, picture));
+                        exhibits.Add(SpawnWallExhibit(i, j, exhibitDto, room.WallBlocs, room));
                     }
 
                     if (exhibitDto.Id == ExhibitsConstants.Cup.Id)
                     {
                         exhibits.Add(SpawnExhibit(i, j, exhibitDto.HeightSpawn, exhibitDto, room.WallBlocs,
-                            room.FloorBlocs, picture));
+                            room.FloorBlocs, room, pedestal));
+                    }
+
+                    if (exhibitDto.Id == ExhibitsConstants.Decoration.Id)
+                    {
+                        var rnd = Random.Range(0, decorations.Length - 1);
+                        exhibits.Add(SpawnDecoration(i, j, exhibitDto.HeightSpawn, exhibitDto, room.WallBlocs,
+                            room.FloorBlocs, room, decorations[rnd]));
+                    }
+                    
+                    if (exhibitDto.Id == ExhibitsConstants.Video.Id)
+                    {
+                        exhibits.Add(SpawnVideoExhibit(i, j, exhibitDto, room.WallBlocs, room));
                     }
                 }
             }
@@ -70,9 +79,11 @@ namespace GenerationMap
         }
 
         private GameObject SpawnWallExhibit(int i, int j, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
-            GameObject o)
+            Room room)
         {
-            var nearWall = FindNearWall(i, j, roomWallBlocs);
+            var nearWall = FindNearWall(i, j, room,roomWallBlocs);
+            //костыль
+            if (nearWall == null) return null;
             var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
             var rotate = nearWall.transform.rotation;
             var exhibit = SpawnChunk(picture,
@@ -83,27 +94,90 @@ namespace GenerationMap
         }
 
         private GameObject SpawnExhibit(int i, int j, float height, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
-            GameObject[,] floorBlocks, GameObject o)
+            GameObject[,] floorBlocks, Room room, GameObject o)
         {
-            var nearWall = FindNearWall(i, j, roomWallBlocs);
+            var nearWall = FindNearWall(i, j, room, roomWallBlocs);
+            if (nearWall == null) return null;
             var rotate = nearWall.transform.rotation;
-            var exhibit = SpawnChunk(pedestal,
-                floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
+            var exhibit = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
             exhibit.GetComponent<ViewObject>().Name = exhibitDto.TextContentFirst;
             return exhibit;
         }
-
-
-        private GameObject FindNearWall(int i, int j, GameObject[,] roomWallBlocs)
+        
+        private GameObject SpawnVideoExhibit(int i, int j, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
+            Room room)
         {
-            if (i == 1) return roomWallBlocs[0, j];
-            if (j == 1) return roomWallBlocs[i, 0];
-            if (i == roomWallBlocs.GetLength(0) - 2) return roomWallBlocs[roomWallBlocs.GetLength(0) - 1, j];
-            if (j == roomWallBlocs.GetLength(1) - 2) return roomWallBlocs[i, roomWallBlocs.GetLength(1) - 1];
+            var nearWall = FindNearWall(i, j, room,roomWallBlocs);
+            //костыль
+            if (nearWall == null) return null;
+            var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
+            var rotate = nearWall.transform.rotation;
+            var exhibit = SpawnChunk(videoFrame,
+                position, rotate);
+            exhibit.GetComponent<VideoFrame>()._videoUrl = exhibitDto.LinkOnImage;
+
+            return exhibit;
+        }
+        
+        private GameObject SpawnDecoration(int i, int j, float height, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
+            GameObject[,] floorBlocks, Room room, GameObject o)
+        {
+            var nearWall = FindNearWall(i, j, room, roomWallBlocs);
+            if (nearWall == null) return null;
+            var rotate = nearWall.transform.rotation;
+            var decoration = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
+           
+            return decoration;
+        }
+
+
+        private GameObject FindNearWall(int i, int j, Room room, GameObject[,] roomWallBlocs)
+        {
+            if (i == 0 && j == 0)
+            {
+                if (roomWallBlocs[1, j] == null) Debug.Log($"{i},{j}");
+                return roomWallBlocs[0, j];
+            }
+            if (i == 0)
+            {
+                if (roomWallBlocs[0, j] == null) Debug.Log($"{i},{j}");
+                return roomWallBlocs[0, j];
+            }
+
+            if (j == 0)
+            {
+                if (roomWallBlocs[i, 0] == null) Debug.Log($"{i},{j}");
+                return roomWallBlocs[i, 0];
+            }
+
+            if (i == room.Length)
+            {
+                if (roomWallBlocs[room.Length + 1, j] == null) Debug.Log($"{i},{j}");
+                return roomWallBlocs[room.Length + 1, j];
+            }
+
+            if (j == room.Width)
+            {
+                if (roomWallBlocs[i, room.Width+1] == null) Debug.Log($"{i},{j}");
+                return roomWallBlocs[i, room.Width+1];
+            }
 
             if (i < roomWallBlocs.GetLength(0) / 2)
+            {
+                if (roomWallBlocs[0, j] == null)
+                {
+                    Debug.Log($"{i},{j} sredn<");
+                    Debug.Log($"{0},{j} sredn<");
+                }
                 return roomWallBlocs[0, j];
-            return roomWallBlocs[roomWallBlocs.GetLength(0) - 1, j];
+            }
+
+            if (roomWallBlocs[room.Length, j])
+            {
+                Debug.Log($"{i},{j} sredn>");
+                Debug.Log($"{room.Length + 1},{j} sredn>");
+            }
+            return roomWallBlocs[room.Length + 1, j];
         }
 
         private GameObject[,] SpawnWalls(Vector3 positionRoom, int roomWidth, int roomLength, GameObject prefabWall,

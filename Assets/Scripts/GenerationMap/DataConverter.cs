@@ -1,12 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
-using Admin.PHP;
 using Admin.Utility;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace GenerationMap
@@ -45,7 +39,7 @@ namespace GenerationMap
 
         public Room GetRoomByRoomDto(RoomDto roomDto)
         {
-            Debug.Log($"{roomDto.HallOptions.sizex} {roomDto.HallOptions.sizez}");
+            Debug.Log($"{roomDto.HallOptions.name} {roomDto.HallOptions.sizex} {roomDto.HallOptions.sizez}");
             var exhibitsData = roomDto.Contents.Select(GetExhibitByResponse).ToList();
             var exhibitsMap = new ExhibitDto[roomDto.HallOptions.sizex, roomDto.HallOptions.sizez];
             

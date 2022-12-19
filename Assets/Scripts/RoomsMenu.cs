@@ -52,7 +52,7 @@ public class RoomsMenu : MonoBehaviour
 
     public void LoadHall()
     {
-        var room = converter.GetRoomByRoomDto(_roomsContainer.CachedRooms[currentHall]);
+        var room = converter.GetRoomByRoomDto(_roomsContainer.CachedRooms[_roomsContainer.CachedHallsInfo[currentHall].hnum]);
         converter.GenerateRoomWithContens(room);
         var posForSpawn = room.GetSpawnPosition();
         player.transform.position = posForSpawn;
