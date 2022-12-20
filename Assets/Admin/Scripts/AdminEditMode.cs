@@ -12,7 +12,7 @@ using UnityEngine.UI;
 public class AdminEditMode : MonoBehaviour
 {
     [SerializeField] private Sprite _doorSprite, _frameSprite, _infoSprite, _cupSprite, _medalSprite, _rubberSprite, _videoSprite, _decorSprite, _selectSprite;
-    [SerializeField] private AdminViewMode _adminView;
+    [SerializeField] private HallViewer _adminView;
     [SerializeField] private RectTransform _paintsParent;
     [SerializeField] private RectTransform _cursorTile;
     [SerializeField] private RectTransform _imagePreview;
@@ -123,12 +123,12 @@ public class AdminEditMode : MonoBehaviour
             for (int j = 0; j < 1080 / tileSize; j++)
             {
                 bool isOverPreview = false;
-                GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
-                    AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(
+                GameObject[] casted = RaycastUtilities.UIRaycasts(
+                    RaycastUtilities.ScreenPosToPointerData(
                         new Vector2(i * tileSize + tileSize/2, j * tileSize + tileSize/4)));
                 foreach (var c in casted)
                 {
-                    if (c.GetComponent<AdminHallPreview>())
+                    if (c.GetComponent<HallPreviewResizer>())
                         isOverPreview = true;
                 }
 
@@ -302,11 +302,10 @@ public class AdminEditMode : MonoBehaviour
         _doorTool.interactable = turnToTrue;
         _isDoorBlock = !turnToTrue;
         bool isOverPreview = false;
-        GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
-            AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(absoluteMousePos));
+        GameObject[] casted = RaycastUtilities.UIRaycasts(RaycastUtilities.ScreenPosToPointerData(absoluteMousePos));
         foreach (var c in casted)
         {
-            if (c.GetComponent<AdminHallPreview>())
+            if (c.GetComponent<HallPreviewResizer>())
                 isOverPreview = true;
         }
         

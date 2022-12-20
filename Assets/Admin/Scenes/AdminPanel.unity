@@ -25360,6 +25360,7 @@ GameObject:
   - component: {fileID: 1756156829}
   - component: {fileID: 1756156830}
   - component: {fileID: 1756156831}
+  - component: {fileID: 1756156833}
   - component: {fileID: 1756156832}
   m_Layer: 5
   m_Name: Panel - View Mode
@@ -25421,8 +25422,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textGORefreshing: {fileID: 667551742}
-  _hallListingPrefab: {fileID: 9206340293977800339, guid: 489b0c4cab8a53745aa4582dd0f2e4b4, type: 3}
-  _hallListingsParent: {fileID: 1759254399}
   _modeSwitchEdit: {fileID: 1048876208}
   _modeSwitchNew: {fileID: 1202694880}
 --- !u!114 &1756156832
@@ -25440,6 +25439,20 @@ MonoBehaviour:
   _tilePrefab: {fileID: 4393069683093656196, guid: 80e62d113d666e14584e9cbd5ca81bfc, type: 3}
   _tilesParent: {fileID: 428478305}
   _hallPreview: {fileID: 1107959038}
+--- !u!114 &1756156833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756156828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa087202adb6b1540b8165dbef2969a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hallListingPrefab: {fileID: 9206340293977800339, guid: 489b0c4cab8a53745aa4582dd0f2e4b4, type: 3}
+  _hallListingsParent: {fileID: 1759254399}
 --- !u!1 &1759254398
 GameObject:
   m_ObjectHideFlags: 0

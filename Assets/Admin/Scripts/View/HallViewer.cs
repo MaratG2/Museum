@@ -10,17 +10,16 @@ using UnityEngine.UI;
 
 namespace Admin.View
 {
-    public class AdminViewMode : MonoBehaviour
+    public class HallViewer : MonoBehaviour
     {
         [SerializeField] private GameObject _textGORefreshing;
-        [SerializeField] private Button _hallListingPrefab;
-        [SerializeField] private RectTransform _hallListingsParent;
         [SerializeField] private Button _modeSwitchEdit;
         [SerializeField] private Button _modeSwitchNew;
         private HallQueries _hallQueries = new();
         private Hall _hallSelected;
         private List<Hall> _cachedHalls;
         private TilesDrawer _tilesDrawer;
+        private HallLister _hallLister;
 
         public Hall HallSelected
         {
@@ -41,6 +40,7 @@ namespace Admin.View
         private void Awake()
         {
             _tilesDrawer = GetComponent<TilesDrawer>();
+            _hallLister = GetComponent<HallLister>();
         }
 
         private void Start()
@@ -64,13 +64,11 @@ namespace Admin.View
             Hall current = new Hall();
             bool hasFound = false;
             foreach (var cho in _cachedHalls)
-            {
                 if (cho.hnum == hnum)
                 {
                     current = cho;
                     hasFound = true;
                 }
-            }
 
             if (!hasFound)
             {
@@ -85,6 +83,13 @@ namespace Admin.View
             }
 
             _hallSelected = current;
+            ModeSwitchChangeActive();
+            
+            StartCoroutine(_tilesDrawer.DrawTilesForHall(_hallSelected));
+        }
+
+        private void ModeSwitchChangeActive()
+        {
             var user = FindObjectOfType<Login>().CurrentUser;
             if (user.access_level == AccessLevel.Editor)
             {
@@ -104,63 +109,31 @@ namespace Admin.View
                 _modeSwitchEdit.gameObject.SetActive(true);
                 _modeSwitchNew.gameObject.SetActive(false);
             }
-
-            StartCoroutine(_tilesDrawer.DrawTilesForHall(_hallSelected));
         }
 
         public void Refresh()
         {
-            for (int i = 0; i < _hallListingsParent.childCount; i++)
-                Destroy(_hallListingsParent.GetChild(i).gameObject);
+            ResetVariables();
+            StartCoroutine(CreateHallListings());
+        }
+
+        private void ResetVariables()
+        {
             HallSelected = new Hall();
+            _hallLister.ClearAllHallListings();
             _tilesDrawer.ClearAllTiles();
             _tilesDrawer.SetPreviewState(false);
             _textGORefreshing.SetActive(true);
             _modeSwitchEdit.gameObject.SetActive(false);
             _modeSwitchNew.gameObject.SetActive(true);
-            StartCoroutine(InitializeAllHalls());
         }
 
-        private IEnumerator InitializeAllHalls()
+        private IEnumerator CreateHallListings()
         {
             _cachedHalls = new List<Hall>();
-
             yield return _hallQueries.GetAllHalls();
-            CreateAllHallListings();
-
+            _hallLister.CreateAllHallListings(_cachedHalls, SelectHall);
             _textGORefreshing.SetActive(false);
-        }
-
-        private void CreateAllHallListings()
-        {
-            foreach (var hall in _cachedHalls)
-            {
-                var newInstance = Instantiate(_hallListingPrefab, Vector3.zero, Quaternion.identity,
-                    _hallListingsParent);
-                newInstance.gameObject.name = hall.hnum + " - " + hall.name;
-                newInstance.GetComponentInChildren<TextMeshProUGUI>().text = hall.name;
-                newInstance.onClick.AddListener(() => SelectHallFromButton(hall.hnum, newInstance.gameObject));
-            }
-
-        }
-
-        private void SelectHallFromButton(int onum, GameObject linkGO)
-        {
-            for (int i = 0; i < _hallListingsParent.transform.childCount; i++)
-            {
-                if (_hallListingsParent.GetChild(i).gameObject == linkGO)
-                {
-                    _hallListingsParent.GetChild(i).GetComponent<Image>().color = Color.green;
-                    _hallListingsParent.GetChild(i).GetComponentInChildren<TextMeshProUGUI>().color = Color.black;
-                }
-                else
-                {
-                    _hallListingsParent.GetChild(i).GetComponent<Image>().color = Color.gray;
-                    _hallListingsParent.GetChild(i).GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
-                }
-            }
-
-            SelectHall(onum);
         }
     }
 }

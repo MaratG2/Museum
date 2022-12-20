@@ -40,6 +40,7 @@ namespace Admin.View
         public IEnumerator DrawTilesForHall(Hall hall)
         {
             SetPreviewState(true);
+            yield return new WaitForSecondsRealtime(0.1f);
             yield return CalculateTileSize(hall.sizex);
             yield return FindLeftBottomTilePosition();
             yield return _hallQueries.GetAllContentsByHnum(hall.hnum);
@@ -107,12 +108,12 @@ namespace Admin.View
         private bool CheckIfTileExistsAt(int x, int y)
         {
             bool isOverPreview = false;
-            GameObject[] casted = AdminHallPreview.RaycastUtilities.UIRaycasts(
-                AdminHallPreview.RaycastUtilities.ScreenPosToPointerData(
+            GameObject[] casted = RaycastUtilities.UIRaycasts(
+                RaycastUtilities.ScreenPosToPointerData(
                     new Vector2(x * _tileSize + _tileSize / 2, y * _tileSize + _tileSize / 4)));
             foreach (var c in casted)
             {
-                if (c.GetComponent<AdminHallPreview>())
+                if (c.GetComponent<HallPreviewResizer>())
                     isOverPreview = true;
             }
 

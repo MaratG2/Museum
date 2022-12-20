@@ -26,7 +26,7 @@ public class AdminNewMode : MonoBehaviour
     [SerializeField] private CanvasGroup _viewCanvasGroup;
     [SerializeField] private Button _goToViewMode;
     [SerializeField] private Button _goToUsersMode;
-    private AdminViewMode _adminViewMode;
+    private HallViewer _hallViewer;
     private QueriesToPHP _queriesToPhp = new (isDebugOn: true);
     private Action<string> _responseCallback;
     private string _responseText;
@@ -34,7 +34,7 @@ public class AdminNewMode : MonoBehaviour
 
     private void Start()
     {
-        _adminViewMode = FindObjectOfType<AdminViewMode>();
+        _hallViewer = FindObjectOfType<HallViewer>();
         _inputDateBegin.interactable = false;
         _inputDateEnd.interactable = false;
     }
@@ -125,8 +125,8 @@ public class AdminNewMode : MonoBehaviour
     {
         _newCanvasGroup.SetActive(false);
         _viewCanvasGroup.SetActive(true);
-        _adminViewMode.enabled = true;
-        _adminViewMode.Refresh();
+        _hallViewer.enabled = true;
+        _hallViewer.Refresh();
         this.enabled = false;
     }
 

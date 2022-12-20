@@ -6,9 +6,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AdminHallPreview : MonoBehaviour
+public class HallPreviewResizer : MonoBehaviour
 {
-    [SerializeField] private AdminViewMode _adminView;
+    [SerializeField] private HallViewer _adminView;
     private RectTransform _rt;
     private BoxCollider2D _collider2D;
     private Image _image;
@@ -58,35 +58,6 @@ public class AdminHallPreview : MonoBehaviour
         _image.material.SetTextureScale("_MainTex", new Vector2(sizeX, sizeZ));
         if(_collider2D)
             _collider2D.size = _rt.sizeDelta;
-    }
-    
-    public static class RaycastUtilities
-    {
-        public static bool PointerIsOverUI(Vector2 screenPos)
-        {
-            var hitObject = UIRaycast(ScreenPosToPointerData(screenPos));
-            return hitObject != null && hitObject.layer == LayerMask.NameToLayer("UI");
-        }
- 
-        public static GameObject UIRaycast (PointerEventData pointerData)
-        {
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerData, results);
- 
-            return results.Count < 1 ? null : results[0].gameObject;
-        }
-        public static GameObject[] UIRaycasts (PointerEventData pointerData)
-        {
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerData, results);
-            List<GameObject> gos = new List<GameObject>();
-            foreach (var r in results)
-                gos.Add(r.gameObject);
-            return gos.ToArray();
-        }
- 
-        public static PointerEventData ScreenPosToPointerData (Vector2 screenPos)
-            => new(EventSystem.current){position = screenPos};
     }
 }
 
