@@ -314,10 +314,32 @@ namespace Admin.Edit
             _doorTool.interactable = turnToTrue;
             _isDoorBlock = !turnToTrue;
         }
-        
+
+        private bool CanDraw()
+        {
+            return (_currentTool == ExhibitsConstants.SpawnPoint.Id
+                   || _currentTool == ExhibitsConstants.Picture.Id
+                   || _currentTool == ExhibitsConstants.InfoBox.Id
+                   || _currentTool == ExhibitsConstants.Cup.Id
+                   || _currentTool == ExhibitsConstants.Medal.Id
+                   || _currentTool == ExhibitsConstants.Video.Id
+                   || _currentTool == ExhibitsConstants.Decoration.Id)
+                   && IsCursorReady();
+        }
+
+        private bool IsCursorReady()
+        {
+            return _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0;
+        }
+
+        private bool IsHallSelected()
+        {
+            return _hallViewer.HallSelected.sizex != 0 && _hallViewer.HallSelected.sizez != 0;
+        }
+
         void Update()
         {
-            if (_hallViewer.HallSelected.sizex == 0 || _hallViewer.HallSelected.sizez == 0)
+            if (!IsHallSelected())
                 return;
 
             UpdateCursorPosition();
@@ -336,26 +358,13 @@ namespace Admin.Edit
 
                 posToDelete = new List<Vector2>();
                 StartCoroutine(_tilesDrawer.DrawTilesForHall(_hallViewer.HallSelected));
-                //FindLeftBottomTile();
-                //StartCoroutine(GetAndDrawHallContents(_adminView.HallSelected.hnum));
             }
 
-            if (_currentTool == ExhibitsConstants.SpawnPoint.Id
-                || _currentTool == ExhibitsConstants.Picture.Id
-                || _currentTool == ExhibitsConstants.InfoBox.Id
-                || _currentTool == ExhibitsConstants.Cup.Id
-                || _currentTool == ExhibitsConstants.Medal.Id
-                || _currentTool == ExhibitsConstants.Video.Id
-                || _currentTool == ExhibitsConstants.Decoration.Id
-                && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Paint(_tiledMousePos / _tileSize, _cursorTile.anchoredPosition);
-                }
-            }
+            if (CanDraw() && Input.GetMouseButtonDown(0))
+                Paint(_tiledMousePos / _tileSize, _cursorTile.anchoredPosition);
+       
 
-            if (_currentTool is -3 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
+            if (_currentTool is -3 && IsCursorReady())
             {
                 if (Input.GetMouseButtonDown(0))
                 {
