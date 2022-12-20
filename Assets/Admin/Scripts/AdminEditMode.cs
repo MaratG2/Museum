@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Admin.PHP;
 using Admin.Utility;
+using Admin.View;
 using GenerationMap;
 using TMPro;
 using UnityEngine;
