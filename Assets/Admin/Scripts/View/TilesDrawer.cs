@@ -12,8 +12,10 @@ namespace Admin.View
         [SerializeField] private GameObject _tilePrefab;
         [SerializeField] private GameObject _tilesParent;
         [SerializeField] private GameObject _hallPreview;
+        public Action<Vector2> OnStartTileFound;
         private HallQueries _hallQueries = new ();
         private float _tileSize;
+        public float TileSize => _tileSize;
         private Vector2 _leftBottomTilePos;
         
         private void OnEnable()
@@ -50,7 +52,6 @@ namespace Admin.View
         {
             if (hallContents == null)
                 return;
-            
             foreach (var hallContent in hallContents)
             {
                 if (hallContent.hnum == 0)
@@ -101,6 +102,7 @@ namespace Admin.View
                             i + 0.5f,
                             j + 0.25f
                         );
+                        OnStartTileFound?.Invoke(_leftBottomTilePos);
                         yield break;
                     }
         }
