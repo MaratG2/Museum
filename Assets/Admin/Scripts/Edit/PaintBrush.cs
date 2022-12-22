@@ -19,10 +19,24 @@ namespace Admin.Edit
 
         private void Update()
         {
+            BlockDoorToolIfNeeded();
             if (_toolSelector.CanDraw() && Input.GetMouseButtonDown(0))
                 Paint(_tiledMousePos / _tileSize, _cursorTile.anchoredPosition);
         }
 
+        private void BlockDoorToolIfNeeded()
+        {
+            bool turnToTrue = true;
+            for (int i = 0; i < _paintsParent.childCount; i++)
+            {
+                Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
+                if (tileChange.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
+                    turnToTrue = false;
+            }
+
+            _doorTool.interactable = turnToTrue;
+            _toolSelector.IsDoorBlock = !turnToTrue;
+        }
         private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new())
         {
             if (_hallPlan == null)

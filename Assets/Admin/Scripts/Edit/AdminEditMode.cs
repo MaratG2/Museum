@@ -17,7 +17,6 @@ namespace Admin.Edit
     {
         [SerializeField] private HallViewer _hallViewer;
         [SerializeField] private RectTransform _paintsParent;
-        [SerializeField] private RectTransform _imagePreview;
         [SerializeField] private Toggle _toggleMaintained, _toggleHidden;
         [SerializeField] private TMP_InputField _nameText;
         [SerializeField] private CanvasGroup _changePropertiesGroup;
@@ -43,22 +42,21 @@ namespace Admin.Edit
         private int[][] _hallPlan;
         private Vector2 _startTilePos = Vector2.zero;
         private List<Vector2> posToDelete = new List<Vector2>();
-        private bool _isCursorLock;
         private QueriesToPHP _queriesToPhp = new(isDebugOn: true);
         private HallQueries _hallQueries = new HallQueries();
         private List<HallContent> _cachedHallContents = new();
         private Action<string> OnResponseCallback;
         private string _response;
-        private Vector2 _tiledMousePos;
-        private float _tileSize;
 
         private ToolSelector _toolSelector;
+        private EditBrush _editBrush;
         private EditCursor _editCursor;
 
         private void Awake()
         {
             _tilesDrawer = GetComponent<TilesDrawer>();
             _toolSelector = GetComponent<ToolSelector>();
+            _editBrush = GetComponent<EditBrush>();
             _editCursor = GetComponent<EditCursor>();
         }
         
@@ -230,20 +228,6 @@ namespace Admin.Edit
                 Debug.LogError("Update hall query: " + _response);
         }
 
-        private void BlockDoorToolIfNeeded()
-        {
-            bool turnToTrue = true;
-            for (int i = 0; i < _paintsParent.childCount; i++)
-            {
-                Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
-                if (tileChange.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
-                    turnToTrue = false;
-            }
-
-            _doorTool.interactable = turnToTrue;
-            _toolSelector.IsDoorBlock = !turnToTrue;
-        }
-
         private bool IsHallSelected()
         {
             return _hallViewer.HallSelected.sizex != 0 && _hallViewer.HallSelected.sizez != 0;
@@ -253,8 +237,6 @@ namespace Admin.Edit
         {
             if (!IsHallSelected())
                 return;
-
-            BlockDoorToolIfNeeded();
 
             if (_startTilePos == Vector2.zero)
             {
@@ -322,9 +304,9 @@ namespace Admin.Edit
 
         public void SaveProperties()
         {
-            if (!_editCursor.TileSelected)
+            if (!_editBrush.TileSelected)
                 return;
-            var hallContent = _editCursor.TileSelected.hallContent;
+            var hallContent = _editBrush.TileSelected.hallContent;
             if (hallContent.type == ExhibitsConstants.Picture.Id
                 || hallContent.type == ExhibitsConstants.Video.Id)
             {

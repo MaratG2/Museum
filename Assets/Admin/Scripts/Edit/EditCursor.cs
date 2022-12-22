@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Admin.Utility;
+using Admin.View;
 using UnityEngine;
 
 namespace Admin.Edit
@@ -8,12 +10,26 @@ namespace Admin.Edit
     public class EditCursor : MonoBehaviour
     {
         [SerializeField] private RectTransform _cursorTile;
-        private Tile _tileSelected;
+        [SerializeField] private CanvasGroup _changePropertiesGroup;
         public RectTransform CursorTile => _cursorTile;
-        public Tile TileSelected => _tileSelected;
+        private TilesDrawer _tilesDrawer;
+        private Vector2 _tiledMousePos;
+        private float _tileSize;
+        private Vector2 _windowSize;
+        private Vector2 _absoluteMousePos;
+        private bool _isCursorLock;
+
+        private void Awake()
+        {
+            _tilesDrawer = GetComponent<TilesDrawer>();
+        }
 
         private void Update()
         {
+            if (_isCursorLock)
+                return;
+            
+            ChangeCursorTileSize();
             UpdateCursorPosition();
         }
         
@@ -22,49 +38,42 @@ namespace Admin.Edit
             return _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0;
         }
 
+        private void ChangeCursorTileSize()
+        {
+            _windowSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            _absoluteMousePos = Input.mousePosition;
+            _tileSize = _tilesDrawer.TileSize;
+            _cursorTile.sizeDelta = new Vector2(_tileSize, _tileSize);
+        }
+
         private void UpdateCursorPosition()
         {
-            Vector2 windowSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
-            Vector2 absoluteMousePos = Input.mousePosition;
-            _tileSize = _imagePreview.sizeDelta.x / _hallViewer.HallSelected.sizex;
-            _cursorTile.sizeDelta = new Vector2(_tileSize, _tileSize);
-
-            float addPosX = 0, addPosY = _tileSize / 4;
-            if (_hallViewer.HallSelected.sizez % 2 == 0)
-                addPosY = -_tileSize / 4;
-            if (_hallViewer.HallSelected.sizex % 2 != 0)
-                addPosX = _tileSize / 2;
-
-            _imagePreview.anchoredPosition = new Vector2
-            (
-                Mathf.FloorToInt((0.35f) * (windowSize.x / _tileSize)) * _tileSize + addPosX,
-                Mathf.FloorToInt((0.55f) * (windowSize.y / _tileSize)) * _tileSize + addPosY
-            );
             _tiledMousePos = new Vector2
             (
-                Mathf.FloorToInt((absoluteMousePos.x / windowSize.x) * (windowSize.x / _tileSize)) * _tileSize +
+                Mathf.FloorToInt((_absoluteMousePos.x / _windowSize.x) * (_windowSize.x / _tileSize)) * _tileSize +
                 _tileSize / 2,
-                Mathf.FloorToInt(((absoluteMousePos.y + _tileSize / 4) / windowSize.y) * (windowSize.y / _tileSize)) *
+                Mathf.FloorToInt(((_absoluteMousePos.y + _tileSize / 4) / _windowSize.y) * (_windowSize.y / _tileSize)) *
                 _tileSize + _tileSize / 4
             );
             
-            bool isOverPreview = false;
+            bool isOverPreview = CheckIfIsOverPreview();
+            
+            if (isOverPreview && _absoluteMousePos.x < 0.75f * _windowSize.x)
+                _cursorTile.anchoredPosition = _tiledMousePos;
+            else
+                _cursorTile.anchoredPosition = -_windowSize;
+        }
+
+        private bool CheckIfIsOverPreview()
+        {
             GameObject[] casted =
-                RaycastUtilities.UIRaycasts(RaycastUtilities.ScreenPosToPointerData(absoluteMousePos));
+                RaycastUtilities.UIRaycasts(RaycastUtilities.ScreenPosToPointerData(_absoluteMousePos));
             foreach (var c in casted)
             {
                 if (c.GetComponent<HallPreviewResizer>())
-                    isOverPreview = true;
+                    return true;
             }
-
-            if (!_isCursorLock)
-            {
-                if (absoluteMousePos.x < 0.75f * windowSize.x && isOverPreview)
-                    _cursorTile.anchoredPosition = _tiledMousePos;
-                else
-                    _cursorTile.anchoredPosition = -windowSize;
-            }
-            //Debug.Log(_tiledMousePos/_tileSize);
+            return false;
         }
     }
 }

@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using GenerationMap;
 using UnityEngine;
 
 namespace Admin.Edit
 {
     public class EditBrush : MonoBehaviour
     {
+        public Tile TileSelected { get; private set; }
         public void Edit()
         {
             if (Input.GetMouseButtonDown(0))
@@ -33,7 +36,7 @@ namespace Admin.Edit
                             _propertiesName.text = tileChange.hallContent.title;
                             _propertiesUrl.text = tileChange.hallContent.image_url;
                             _propertiesDesc.text = tileChange.hallContent.image_desc;
-                            _tileSelected = tileChange;
+                            TileSelected = tileChange;
                         }
 
                         if (tileChange.hallContent.type == ExhibitsConstants.InfoBox.Id)
@@ -43,7 +46,7 @@ namespace Admin.Edit
                             _infoGroup.SetActive(true);
                             _infoBoxName.text = tileChange.hallContent.title;
                             _infoController.Setup(tileChange.hallContent.image_desc);
-                            _tileSelected = tileChange;
+                            TileSelected = tileChange;
                         }
 
                         if (tileChange.hallContent.type == ExhibitsConstants.Cup.Id)
@@ -65,7 +68,7 @@ namespace Admin.Edit
                             _propertiesName.text = tileChange.hallContent.title;
                             _propertiesUrl.text = tileChange.hallContent.image_url;
                             _propertiesDesc.text = tileChange.hallContent.image_desc;
-                            _tileSelected = tileChange;
+                            TileSelected = tileChange;
                         }
 
                         if (tileChange.hallContent.type == ExhibitsConstants.Decoration.Id)
@@ -74,7 +77,7 @@ namespace Admin.Edit
                             _isCursorLock = true;
                             _changePropertiesGroup.SetActive(true);
                             _decorGroup.SetActive(true);
-                            _tileSelected = tileChange;
+                            TileSelected = tileChange;
                         }
                     }
                 }

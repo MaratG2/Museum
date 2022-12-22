@@ -43,7 +43,7 @@ namespace Admin.View
         {
             SetPreviewState(true);
             yield return new WaitForSecondsRealtime(0.1f);
-            yield return CalculateTileSize(hall.sizex);
+            yield return CalculateTileSize();
             yield return FindLeftBottomTilePosition();
             yield return _hallQueries.GetAllContentsByHnum(hall.hnum);
         }
@@ -82,11 +82,11 @@ namespace Admin.View
             newTile.GetComponent<Tile>().Setup();
         }
 
-        private IEnumerator CalculateTileSize(int hallSizeX)
+        private IEnumerator CalculateTileSize()
         {
             do
             {
-                _tileSize = _hallPreview.GetComponent<RectTransform>().sizeDelta.x / hallSizeX;
+                _tileSize = _hallPreview.GetComponent<HallPreviewResizer>().TileSize;
                 yield return new WaitForEndOfFrame();
             } while (_tileSize.Equals(0f));
         }
