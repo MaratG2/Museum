@@ -5,11 +5,14 @@ using Admin.Utility;
 using GenerationMap;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Admin.Edit
 {
     public class PaintBrush : MonoBehaviour
     {
+        [SerializeField] private Transform _paintsParent;
+        [SerializeField] private Button _doorTool;
         private ToolSelector _toolSelector;
         
         private void Awake()
@@ -37,6 +40,7 @@ namespace Admin.Edit
             _doorTool.interactable = turnToTrue;
             _toolSelector.IsDoorBlock = !turnToTrue;
         }
+        
         private void Paint(Vector2 tiledPos, Vector2 pos, bool hasStruct = false, HallContent content = new())
         {
             if (_hallPlan == null)

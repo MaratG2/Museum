@@ -29,7 +29,6 @@ namespace Admin.Edit
         [SerializeField] private TMP_Dropdown _roofDropdown;
         [SerializeField] private TMP_InputField _dateBegin;
         [SerializeField] private TMP_InputField _dateEnd;
-        [SerializeField] private Button _doorTool;
 
         private TilesDrawer _tilesDrawer;
         private int[][] _hallPlan;
@@ -169,6 +168,12 @@ namespace Admin.Edit
 
         public void SetHallPlan(Vector2 pos, int value)
         {
+            if ((int)pos.x >= _hallPlan.Length || (_hallPlan.Length > 0 && (int)pos.y >= _hallPlan[0].Length))
+            {
+                Debug.LogError("HallPlan out of bounds");
+                return;
+            }
+            
             _hallPlan[(int)pos.x][(int)pos.y] = value;
         }
 
