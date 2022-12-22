@@ -2,92 +2,84 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GenerationMap;
+using MaratG2.Extensions;
 using UnityEngine;
 
 namespace Admin.Edit
 {
     public class EditBrush : MonoBehaviour
     {
+        [SerializeField] private CanvasGroup _changePropertiesGroup;
         [SerializeField] private Transform _paintsParent;
         public Tile TileSelected { get; private set; }
         private EditCursor _editCursor;
+        private EditMedia _editMedia;
+        private EditInfoBox _editInfoBox;
+        private EditDecoration _editDecoration;
 
         private void Awake()
         {
             _editCursor = GetComponent<EditCursor>();
+            _editMedia = GetComponent<EditMedia>();
+            _editInfoBox = GetComponent<EditInfoBox>();
+            _editDecoration = GetComponent<EditDecoration>();
         }
-        
+
         public void Edit()
         {
-            if (Input.GetMouseButtonDown(0))
+            Vector2 tileRealPos = _editCursor.TiledHallMousePos;
+            for (int i = 0; i < _paintsParent.childCount; i++)
             {
-                Vector2 tileRealPos = _editCursor.TiledHallMousePos;
-                for (int i = 0; i < _paintsParent.childCount; i++)
-                {
-                    Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
-                    if (tileChange && tileChange.hallContent.pos_x == tileRealPos.x &&
-                        tileChange.hallContent.pos_z == tileRealPos.y)
-                    {
-                        if (tileChange.hallContent.type == ExhibitsConstants.SpawnPoint.Id)
-                        {
-                            Debug.Log("Tile Change Door: " + i);
-                        }
-
-                        if (tileChange.hallContent.type == ExhibitsConstants.Picture.Id)
-                        {
-                            _propertiesHeader.text = "Редактирование фото";
-                            _isCursorLock = true;
-                            _changePropertiesGroup.SetActive(true);
-                            _photoVideoGroup.SetActive(true);
-                            _propertiesName.text = tileChange.hallContent.title;
-                            _propertiesUrl.text = tileChange.hallContent.image_url;
-                            _propertiesDesc.text = tileChange.hallContent.image_desc;
-                            TileSelected = tileChange;
-                        }
-
-                        if (tileChange.hallContent.type == ExhibitsConstants.InfoBox.Id)
-                        {
-                            _isCursorLock = true;
-                            _changePropertiesGroup.SetActive(true);
-                            _infoGroup.SetActive(true);
-                            _infoBoxName.text = tileChange.hallContent.title;
-                            _infoController.Setup(tileChange.hallContent.image_desc);
-                            TileSelected = tileChange;
-                        }
-
-                        if (tileChange.hallContent.type == ExhibitsConstants.Cup.Id)
-                        {
-                            Debug.Log("Tile Change Cup: " + i);
-                        }
-
-                        if (tileChange.hallContent.type == ExhibitsConstants.Medal.Id)
-                        {
-                            Debug.Log("Tile Change Medal: " + i);
-                        }
-
-                        if (tileChange.hallContent.type == ExhibitsConstants.Video.Id)
-                        {
-                            _propertiesHeader.text = "Редактирование видео";
-                            _isCursorLock = true;
-                            _changePropertiesGroup.SetActive(true);
-                            _photoVideoGroup.SetActive(true);
-                            _propertiesName.text = tileChange.hallContent.title;
-                            _propertiesUrl.text = tileChange.hallContent.image_url;
-                            _propertiesDesc.text = tileChange.hallContent.image_desc;
-                            TileSelected = tileChange;
-                        }
-
-                        if (tileChange.hallContent.type == ExhibitsConstants.Decoration.Id)
-                        {
-                            _decorationsDropdown.value = Int32.Parse(tileChange.hallContent.title);
-                            _isCursorLock = true;
-                            _changePropertiesGroup.SetActive(true);
-                            _decorGroup.SetActive(true);
-                            TileSelected = tileChange;
-                        }
-                    }
-                }
+                Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();
+                if (!tileChange || tileChange.hallContent.combined_pos != $"{tileRealPos.x}_{tileRealPos.y}")
+                    continue;
+                ProcessPicture(tileChange);
+                ProcessInfoBox(tileChange);
+                ProcessVideo(tileChange);
+                ProcessDecoration(tileChange);
             }
+        }
+
+        private void Processed(Tile tile)
+        {
+            _editCursor.ChangeCursorLock(true);
+            _changePropertiesGroup.SetActive(true);
+            TileSelected = tile;
+        }
+        private void ProcessPicture(Tile tile)
+        {
+            if (tile.hallContent.type != ExhibitsConstants.Picture.Id)
+                return;
+            
+            Processed(tile);
+            _editMedia.ShowMedia(tile.hallContent, true);
+        }
+        
+        private void ProcessInfoBox(Tile tile)
+        {
+            if (tile.hallContent.type != ExhibitsConstants.InfoBox.Id)
+                return;
+            
+            Processed(tile);
+            _editInfoBox.ShowMedia(tile.hallContent);
+        }
+        
+        private void ProcessVideo(Tile tile)
+        {
+            if (tile.hallContent.type != ExhibitsConstants.Video.Id)
+                return;
+            
+            Processed(tile);
+            _editMedia.ShowMedia(tile.hallContent, false);
+        }
+        
+        private void ProcessDecoration(Tile tile)
+        {
+            if (tile.hallContent.type != ExhibitsConstants.Decoration.Id)
+                return;
+            
+            Processed(tile);
+            _editDecoration.ShowMedia(tile.hallContent);
         }
     }
 }

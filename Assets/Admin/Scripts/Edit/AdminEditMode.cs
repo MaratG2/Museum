@@ -24,12 +24,6 @@ namespace Admin.Edit
         [SerializeField] private CanvasGroup _decorGroup;
         [SerializeField] private CanvasGroup _infoGroup;
         [SerializeField] private CanvasGroup _confirmGroup;
-        [SerializeField] private TextMeshProUGUI _propertiesHeader;
-        [SerializeField] private TMP_InputField _propertiesName;
-        [SerializeField] private TMP_InputField _propertiesUrl;
-        [SerializeField] private TMP_InputField _propertiesDesc;
-        [SerializeField] private TMP_InputField _infoBoxName;
-        [SerializeField] private TMP_Dropdown _decorationsDropdown;
         [SerializeField] private TMP_Dropdown _wallDropdown;
         [SerializeField] private TMP_Dropdown _floorDropdown;
         [SerializeField] private TMP_Dropdown _roofDropdown;
@@ -38,7 +32,6 @@ namespace Admin.Edit
         [SerializeField] private Button _doorTool;
 
         private TilesDrawer _tilesDrawer;
-        private InfoController _infoController;
         private int[][] _hallPlan;
         private Vector2 _startTilePos = Vector2.zero;
         private List<Vector2> posToDelete = new List<Vector2>();

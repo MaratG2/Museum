@@ -36,6 +36,11 @@ namespace Admin.Edit
             _tilesDrawer.OnStartTileFound -= startTile => TiledHallMousePos = startTile;
         }
 
+        public void ChangeCursorLock(bool setTo)
+        {
+            _isCursorLock = setTo;
+        }
+
         private void Update()
         {
             if (_isCursorLock)
