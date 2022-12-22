@@ -174,6 +174,16 @@ namespace Admin.Edit
                 yield return DeleteContentQuery(posDel.x + "_" + posDel.y);
         }
 
+        public void SetHallPlan(Vector2 pos, int value)
+        {
+            _hallPlan[(int)pos.x][(int)pos.y] = value;
+        }
+
+        public void AddToPosToDelete(Vector2 pos)
+        {
+            posToDelete.Add(pos);
+        }
+
         private IEnumerator InsertOrUpdateContentQuery(HallContent c)
         {
             string phpFileName = "insert_or_update_content.php";

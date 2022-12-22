@@ -8,14 +8,20 @@ namespace Admin.Edit
 {
     public class EditBrush : MonoBehaviour
     {
+        [SerializeField] private Transform _paintsParent;
         public Tile TileSelected { get; private set; }
+        private EditCursor _editCursor;
+
+        private void Awake()
+        {
+            _editCursor = GetComponent<EditCursor>();
+        }
+        
         public void Edit()
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Vector2 tiledPos = _tiledMousePos / _tileSize;
-                Vector2 tileRealPos = new Vector2(Mathf.FloorToInt(tiledPos.x - _startTilePos.x),
-                    Mathf.FloorToInt(tiledPos.y - _startTilePos.y));
+                Vector2 tileRealPos = _editCursor.TiledHallMousePos;
                 for (int i = 0; i < _paintsParent.childCount; i++)
                 {
                     Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();

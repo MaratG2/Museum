@@ -13,15 +13,27 @@ namespace Admin.Edit
         [SerializeField] private CanvasGroup _changePropertiesGroup;
         public RectTransform CursorTile => _cursorTile;
         private TilesDrawer _tilesDrawer;
-        private Vector2 _tiledMousePos;
+        public Vector2 TiledMousePos { get; private set; }
+        public Vector2 TiledHallMousePos { get; private set; }
         private float _tileSize;
         private Vector2 _windowSize;
         private Vector2 _absoluteMousePos;
+        private Vector2 _startTilePos;
         private bool _isCursorLock;
 
         private void Awake()
         {
             _tilesDrawer = GetComponent<TilesDrawer>();
+        }
+        
+        private void OnEnable()
+        {
+            _tilesDrawer.OnStartTileFound += startTile => _startTilePos = startTile;
+        }
+
+        private void OnDisable()
+        {
+            _tilesDrawer.OnStartTileFound -= startTile => TiledHallMousePos = startTile;
         }
 
         private void Update()
@@ -48,18 +60,19 @@ namespace Admin.Edit
 
         private void UpdateCursorPosition()
         {
-            _tiledMousePos = new Vector2
+            TiledMousePos = new Vector2
             (
                 Mathf.FloorToInt((_absoluteMousePos.x / _windowSize.x) * (_windowSize.x / _tileSize)) * _tileSize +
                 _tileSize / 2,
                 Mathf.FloorToInt(((_absoluteMousePos.y + _tileSize / 4) / _windowSize.y) * (_windowSize.y / _tileSize)) *
                 _tileSize + _tileSize / 4
             );
+            TiledHallMousePos = TiledMousePos - _startTilePos;
             
             bool isOverPreview = CheckIfIsOverPreview();
             
             if (isOverPreview && _absoluteMousePos.x < 0.75f * _windowSize.x)
-                _cursorTile.anchoredPosition = _tiledMousePos;
+                _cursorTile.anchoredPosition = TiledMousePos;
             else
                 _cursorTile.anchoredPosition = -_windowSize;
         }
