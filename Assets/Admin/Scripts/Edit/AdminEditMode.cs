@@ -128,7 +128,28 @@ namespace Admin.Edit
 
         public void DeleteHallConfirm()
         {
-            StartCoroutine(DeleteHallQuery(_hallViewer.HallSelected.hnum));
+            StartCoroutine(Deletion());
+        }
+
+        private IEnumerator Deletion()
+        {
+            _progressSaver.Clear();
+            _progressSaver.UpdateCustomMessage("Удаление зала...");
+            yield return DeleteAllContents();
+            _progressSaver.UpdateCustomMessage("Удаление настроек зала...");
+            yield return DeleteHallQuery(_hallViewer.HallSelected.hnum);
+            _progressSaver.UpdateCustomMessage("Зал удален");
+            yield return new WaitForSecondsRealtime(0.8f);
+            _progressSaver.Clear();
+        }
+        private IEnumerator DeleteAllContents()
+        {
+            for (int i = 0; i < _paintsParent.childCount; i++)
+            {
+                var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
+                yield return DeleteContentQuery(_hallViewer.HallSelected.hnum, c.combined_pos);
+                _progressSaver.UpdateProgress(i + 1, _paintsParent.childCount, false);
+            }
         }
 
         private IEnumerator DeleteHallQuery(int hnum)
@@ -177,7 +198,7 @@ namespace Admin.Edit
                 int i = 0;
                 foreach (var posDel in posToDelete)
                 {
-                    yield return DeleteContentQuery(posDel.x + "_" + posDel.y);
+                    yield return DeleteContentQuery(_hallViewer.HallSelected.hnum, $"{posDel.x}_{posDel.y}");
                     _progressSaver.UpdateProgress(i+1, posToDelete.Count, false);
                     i++;
                 }
@@ -236,10 +257,12 @@ namespace Admin.Edit
                 Debug.LogError("Insert or update hall query: " + _response);
         }
 
-        private IEnumerator DeleteContentQuery(string combined_pos)
+        private IEnumerator DeleteContentQuery(int hnum, string combined_pos)
         {
             string phpFileName = "delete_content.php";
             WWWForm data = new WWWForm();
+            Debug.Log("Delete for hnum: " + hnum);
+            data.AddField("hnum", hnum);
             data.AddField("combined_pos", combined_pos);
             yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
             if (_response == "Query completed")
