@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Admin.Utility;
 using MaratG2.Extensions;
 using TMPro;
@@ -12,6 +10,8 @@ namespace Admin.Edit
         [SerializeField] private CanvasGroup _uiGroup;
         [SerializeField] private InfoController _infoController;
         [SerializeField] private TMP_InputField _infoBoxName;
+        public InfoController InfoController => _infoController;
+        public string Title => _infoBoxName.text;
         
         public void ShowMedia(HallContent hallContent)
         {

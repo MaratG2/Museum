@@ -27,7 +27,7 @@ namespace Admin.Edit
 
         public void Edit()
         {
-            Vector2 tileRealPos = _editCursor.TiledHallMousePos;
+            Vector2 tileRealPos = _editCursor.TileHallMousePos;
             for (int i = 0; i < _paintsParent.childCount; i++)
             {
                 Tile tileChange = _paintsParent.GetChild(i).GetComponent<Tile>();

@@ -42,19 +42,24 @@ namespace Admin.Edit
 
         private ToolSelector _toolSelector;
         private EditBrush _editBrush;
+        private RubberBrush _rubberBrush;
         private EditCursor _editCursor;
+        private EditInfoBox _editInfoBox;
+        private EditMedia _editMedia;
+        private EditDecoration _editDecoration;
+        private ProgressSaver _progressSaver;
 
         private void Awake()
         {
             _tilesDrawer = GetComponent<TilesDrawer>();
             _toolSelector = GetComponent<ToolSelector>();
             _editBrush = GetComponent<EditBrush>();
+            _rubberBrush = GetComponent<RubberBrush>();
             _editCursor = GetComponent<EditCursor>();
-        }
-        
-        private void Start()
-        {
-            _infoController = FindObjectOfType<InfoController>();
+            _editInfoBox = GetComponent<EditInfoBox>();
+            _editMedia = GetComponent<EditMedia>();
+            _editDecoration = GetComponent<EditDecoration>();
+            _progressSaver = GetComponent<ProgressSaver>();
         }
 
         private void OnEnable()
@@ -72,6 +77,8 @@ namespace Admin.Edit
             _dateBegin.text = "";
             _dateEnd.text = "";
             _toolSelector.SelectTool(-1);
+            StopAllCoroutines();
+            _progressSaver.Clear();
         }
 
         public void Refresh()
@@ -153,23 +160,38 @@ namespace Admin.Edit
 
         private IEnumerator SaveHallCR()
         {
+            _progressSaver.Clear();
+            _progressSaver.UpdateCustomMessage("Сохранение зала...");
             yield return UpdateHallQuery(_hallViewer.HallSelected.hnum);
+            _progressSaver.UpdateCustomMessage("Настройки зала сохранены!");
 
             for (int i = 0; i < _paintsParent.childCount; i++)
             {
                 var c = _paintsParent.GetChild(i).GetComponent<Tile>().hallContent;
                 c.hnum = _hallViewer.HallSelected.hnum;
                 yield return InsertOrUpdateContentQuery(c);
+                _progressSaver.UpdateProgress(i+1, _paintsParent.childCount, true);
             }
 
-            foreach (var posDel in posToDelete)
-                yield return DeleteContentQuery(posDel.x + "_" + posDel.y);
+            {
+                int i = 0;
+                foreach (var posDel in posToDelete)
+                {
+                    yield return DeleteContentQuery(posDel.x + "_" + posDel.y);
+                    _progressSaver.UpdateProgress(i+1, posToDelete.Count, false);
+                    i++;
+                }
+            }
+            _progressSaver.UpdateCustomMessage("Сохранение и удаление завершено");
+            yield return new WaitForSecondsRealtime(0.7f);
+            _progressSaver.Clear();
         }
 
         public void SetHallPlan(Vector2 pos, int value)
         {
-            if ((int)pos.x >= _hallPlan.Length || (_hallPlan.Length > 0 && (int)pos.y >= _hallPlan[0].Length))
+            if (IsOutOfBoundsHallPlan(pos))
             {
+                Debug.Log(pos);
                 Debug.LogError("HallPlan out of bounds");
                 return;
             }
@@ -177,11 +199,25 @@ namespace Admin.Edit
             _hallPlan[(int)pos.x][(int)pos.y] = value;
         }
 
+        public bool IsOutOfBoundsHallPlan(Vector2 pos)
+        {
+            return (int)pos.x >= _hallPlan.Length || (_hallPlan.Length > 0 && (int)pos.y >= _hallPlan[0].Length);
+        }
+
         public void AddToPosToDelete(Vector2 pos)
         {
             posToDelete.Add(pos);
         }
 
+        public void RemoveFromPosToDelete(string combined_pos)
+        {
+            for (int i = 0; i < posToDelete.Count; i++)
+            {
+                if (combined_pos == $"{posToDelete[i].x}_{posToDelete[i].y}")
+                    posToDelete.RemoveAt(i);
+            }
+        }
+        
         private IEnumerator InsertOrUpdateContentQuery(HallContent c)
         {
             string phpFileName = "insert_or_update_content.php";
@@ -261,16 +297,13 @@ namespace Admin.Edit
                 StartCoroutine(_tilesDrawer.DrawTilesForHall(_hallViewer.HallSelected));
             }
 
-
-            if (_currentTool is -3 && IsCursorReady())
-            {
-                //EditBrush
-            }
-
-            if (_currentTool is -2 && _cursorTile.anchoredPosition.x > 1 && _changePropertiesGroup.alpha == 0)
-            {
-                //RubberBrush
-            }
+            if (!Input.GetMouseButtonDown(0) || !_editCursor.IsCursorReady())
+                return;
+            
+            if (_toolSelector.CurrentTool is -3)
+                _editBrush.Edit();
+            if (_toolSelector.CurrentTool is -2)
+                _rubberBrush.Delete();
         }
         
         private string GetDate(bool isBegin)
@@ -302,7 +335,7 @@ namespace Admin.Edit
 
         public void HidePropertiesGroup()
         {
-            _isCursorLock = false;
+            _editCursor.ChangeCursorLock(false);
             _changePropertiesGroup.SetActive(false);
             _photoVideoGroup.SetActive(false);
             _decorGroup.SetActive(false);
@@ -318,24 +351,25 @@ namespace Admin.Edit
             if (hallContent.type == ExhibitsConstants.Picture.Id
                 || hallContent.type == ExhibitsConstants.Video.Id)
             {
-                hallContent.title = _propertiesName.text;
-                hallContent.image_url = _propertiesUrl.text;
-                hallContent.image_desc = _propertiesDesc.text;
+                hallContent.title = _editMedia.Title;
+                hallContent.image_url = _editMedia.Url;
+                hallContent.image_desc = _editMedia.Desc;
             }
 
             if (hallContent.type == ExhibitsConstants.InfoBox.Id)
             {
-                _infoController.InfoPartsChanged();
-                hallContent.title = _infoBoxName.text;
+                _editInfoBox.InfoController.InfoPartsChanged();
+                hallContent.title = _editInfoBox.Title;
                 hallContent.image_url = "InfoBox";
-                hallContent.image_desc = _infoController.AllJsonData;
+                hallContent.image_desc = _editInfoBox.InfoController.AllJsonData;
             }
 
             if (hallContent.type == ExhibitsConstants.Decoration.Id)
             {
-                hallContent.title = _decorationsDropdown.value.ToString();
+                var decorValue = _editDecoration.DecorationsDropdown.value;
+                hallContent.title = decorValue.ToString();
                 hallContent.image_url = "Decoration";
-                hallContent.image_desc = _decorationsDropdown.options[_decorationsDropdown.value].text;
+                hallContent.image_desc = _editDecoration.DecorationsDropdown.options[decorValue].text;
             }
 
             HidePropertiesGroup();

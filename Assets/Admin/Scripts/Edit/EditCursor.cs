@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Admin.Utility;
 using Admin.View;
 using UnityEngine;
@@ -14,7 +11,9 @@ namespace Admin.Edit
         public RectTransform CursorTile => _cursorTile;
         private TilesDrawer _tilesDrawer;
         public Vector2 TiledMousePos { get; private set; }
+        public Vector2 TileMousePos { get; private set; }
         public Vector2 TiledHallMousePos { get; private set; }
+        public Vector2 TileHallMousePos { get; private set; }
         private float _tileSize;
         private Vector2 _windowSize;
         private Vector2 _absoluteMousePos;
@@ -72,7 +71,9 @@ namespace Admin.Edit
                 Mathf.FloorToInt(((_absoluteMousePos.y + _tileSize / 4) / _windowSize.y) * (_windowSize.y / _tileSize)) *
                 _tileSize + _tileSize / 4
             );
+            TileMousePos = TiledMousePos / _tileSize;
             TiledHallMousePos = TiledMousePos - _startTilePos;
+            TileHallMousePos = TileMousePos - _startTilePos;
             
             bool isOverPreview = CheckIfIsOverPreview();
             

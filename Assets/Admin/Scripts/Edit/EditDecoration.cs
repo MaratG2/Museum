@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Admin.Utility;
 using MaratG2.Extensions;
 using TMPro;
@@ -12,6 +10,7 @@ namespace Admin.Edit
     {
         [SerializeField] private CanvasGroup _uiGroup;
         [SerializeField] private TMP_Dropdown _decorationsDropdown;
+        public TMP_Dropdown DecorationsDropdown => _decorationsDropdown;
         
         public void ShowMedia(HallContent hallContent)
         {

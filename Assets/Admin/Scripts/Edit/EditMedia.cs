@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Admin.Utility;
 using MaratG2.Extensions;
 using TMPro;
@@ -14,7 +12,10 @@ namespace Admin.Edit
         [SerializeField] private TMP_InputField _propertiesName;
         [SerializeField] private TMP_InputField _propertiesUrl;
         [SerializeField] private TMP_InputField _propertiesDesc;
-        
+        public string Title => _propertiesName.text;
+        public string Url => _propertiesUrl.text;
+        public string Desc => _propertiesDesc.text;
+
         public void ShowMedia(HallContent hallContent, bool isPhoto)
         {
             _uiGroup.SetActive(true);

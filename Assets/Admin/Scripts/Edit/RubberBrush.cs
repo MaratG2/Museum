@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Admin.Edit
@@ -19,7 +16,7 @@ namespace Admin.Edit
 
         public void Delete()
         {
-            Vector2 planPos = _editCursor.TiledHallMousePos;
+            Vector2 planPos = _editCursor.TileHallMousePos;
             _adminEditMode.SetHallPlan(planPos, -1);
             for (int i = 0; i < _paintsParent.childCount; i++)
             {
