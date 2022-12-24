@@ -11,14 +11,14 @@ namespace Admin.Edit
         [SerializeField] private Button _doorTool;
         private ToolSelector _toolSelector;
         private EditCursor _editCursor;
-        private AdminEditMode _adminEditMode;
+        private HallEditor _hallEditor;
         private EditDecoration _editDecoration;
         
         private void Awake()
         {
             _toolSelector = GetComponent<ToolSelector>();
             _editCursor = GetComponent<EditCursor>();
-            _adminEditMode = GetComponent<AdminEditMode>();
+            _hallEditor = GetComponent<HallEditor>();
             _editDecoration = GetComponent<EditDecoration>();
         }
 
@@ -45,7 +45,7 @@ namespace Admin.Edit
         
         private void Paint(Vector2 hallPos, Vector2 globalPos, bool hasStruct = false, HallContent content = new())
         {
-            if (!_adminEditMode.IsPlanAtPosEmpty(hallPos))
+            if (!_hallEditor.IsPlanAtPosEmpty(hallPos))
                 return;
             
             var newTileGO = Instantiate(_editCursor.CursorTile.gameObject, globalPos, Quaternion.identity,
@@ -55,7 +55,7 @@ namespace Admin.Edit
             newTileGO.GetComponent<RectTransform>().anchoredPosition = globalPos;
             newTileGO.GetComponent<Image>().color = _editCursor.CursorTile.GetComponent<Image>().color;
             
-            _adminEditMode.SetHallPlan(hallPos, _toolSelector.CurrentTool);
+            _hallEditor.SetHallPlan(hallPos, _toolSelector.CurrentTool);
             
             Tile newTile = newTileGO.GetComponent<Tile>();
             newTile.hallContent.type = _toolSelector.CurrentTool;
@@ -66,7 +66,7 @@ namespace Admin.Edit
             ProcessMedia(newTile);
             ProcessDecoration(newTile);
             ProcessSpawnPoint(newTile);
-            _adminEditMode.RemoveFromPosToDelete(newTile.hallContent.combined_pos);
+            _hallEditor.RemoveFromPosToDelete(newTile.hallContent.combined_pos);
 
             if (hasStruct)
                 newTile.hallContent = content;

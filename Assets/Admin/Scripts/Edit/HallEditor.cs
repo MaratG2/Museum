@@ -8,12 +8,11 @@ using GenerationMap;
 using MaratG2.Extensions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Admin.Edit
 {
-    public class AdminEditMode : MonoBehaviour
+    public class HallEditor : MonoBehaviour
     {
         [SerializeField] private HallViewer _hallViewer;
         [SerializeField] private RectTransform _paintsParent;

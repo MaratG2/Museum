@@ -43,19 +43,19 @@ namespace Admin.View
                 Destroy(_tilesParent.transform.GetChild(i).gameObject);
         }
         
-        public IEnumerator DrawTilesForHall(Hall hall, AdminEditMode _adminEditMode = null)
+        public IEnumerator DrawTilesForHall(Hall hall, HallEditor hallEditor = null)
         {
             SetPreviewState(true);
             yield return new WaitForSecondsRealtime(0.1f);
             yield return CalculateTileSize();
             yield return FindLeftBottomTilePosition();
             yield return _hallQueries.GetAllContentsByHnum(hall.hnum);
-            if (_adminEditMode)
+            if (hallEditor)
             {
                 foreach (var content in _hallContents)
                 {
                     Vector2 hallPos = new Vector2(content.pos_x, content.pos_z);
-                    _adminEditMode.SetHallPlan(hallPos, content.type);
+                    hallEditor.SetHallPlan(hallPos, content.type);
                 }
             }
         }

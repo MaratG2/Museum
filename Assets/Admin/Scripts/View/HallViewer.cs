@@ -80,7 +80,7 @@ namespace Admin.View
             if (_hallSelected.name != current.name)
             {
                 _tilesDrawer.ClearAllTiles();
-                FindObjectOfType<AdminEditMode>().ClearAll();
+                FindObjectOfType<HallEditor>().ClearAll();
             }
 
             _hallSelected = current;

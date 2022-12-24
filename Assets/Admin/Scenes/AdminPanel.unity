@@ -2641,6 +2641,7 @@ GameObject:
   - component: {fileID: 244376365}
   - component: {fileID: 244376366}
   - component: {fileID: 244376367}
+  - component: {fileID: 244376368}
   m_Layer: 5
   m_Name: Panel - New Mode
   m_TagString: Untagged
@@ -2718,10 +2719,6 @@ MonoBehaviour:
   _inputName: {fileID: 909170297}
   _inputSizeX: {fileID: 1320300825}
   _inputSizeZ: {fileID: 310482156}
-  _dateBegin: {fileID: 1530456352}
-  _dateEnd: {fileID: 1655991852}
-  _inputDateBegin: {fileID: 287830572}
-  _inputDateEnd: {fileID: 2023076362}
   _wallDropdown: {fileID: 1691494189}
   _floorDropdown: {fileID: 746492791}
   _roofDropdown: {fileID: 1548886186}
@@ -2730,6 +2727,22 @@ MonoBehaviour:
   _viewCanvasGroup: {fileID: 1756156830}
   _goToViewMode: {fileID: 910863879}
   _goToUsersMode: {fileID: 1449183810}
+--- !u!114 &244376368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244376364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 799015c772a3d1643ae2bd1a87c5b394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dateBegin: {fileID: 1530456352}
+  _dateEnd: {fileID: 1655991852}
+  _inputDateBegin: {fileID: 287830572}
+  _inputDateEnd: {fileID: 2023076362}
 --- !u!1 &247424949
 GameObject:
   m_ObjectHideFlags: 0
@@ -21629,10 +21642,10 @@ RectTransform:
   m_Father: {fileID: 1047751915}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 57.2869}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 278.29996, y: -33.643448}
+  m_SizeDelta: {x: 556.5999, y: 57.2869}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1510953858
 MonoBehaviour:
