@@ -110,11 +110,17 @@ namespace Admin.Edit
             if (!_hallViewer.HallSelected.is_date_b)
                 _dateBegin.placeholder.GetComponent<TextMeshProUGUI>().text = "0000-12-31 23:59:59";
             else
+            {
                 _dateBegin.placeholder.GetComponent<TextMeshProUGUI>().text = _hallViewer.HallSelected.date_begin;
+                _dateBegin.text = _hallViewer.HallSelected.date_begin;
+            }
             if (!_hallViewer.HallSelected.is_date_e)
                 _dateEnd.placeholder.GetComponent<TextMeshProUGUI>().text = "0000-12-31 23:59:59";
             else
+            {
                 _dateEnd.placeholder.GetComponent<TextMeshProUGUI>().text = _hallViewer.HallSelected.date_end;
+                _dateEnd.text = _hallViewer.HallSelected.date_end;
+            }
 
             _startTilePos = Vector2.zero;
         }
@@ -290,6 +296,7 @@ namespace Admin.Edit
             data.AddField("is_date_b", GetDate(true) == "" ? 0 : 1);
             data.AddField("is_date_e", GetDate(false) == "" ? 0 : 1);
             data.AddField("time_begin", GetDate(true));
+            Debug.Log(GetDate(true));
             data.AddField("time_end", GetDate(false));
             yield return _queriesToPhp.PostRequest(phpFileName, data, OnResponseCallback);
             if (_response == "Query completed")
