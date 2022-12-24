@@ -45,6 +45,9 @@ namespace Admin.Edit
         
         private void Paint(Vector2 hallPos, Vector2 globalPos, bool hasStruct = false, HallContent content = new())
         {
+            if (!_adminEditMode.IsPlanAtPosEmpty(hallPos))
+                return;
+            
             var newTileGO = Instantiate(_editCursor.CursorTile.gameObject, globalPos, Quaternion.identity,
                 _paintsParent);
             newTileGO.GetComponent<RectTransform>().anchorMin = Vector2.zero;

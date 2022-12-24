@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Admin.Edit;
 using Admin.PHP;
 using Admin.Utility;
 using UnityEngine;
@@ -17,15 +18,18 @@ namespace Admin.View
         private float _tileSize;
         public float TileSize => _tileSize;
         private Vector2 _leftBottomTilePos;
+        private List<HallContent> _hallContents = new ();
         
         private void OnEnable()
         {
             _hallQueries.OnAllHallContentsGet += DrawTilesForGotHall;
+            _hallQueries.OnAllHallContentsGet += contents => _hallContents = contents;
         }
 
         private void OnDisable()
         {
             _hallQueries.OnAllHallContentsGet -= DrawTilesForGotHall;
+            _hallQueries.OnAllHallContentsGet -= contents => _hallContents = contents;
         }
 
         public void SetPreviewState(bool setTo)
@@ -39,13 +43,21 @@ namespace Admin.View
                 Destroy(_tilesParent.transform.GetChild(i).gameObject);
         }
         
-        public IEnumerator DrawTilesForHall(Hall hall)
+        public IEnumerator DrawTilesForHall(Hall hall, AdminEditMode _adminEditMode = null)
         {
             SetPreviewState(true);
             yield return new WaitForSecondsRealtime(0.1f);
             yield return CalculateTileSize();
             yield return FindLeftBottomTilePosition();
             yield return _hallQueries.GetAllContentsByHnum(hall.hnum);
+            if (_adminEditMode)
+            {
+                foreach (var content in _hallContents)
+                {
+                    Vector2 hallPos = new Vector2(content.pos_x, content.pos_z);
+                    _adminEditMode.SetHallPlan(hallPos, content.type);
+                }
+            }
         }
         
         private void DrawTilesForGotHall(List<HallContent> hallContents)

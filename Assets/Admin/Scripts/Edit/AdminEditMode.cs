@@ -225,6 +225,11 @@ namespace Admin.Edit
             return (int)pos.x >= _hallPlan.Length || (_hallPlan.Length > 0 && (int)pos.y >= _hallPlan[0].Length);
         }
 
+        public bool IsPlanAtPosEmpty(Vector2 pos)
+        {
+            return _hallPlan[(int)pos.x][(int)pos.y] < 0;
+        }
+
         public void AddToPosToDelete(Vector2 pos)
         {
             posToDelete.Add(pos);
@@ -317,7 +322,7 @@ namespace Admin.Edit
                 }
 
                 posToDelete = new List<Vector2>();
-                StartCoroutine(_tilesDrawer.DrawTilesForHall(_hallViewer.HallSelected));
+                StartCoroutine(_tilesDrawer.DrawTilesForHall(_hallViewer.HallSelected, this));
             }
 
             if (!Input.GetMouseButtonDown(0) || !_editCursor.IsCursorReady())
