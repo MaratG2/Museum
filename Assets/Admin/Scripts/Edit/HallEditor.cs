@@ -398,7 +398,7 @@ namespace Admin.Edit
                 hallContent.image_url = "Decoration";
                 hallContent.image_desc = _editDecoration.DecorationsDropdown.options[decorValue].text;
             }
-
+            _editBrush.TileSelected.hallContent = hallContent;
             HidePropertiesGroup();
         }
 
