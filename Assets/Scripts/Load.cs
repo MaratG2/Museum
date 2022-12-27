@@ -10,7 +10,7 @@ public class Load : MonoBehaviour
     IEnumerator Start()
     {
         PlayerManager.isJump = false;
-        AsyncOperation L = SceneManager.LoadSceneAsync(SceneChoice.scene);
+        AsyncOperation L = SceneManager.LoadSceneAsync("Inside");
         while (L.isDone == false)
         {
             c.transform.Rotate(Vector3.forward, -15f * Time.deltaTime);

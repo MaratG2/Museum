@@ -2101,6 +2101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj: {fileID: 742582823219879360}
+  roomsMenu: {fileID: 0}
   MustBeClosed:
   - {fileID: 3462897979408277353}
   - {fileID: 3462897979231208702}

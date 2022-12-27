@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Admin.Utility;
@@ -13,28 +12,15 @@ namespace GenerationMap
         [SerializeField] public GameObject wallBlock;
         [SerializeField] public GameObject floorBlock;
         [SerializeField] public GameObject cellingBlock;
-        [SerializeField] public Vector3 positionForSpawn = new Vector3(100,0,100);
-        public List<Room> Rooms = new List<Room>();
+        [SerializeField] public GameObject angleWallBlock;
+        [SerializeField] public Vector3 positionForSpawn = new(100,0,100);
+        private Room _lastSpawnedRoom;
 
-        public void Start()
+        public void GenerateRoomWithContens(Room roomOptions)
         {
-            ConnectionDb.OpenConnection();
+            generationScript.SpawnRoom(roomOptions);
         }
-
-        public Vector3 GenerateRoomByOnum(int num)
-        {
-            return GenerateRoomByOnum(ConnectionDb.GetOptionByOnum(num));
-        }
-
-        public Vector3 GenerateRoomByOnum(Hall roomOptions)
-        {
-            var room = GetRoomByResponse(roomOptions);
-            generationScript.SpawnRoom(room);
-            Rooms.Add(room);
-            return room.GetSpawnPosition();
-        }
-
-
+        
         public ExhibitDto GetExhibitByResponse(HallContent content)
         {
             var constExhibit = ExhibitsConstants.GetModelById(content.type);
@@ -48,26 +34,20 @@ namespace GenerationMap
                 LocalPosition = new Point(content.pos_x, content.pos_z),
                 LinkOnImage = content.image_url,
                 TextContentFirst = content.title,
-
+                Description = content.image_desc,
             };
         }
-        
-        public Room GetRoomByResponse(Hall room)
+
+        public Room GetRoomByRoomDto(RoomDto roomDto)
         {
-            var exhibitsData = ConnectionDb
-                .GetAllContentByOnum(room.hnum)
-                .Select(GetExhibitByResponse)
-                .ToList();
-            Debug.Log($"{exhibitsData.Count}");
+            Debug.Log($"{roomDto.HallOptions.name} {roomDto.HallOptions.sizex} {roomDto.HallOptions.sizez}");
+            var exhibitsData = roomDto.Contents.Select(GetExhibitByResponse).ToList();
+            var exhibitsMap = new ExhibitDto[roomDto.HallOptions.sizex, roomDto.HallOptions.sizez];
 
-
-            var exhibitsMap = new ExhibitDto[room.sizex, room.sizez];
             for (var i = 0; i < exhibitsMap.GetLength(0); i++)
             {
                 for (var j = 0; j < exhibitsMap.GetLength(1); j++)
-                {
                     exhibitsMap[i, j] = ExhibitsConstants.Floor;
-                }
             }
 
             var localSpawnPoint = new Vector2Int();
@@ -78,9 +58,23 @@ namespace GenerationMap
                 exhibitsMap[exibit.LocalPosition.X, exibit.LocalPosition.Y] = exibit;
             }
 
-            return new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock), localSpawnPoint,
-                positionForSpawn);
+            var tempSpawnPosition = positionForSpawn;
+
+            positionForSpawn *= -1;
+            DestroyLastRoom();
+            var newRoom = new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock, angleWallBlock),
+                localSpawnPoint,
+                tempSpawnPosition);
+            _lastSpawnedRoom = newRoom;
+            return newRoom;
         }
+
+        private void DestroyLastRoom()
+        {
+            if (_lastSpawnedRoom == null) return;
+            StartCoroutine(generationScript.DestroyRoom(_lastSpawnedRoom));
+        }
+        
         
     }
 }

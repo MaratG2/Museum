@@ -31,6 +31,7 @@ namespace GenerationMap
 
         public Vector3 GetSpawnPosition()
         {
+            if (LocalSpawnPoint == Vector2Int.zero) return PositionRoom + new Vector3(0, 0.2f, 0);
             var scale = Prefabs.PrefabFloor.GetComponent<BoxCollider>().size;
             var startPoint = new Vector3(PositionRoom.x - (float) Length / 2 * scale.x, PositionRoom.y,
                 scale.z / 2 + PositionRoom.z - (float) Width / 2 * scale.z);
