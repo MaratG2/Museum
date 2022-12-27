@@ -63,7 +63,7 @@ namespace GenerationMap
                     if (exhibitDto.Id == ExhibitsConstants.Decoration.Id)
                     {
                         var rnd = Random.Range(0, decorations.Length - 1);
-                        exhibits.Add(SpawnDecoration(i, j, exhibitDto.HeightSpawn, exhibitDto, room.WallBlocs,
+                        exhibits.Add(SpawnDecoration(i, j, exhibitDto.HeightSpawn, room.WallBlocs,
                             room.FloorBlocs, room, decorations[rnd]));
                     }
                     
@@ -119,7 +119,7 @@ namespace GenerationMap
             return exhibit;
         }
         
-        private GameObject SpawnDecoration(int i, int j, float height, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
+        private GameObject SpawnDecoration(int i, int j, float height, GameObject[,] roomWallBlocs,
             GameObject[,] floorBlocks, Room room, GameObject o)
         {
             var nearWall = FindNearWallV2(i, j, room, roomWallBlocs);
@@ -148,54 +148,6 @@ namespace GenerationMap
                 return roomWallBlocs[0, j];
             
             return roomWallBlocs[room.Length - 1, j];
-        }
-        private GameObject FindNearWall(int i, int j, Room room, GameObject[,] roomWallBlocs)
-        {
-            if (i == 0 && j == 0)
-            {
-                if (roomWallBlocs[1, j] == null) Debug.Log($"{i},{j}");
-                return roomWallBlocs[0, j];
-            }
-            if (i == 0)
-            {
-                if (roomWallBlocs[0, j] == null) Debug.Log($"{i},{j}");
-                return roomWallBlocs[0, j];
-            }
-
-            if (j == 0)
-            {
-                if (roomWallBlocs[i, 0] == null) Debug.Log($"{i},{j}");
-                return roomWallBlocs[i, 0];
-            }
-
-            if (i == room.Length)
-            {
-                if (roomWallBlocs[room.Length + 1, j] == null) Debug.Log($"{i},{j}");
-                return roomWallBlocs[room.Length + 1, j];
-            }
-
-            if (j == room.Width)
-            {
-                if (roomWallBlocs[i, room.Width+1] == null) Debug.Log($"{i},{j}");
-                return roomWallBlocs[i, room.Width+1];
-            }
-
-            if (i < roomWallBlocs.GetLength(0) / 2)
-            {
-                if (roomWallBlocs[0, j] == null)
-                {
-                    Debug.Log($"{i},{j} sredn<");
-                    Debug.Log($"{0},{j} sredn<");
-                }
-                return roomWallBlocs[0, j];
-            }
-
-            if (roomWallBlocs[room.Length, j])
-            {
-                Debug.Log($"{i},{j} sredn>");
-                Debug.Log($"{room.Length + 1},{j} sredn>");
-            }
-            return roomWallBlocs[room.Length + 1, j];
         }
 
         private GameObject[,] SpawnWallsV2(Vector3 positionRoom, int roomWidth, int roomLength, Room room)
