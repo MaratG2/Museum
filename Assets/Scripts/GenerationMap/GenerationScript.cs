@@ -33,8 +33,7 @@ namespace GenerationMap
             var height = room.Prefabs.PrefabWall.GetComponent<BoxCollider>().size.y;
             var cellingBlocs = SpawnPlace(room.PositionRoom + new Vector3(0, height, 0), room.Width, room.Length,
                 room.Prefabs.PrefabCeiling);
-            var wallBlocs = SpawnWalls(room.PositionRoom, room.Width, room.Length, room.Prefabs.PrefabWall,
-                room.Prefabs.PrefabFloor);
+            var wallBlocs = SpawnWallsV2(room.PositionRoom, room.Width, room.Length, room);
             room.FloorBlocs = floorBlocs;
             room.WallBlocs = wallBlocs;
             room.CellingBlocs = cellingBlocs;
@@ -81,7 +80,7 @@ namespace GenerationMap
         private GameObject SpawnWallExhibit(int i, int j, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             Room room)
         {
-            var nearWall = FindNearWall(i, j, room,roomWallBlocs);
+            var nearWall = FindNearWallV2(i, j, room,roomWallBlocs);
             //костыль
             if (nearWall == null) return null;
             var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
@@ -96,7 +95,7 @@ namespace GenerationMap
         private GameObject SpawnExhibit(int i, int j, float height, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             GameObject[,] floorBlocks, Room room, GameObject o)
         {
-            var nearWall = FindNearWall(i, j, room, roomWallBlocs);
+            var nearWall = FindNearWallV2(i, j, room, roomWallBlocs);
             if (nearWall == null) return null;
             var rotate = nearWall.transform.rotation;
             var exhibit = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
@@ -107,11 +106,12 @@ namespace GenerationMap
         private GameObject SpawnVideoExhibit(int i, int j, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             Room room)
         {
-            var nearWall = FindNearWall(i, j, room,roomWallBlocs);
+            var nearWall = FindNearWallV2(i, j, room,roomWallBlocs);
             //костыль
             if (nearWall == null) return null;
             var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
-            var rotate = nearWall.transform.rotation;
+            var rotate = nearWall.transform.rotation
+                ;
             var exhibit = SpawnChunk(videoFrame,
                 position, rotate);
             exhibit.GetComponent<VideoFrame>()._videoUrl = exhibitDto.LinkOnImage;
@@ -122,7 +122,7 @@ namespace GenerationMap
         private GameObject SpawnDecoration(int i, int j, float height, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             GameObject[,] floorBlocks, Room room, GameObject o)
         {
-            var nearWall = FindNearWall(i, j, room, roomWallBlocs);
+            var nearWall = FindNearWallV2(i, j, room, roomWallBlocs);
             if (nearWall == null) return null;
             var rotate = nearWall.transform.rotation;
             var decoration = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
@@ -130,7 +130,25 @@ namespace GenerationMap
             return decoration;
         }
 
-
+        private GameObject FindNearWallV2(int i, int j, Room room, GameObject[,] roomWallBlocs)
+        {
+            if (i == 0)
+                return roomWallBlocs[0, j];
+            
+            if (j == 0)
+                return roomWallBlocs[i, 0];
+            
+            if (i == room.Length - 1)
+                return roomWallBlocs[room.Length - 1, j];
+            
+            if (j == room.Width-1)
+                return roomWallBlocs[i, room.Width - 1];
+            
+            if (i < roomWallBlocs.GetLength(0) / 2)
+                return roomWallBlocs[0, j];
+            
+            return roomWallBlocs[room.Length - 1, j];
+        }
         private GameObject FindNearWall(int i, int j, Room room, GameObject[,] roomWallBlocs)
         {
             if (i == 0 && j == 0)
@@ -180,55 +198,72 @@ namespace GenerationMap
             return roomWallBlocs[room.Length + 1, j];
         }
 
-        private GameObject[,] SpawnWalls(Vector3 positionRoom, int roomWidth, int roomLength, GameObject prefabWall,
-            GameObject floorPrefab)
+        private GameObject[,] SpawnWallsV2(Vector3 positionRoom, int roomWidth, int roomLength, Room room)
         {
-            var walls = new GameObject[roomLength+2, roomWidth+2];
+            var matrixWalls = new GameObject[roomLength, roomWidth];
             var axis = new Vector3(0, 1, 0);
-            var scaleFloor = floorPrefab.GetComponent<BoxCollider>().size;
-            //вычисление стартовой точки
-            positionRoom = new Vector3(positionRoom.x - (float) roomLength / 2 * scaleFloor.x, positionRoom.y,
-                scaleFloor.z / 2 + positionRoom.z - (float) roomWidth / 2 * scaleFloor.z);
-
-            //параллельно оси z
-            for (int i = 1; i <= roomWidth; i++)
+            var tempPosition = GetStartPositionForSpawnWall(positionRoom, room);
+            
+            var prefabWall = room.Prefabs.PrefabWall;
+            var prefabAngleWall = room.Prefabs.PrefabAngleWall;
+            var scaleFloor = room.Prefabs.PrefabFloor.GetComponent<BoxCollider>().size;
+            tempPosition += new Vector3(0, 0, scaleFloor.z);
+            
+            //паралельно оси Z
+            for (var i = 1; i < roomWidth - 1; i++)
             {
-                walls[0, i] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(90, axis));
-                
-                if (roomWidth - i > 0)
-                    positionRoom += new Vector3(0, 0, scaleFloor.z);
+                matrixWalls[0, i] = SpawnChunk(prefabWall, tempPosition, Quaternion.AngleAxis(90, axis));
+                tempPosition += new Vector3(0, 0, scaleFloor.z);
             }
+            
+            //установка углового блока 
+            tempPosition += new Vector3(scaleFloor.x / 2, 0, 0);
+            matrixWalls[0, roomWidth - 1] = SpawnChunk(prefabAngleWall, tempPosition, Quaternion.AngleAxis(90, axis));
+            tempPosition += new Vector3(scaleFloor.x , 0, scaleFloor.z / 2);
 
-            positionRoom += new Vector3(scaleFloor.x / 2, 0, scaleFloor.z / 2);
-            //параллельно оси x
-            for (var i = 1; i <= roomLength; i++)
+            //паралельно оси X
+            for (var i = 1; i < roomLength - 1; i++)
             {
-                walls[i, roomWidth + 1] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(180, axis));
-               
-                if (roomLength - i > 0)
-                    positionRoom += new Vector3(scaleFloor.x, 0, 0);
+                matrixWalls[i, roomWidth - 1] = SpawnChunk(prefabWall, tempPosition, Quaternion.AngleAxis(180, axis));
+                tempPosition += new Vector3(scaleFloor.x, 0, 0);
             }
-
-            positionRoom += new Vector3(scaleFloor.x / 2, 0, -scaleFloor.z / 2);
-            //параллельно оси -z
-            for (var i = roomWidth; i >= 1; i--)
+            
+            //установка углового блока 
+            tempPosition += new Vector3(0, 0, -scaleFloor.z / 2);
+            matrixWalls[roomLength - 1, roomWidth - 1] = SpawnChunk(prefabAngleWall, tempPosition, Quaternion.AngleAxis(180, axis));
+            tempPosition += new Vector3(scaleFloor.x / 2, 0, -scaleFloor.z);
+            
+            //паралельно оси -Z
+            for (var i = roomWidth - 2; i > 0; i--)
             {
-                walls[roomLength + 1, i] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(270, axis));
-                
-                if (i > 1)
-                    positionRoom += new Vector3(0, 0, -scaleFloor.z);
+                matrixWalls[roomLength - 1, i] = SpawnChunk(prefabWall, tempPosition, Quaternion.AngleAxis(270, axis));
+                tempPosition += new Vector3(0, 0, -scaleFloor.z);
             }
-
-            positionRoom += new Vector3(-scaleFloor.x / 2, 0, -scaleFloor.z / 2);
-            //параллельно оси -x
-            for (var i = roomLength; i >= 1; i--)
+            
+            //установка углового блока 
+            tempPosition += new Vector3(-scaleFloor.x / 2, 0, 0);
+            matrixWalls[roomLength - 1, 0] = SpawnChunk(prefabAngleWall, tempPosition, Quaternion.AngleAxis(270, axis));
+            tempPosition += new Vector3(-scaleFloor.x, 0, -scaleFloor.z / 2);
+            
+            //паралельно оси -x
+            for (var i = roomLength - 2; i > 0; i--)
             {
-                walls[i, 0] = SpawnChunk(prefabWall, positionRoom, Quaternion.AngleAxis(0, axis));
-                if (i > 1)
-                    positionRoom += new Vector3(-scaleFloor.x, 0, 0);
+                matrixWalls[i, 0] = SpawnChunk(prefabWall, tempPosition, Quaternion.AngleAxis(0, axis));
+                tempPosition += new Vector3(-scaleFloor.x, 0, 0);
             }
+            
+            //установка углового блока 
+            tempPosition += new Vector3(0, 0, scaleFloor.z / 2);
+            matrixWalls[0, 0] = SpawnChunk(prefabAngleWall, tempPosition, Quaternion.AngleAxis(0, axis));
+            
+            return matrixWalls;
+        }
 
-            return walls;
+        private Vector3 GetStartPositionForSpawnWall(Vector3 positionRoom, Room room)
+        {
+            var scaleFloor = room.Prefabs.PrefabFloor.GetComponent<BoxCollider>().size;
+            return new Vector3(positionRoom.x - (float) room.Length / 2 * scaleFloor.x, positionRoom.y,
+                scaleFloor.z / 2 + positionRoom.z - (float) room.Width / 2 * scaleFloor.z);
         }
 
         private GameObject[,] SpawnPlace(Vector3 positionRoom, int roomWidth, int roomLength, GameObject prefab)

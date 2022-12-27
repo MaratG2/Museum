@@ -4,5 +4,5 @@ using UnityEngine;
 
 public static class SceneChoice
 {
-    public static int scene;
+    public static int scene=3;
 }

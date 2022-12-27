@@ -12,6 +12,7 @@ namespace GenerationMap
         [SerializeField] public GameObject wallBlock;
         [SerializeField] public GameObject floorBlock;
         [SerializeField] public GameObject cellingBlock;
+        [SerializeField] public GameObject angleWallBlock;
         [SerializeField] public Vector3 positionForSpawn = new(100,0,100);
         private Room _lastSpawnedRoom;
 
@@ -42,7 +43,7 @@ namespace GenerationMap
             Debug.Log($"{roomDto.HallOptions.name} {roomDto.HallOptions.sizex} {roomDto.HallOptions.sizez}");
             var exhibitsData = roomDto.Contents.Select(GetExhibitByResponse).ToList();
             var exhibitsMap = new ExhibitDto[roomDto.HallOptions.sizex, roomDto.HallOptions.sizez];
-            
+
             for (var i = 0; i < exhibitsMap.GetLength(0); i++)
             {
                 for (var j = 0; j < exhibitsMap.GetLength(1); j++)
@@ -61,7 +62,8 @@ namespace GenerationMap
 
             positionForSpawn *= -1;
             DestroyLastRoom();
-            var newRoom = new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock), localSpawnPoint,
+            var newRoom = new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock, angleWallBlock),
+                localSpawnPoint,
                 tempSpawnPosition);
             _lastSpawnedRoom = newRoom;
             return newRoom;

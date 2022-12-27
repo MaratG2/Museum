@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GenerationMap;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,17 +12,19 @@ public class RoomsMenu : MonoBehaviour
     [SerializeField] private Button next;
     [SerializeField] private Button back;
     [SerializeField] private Button goToHall;
-    [SerializeField] private Text goToHallText;
+    [SerializeField] private TextMeshProUGUI goToHallText;
     [SerializeField] private RoomsContainer _roomsContainer;
 
     [SerializeField] private DataConverter converter;
     [SerializeField] private GameObject player;
+    private Vector3 startPosPlayer;
     private List<GameObject> buttons;
     private int currentHall = 0;
     
     
     public void Start()
     {
+        startPosPlayer = player.transform.position;
         if(_roomsContainer.CachedHallsInfo.Count == 0)
             return;
         goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
@@ -56,6 +59,11 @@ public class RoomsMenu : MonoBehaviour
         converter.GenerateRoomWithContens(room);
         var posForSpawn = room.GetSpawnPosition();
         player.transform.position = posForSpawn;
+    }
+    
+    public void BackToMainRoom()
+    {
+        player.transform.position = startPosPlayer;
     }
 
 
