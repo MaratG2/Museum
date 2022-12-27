@@ -34,7 +34,7 @@ public class ActiveAction : MonoBehaviour
             else
                 InteractiveLabel.Instance.ShowLabal(false);
 
-            if (SceneManager.GetActiveScene().name == "Inside" && TeleportToClick.Instance.ViewMap == true)
+            if (SceneManager.GetActiveScene().name == "Inside" && TeleportToClick.Instance.ViewMap)
             {
                 Ray ray = camera.ScreenPointToRay(Input.mousePosition);
 

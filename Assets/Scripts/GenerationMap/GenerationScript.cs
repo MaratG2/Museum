@@ -10,6 +10,7 @@ namespace GenerationMap
         [SerializeField] public GameObject picture;
         [SerializeField] public GameObject pedestal;
         [SerializeField] public GameObject videoFrame;
+        [SerializeField] public GameObject infoBoxPrefab;
         [SerializeField] public GameObject[] decorations;
         
 
@@ -71,6 +72,10 @@ namespace GenerationMap
                     {
                         exhibits.Add(SpawnVideoExhibit(i, j, exhibitDto, room.WallBlocs, room));
                     }
+                    
+                    if (exhibitDto.Id == ExhibitsConstants.InfoBox.Id)
+                        exhibits.Add(SpawnInfoBox(i, j, exhibitDto.HeightSpawn, exhibitDto, room));
+                    
                 }
             }
 
@@ -80,9 +85,7 @@ namespace GenerationMap
         private GameObject SpawnWallExhibit(int i, int j, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             Room room)
         {
-            var nearWall = FindNearWallV2(i, j, room,roomWallBlocs);
-            //костыль
-            if (nearWall == null) return null;
+            var nearWall = FindNearWallV2(i, j, room);
             var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
             var rotate = nearWall.transform.rotation;
             var exhibit = SpawnChunk(picture,
@@ -95,8 +98,7 @@ namespace GenerationMap
         private GameObject SpawnExhibit(int i, int j, float height, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             GameObject[,] floorBlocks, Room room, GameObject o)
         {
-            var nearWall = FindNearWallV2(i, j, room, roomWallBlocs);
-            if (nearWall == null) return null;
+            var nearWall = FindNearWallV2(i, j, room);
             var rotate = nearWall.transform.rotation;
             var exhibit = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
             exhibit.GetComponent<ViewObject>().Name = exhibitDto.TextContentFirst;
@@ -106,15 +108,12 @@ namespace GenerationMap
         private GameObject SpawnVideoExhibit(int i, int j, ExhibitDto exhibitDto, GameObject[,] roomWallBlocs,
             Room room)
         {
-            var nearWall = FindNearWallV2(i, j, room,roomWallBlocs);
-            //костыль
-            if (nearWall == null) return null;
+            var nearWall = FindNearWallV2(i, j, room);
             var position = nearWall.GetComponent<WallBlock>().SpawnPosition.position;
-            var rotate = nearWall.transform.rotation
-                ;
+            var rotate = nearWall.transform.rotation;
             var exhibit = SpawnChunk(videoFrame,
                 position, rotate);
-            exhibit.GetComponent<VideoFrame>()._videoUrl = exhibitDto.LinkOnImage;
+            exhibit.GetComponent<VideoFrame>().videoUrl = exhibitDto.LinkOnImage;
 
             return exhibit;
         }
@@ -122,16 +121,33 @@ namespace GenerationMap
         private GameObject SpawnDecoration(int i, int j, float height, GameObject[,] roomWallBlocs,
             GameObject[,] floorBlocks, Room room, GameObject o)
         {
-            var nearWall = FindNearWallV2(i, j, room, roomWallBlocs);
-            if (nearWall == null) return null;
+            var nearWall = FindNearWallV2(i, j, room);
             var rotate = nearWall.transform.rotation;
             var decoration = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
            
             return decoration;
         }
-
-        private GameObject FindNearWallV2(int i, int j, Room room, GameObject[,] roomWallBlocs)
+        
+        private GameObject SpawnInfoBox(int i, int j, float height, ExhibitDto exhibitDto, Room room)
         {
+            var nearWall = FindNearWallV2(i, j, room);
+            var rotate = nearWall.transform.rotation;
+            var infoBox = SpawnChunk(infoBoxPrefab, room.FloorBlocs[i, j].transform.position + new Vector3(0, height, 0), rotate);
+            var readText = infoBox.GetComponent<ReadText>();
+            Debug.Log(exhibitDto.LinkOnImage);
+            var infos = JsonHelper.FromJson<InfoPart.InfoPartData>(exhibitDto.Description);
+            foreach (var info in infos)
+            {
+                if (info.url == null) continue;
+                readText.AddNewInfo(info.url, info.desc);
+            }
+            
+            return infoBox;
+        }
+
+        private GameObject FindNearWallV2(int i, int j, Room room)
+        {
+            var roomWallBlocs = room.WallBlocs;
             if (i == 0)
                 return roomWallBlocs[0, j];
             
