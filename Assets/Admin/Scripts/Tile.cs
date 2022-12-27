@@ -1,3 +1,4 @@
+using System;
 using Admin.Utility;
 using GenerationMap;
 using UnityEngine;
@@ -16,7 +17,7 @@ public class Tile : MonoBehaviour
         _image.sprite = null;
         SelectTool(hallContent.type);
     }
-    
+
     private void SelectTool(int tool)
     {
         switch (tool)

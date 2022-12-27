@@ -20,8 +20,9 @@ public class InfoController : MonoBehaviour
         for (int i = 0; i < _parentForInfoPart.childCount - 1; i++)
             Destroy(_parentForInfoPart.GetChild(i).gameObject);
 
-        AllJsonData = newAllJson;
-        InfoPart.InfoPartData[] partsDatas = JsonHelper.FromJson<InfoPart.InfoPartData>(AllJsonData);
+        if (string.IsNullOrWhiteSpace(newAllJson))
+            return;
+        InfoPart.InfoPartData[] partsDatas = JsonHelper.FromJson<InfoPart.InfoPartData>(newAllJson);
         foreach (var pd in partsDatas)
             CreateNewInfoPart(pd);
     }
