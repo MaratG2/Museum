@@ -19,4 +19,5 @@
 Для более подробного изучения GitHub и Desktop, их команд, или при возникновении проблем, рекомендуем ресурсы:
 1.	[Начало работы с GitHub Desktop](https://docs.github.com/ru/desktop/installing-and-configuring-github-desktop/overview/getting-started-with-github-desktop)
 2.	[Как работать в программе GitHub Desktop](https://htmlacademy.ru/blog/git/github-desktop)
+
 При открытии папки проекта в Unity Hub, нам будет доступен весь проект музея. Сцена администраторской части находится по пути Admin→Scenes→AdminPanel, ее можно открыть и работать с ней.
