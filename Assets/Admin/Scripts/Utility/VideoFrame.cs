@@ -3,7 +3,7 @@ using UnityEngine.Video;
 
 namespace Admin.Utility
 {
-    public class VideoFrame : MonoBehaviour, IInterative
+    public class VideoFrame : MonoBehaviour, IInteractive
     {
         [SerializeField] public string videoUrl;
         [SerializeField] [Range(0f, 1f)] private float volume = 0.2f;

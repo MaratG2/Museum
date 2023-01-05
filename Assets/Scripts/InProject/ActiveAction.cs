@@ -23,7 +23,7 @@ public class ActiveAction : MonoBehaviour
                     InteractiveLabel.Instance.ShowLabal(true);
                     if (Input.GetKeyDown(KeyCode.E))
                     {
-                        hit.collider.gameObject.GetComponent<IInterative>().Interact();
+                        hit.collider.gameObject.GetComponent<IInteractive>().Interact();
                     }
                 }
                 else

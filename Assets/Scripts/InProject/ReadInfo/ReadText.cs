@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ReadText : MonoBehaviour, IInterative
+public class ReadText : MonoBehaviour, IInteractive
 {
     bool flag;
 
