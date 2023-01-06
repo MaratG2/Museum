@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoToHall : MonoBehaviour,IInterative
+public class GoToHall : MonoBehaviour,IInteractive
 {
     public void Interact()
     {

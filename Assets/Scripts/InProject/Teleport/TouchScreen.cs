@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TouchScreen : MonoBehaviour,IInterative
+public class TouchScreen : MonoBehaviour,IInteractive
 {
     
     public void Interact()

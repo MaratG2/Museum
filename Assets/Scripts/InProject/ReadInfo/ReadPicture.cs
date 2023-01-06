@@ -39,10 +39,8 @@ public class ReadPicture : ReadText
             var newTexture = ((DownloadHandlerTexture) request.downloadHandler).texture;
             UpdatePicture(newTexture);
         }
-        
     }
     
-
     private void UpdatePicture(Texture2D newImage)
     {
         picture = newImage;

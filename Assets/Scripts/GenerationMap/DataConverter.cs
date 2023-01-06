@@ -34,7 +34,7 @@ namespace GenerationMap
                 LocalPosition = new Point(content.pos_x, content.pos_z),
                 LinkOnImage = content.image_url,
                 TextContentFirst = content.title,
-
+                Description = content.image_desc,
             };
         }
 

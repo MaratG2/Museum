@@ -2,32 +2,34 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Serialization;
 
-public enum TypeObj { Image,Title, Text };
+public enum TypeObj
+{
+    Image,
+    Title,
+    Text
+};
 public class ReadObject
 {
-    
-    public GameObject TypedObject = null;
-    public RectTransform RectTran = null;
-    TextMeshProUGUI TextP = null;
-    TypeObj t = TypeObj.Image;
+    public GameObject TypedObject;
+    public RectTransform RectTran;
+    TextMeshProUGUI TextP;
+    TypeObj type = TypeObj.Image;
     public TextMeshProUGUI TextParametrs
     {
         get
         {
-            if (t != 0)
+            if (type != 0)
                 return TextP;
-            else return null;
+            return null;
         }
-        private set
-        {
-            TextP = value;
-        }
+        private set => TextP = value;
     }
 
     public ReadObject(Sprite image)
     {
-        TypedObject =new GameObject();
+        TypedObject = new GameObject();
         TypedObject.transform.SetParent(ReadEvent.Instance.goForm.transform);
         RectTran = TypedObject.AddComponent<RectTransform>();
         TypedObject.AddComponent<Image>();
@@ -37,9 +39,9 @@ public class ReadObject
 
         RectTran.localPosition = new Vector3(100f, 100f, 100f); //Делается для красивого появления
     }
-    public ReadObject(string text, TypeObj t)
+    public ReadObject(string text, TypeObj type)
     {
-        this.t = t;
+        this.type = type;
 
         TypedObject = new GameObject();
         TypedObject.transform.SetParent(ReadEvent.Instance.goForm.transform);
@@ -47,12 +49,12 @@ public class ReadObject
         TextParametrs = TypedObject.AddComponent<TextMeshProUGUI>();
         
         TextParametrs.font = ReadEvent.Instance.Font;
-        if (t == TypeObj.Text)
+        if (type == TypeObj.Text)
         {
             TextParametrs.fontSize = 28;
             TextParametrs.text = text;
         }
-        else if (t == TypeObj.Title)
+        else if (type == TypeObj.Title)
         {
             TextParametrs.fontSize = 42;
             TextParametrs.text = text;
@@ -67,7 +69,7 @@ public class ReadObject
     }
     public void SetYValue()
     {
-        if(t!=TypeObj.Image)
+        if(type!=TypeObj.Image)
         {
             RectTran.sizeDelta = new Vector2(ReadEvent.width - ReadEvent.SpaceFortext, TextParametrs.preferredHeight);
         }
@@ -75,31 +77,30 @@ public class ReadObject
 }
 [System.Serializable]
 public class ReadFile
-{   
-    [HideInInspector]
+{
     public ReadObject RD;    
+    [FormerlySerializedAs("t")]
     [Header("Choose one: Image or something else")]
     [InspectorName("Type")]
-    public TypeObj t = TypeObj.Image;
-    public Sprite sprite = null;
+    public TypeObj type = TypeObj.Image;
+    public Sprite sprite;
     [TextArea(8, 30)]
-    public string text = null;
+    public string text;
+
     public ReadObject ToReadObject()
     {
-        if(t == 0)
-        {            
+        if (type == TypeObj.Image)
             RD = new ReadObject(sprite);
-        }
-        else if(t == TypeObj.Text)
-        {
+        
+        else if (type == TypeObj.Text)
             RD = new ReadObject(text, TypeObj.Text);
-        }
-        else if (t==TypeObj.Title)
-        {
+
+        else if (type == TypeObj.Title)
             RD = new ReadObject(text, TypeObj.Title);
-        }
+
         return RD;
-    }    
+    }
+
     public static Sprite ToSpite(Texture2D photo)
     {
         return Sprite.Create(photo, new Rect(new Vector2(0f, 0f), new Vector2(photo.width, photo.height)), new Vector2(0f, 0f));
