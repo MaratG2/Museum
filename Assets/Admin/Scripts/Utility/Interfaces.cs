@@ -1,4 +1,4 @@
-﻿interface IInterative
+﻿interface IInteractive
 {
      void Interact();
 }

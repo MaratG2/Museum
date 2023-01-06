@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 #pragma warning disable 0649
-public class ViewObject : MonoBehaviour,IInterative
+public class ViewObject : MonoBehaviour,IInteractive
 {
     [SerializeField]
     public string Name;

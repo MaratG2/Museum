@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 namespace GenerationMap
 {
@@ -18,6 +17,6 @@ namespace GenerationMap
         public string LinkOnImage { get; set; }
         public string TextContentFirst { get; set; }
         public string TextContentSecond { get; set; }
-        public Point LocalPosition { get; set; }
+        public System.Drawing.Point LocalPosition { get; set; }
     }
 }
