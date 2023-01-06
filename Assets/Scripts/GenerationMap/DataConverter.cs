@@ -40,7 +40,6 @@ namespace GenerationMap
 
         public Room GetRoomByRoomDto(RoomDto roomDto)
         {
-            Debug.Log($"{roomDto.HallOptions.name} {roomDto.HallOptions.sizex} {roomDto.HallOptions.sizez}");
             var exhibitsData = roomDto.Contents.Select(GetExhibitByResponse).ToList();
             var exhibitsMap = new ExhibitDto[roomDto.HallOptions.sizex, roomDto.HallOptions.sizez];
 

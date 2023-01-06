@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Admin.PHP;
 using Admin.Utility;
 using GenerationMap;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class RoomsContainer : MonoBehaviour
 {
@@ -28,9 +26,7 @@ public class RoomsContainer : MonoBehaviour
     private void AddToCachedRooms(List<HallContent> newContents)
     {
         if (newContents.Count > 0)
-        {
             CachedRooms[newContents[0].hnum].Contents = newContents;
-        }
     }
     
     public void Awake()
