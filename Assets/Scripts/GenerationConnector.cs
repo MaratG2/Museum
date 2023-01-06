@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Admin.PHP;
@@ -8,7 +9,7 @@ using UnityEngine;
 public class GenerationConnector : MonoBehaviour
 {
     public RoomDto CachedRoom { get; } = new();
-    
+    public Action OnDataGot;
     private HallQueries _hallQueries = new();
 
     private void OnEnable()
@@ -38,5 +39,6 @@ public class GenerationConnector : MonoBehaviour
     {
         yield return _hallQueries.GetHallByHnum(hnum);
         yield return _hallQueries.GetAllContentsByHnum(hnum);
+        OnDataGot?.Invoke();
     }
 }
