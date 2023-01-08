@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 public class ActiveAction : MonoBehaviour
 {
@@ -33,24 +30,7 @@ public class ActiveAction : MonoBehaviour
             }
             else
                 InteractiveLabel.Instance.ShowLabal(false);
-
-            if (SceneManager.GetActiveScene().name == "Inside" && TeleportToClick.Instance.ViewMap)
-            {
-                Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.collider.CompareTag("TeleportSpot"))
-                    {
-                        if (Input.GetKeyDown(KeyCode.Mouse0))
-                        {
-                            hit.collider.gameObject.GetComponent<ITeleportate>().Teleportate();
-                            TeleportToClick.Instance.ChangeCamPriority();
-                            //State.SetCursorLock();
-                        }
-                    }
-                }
-            }
+            
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
@@ -61,20 +41,6 @@ public class ActiveAction : MonoBehaviour
             {
                 Menu.Instance.ActivateRoomMenu();
             }
-
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                try
-                {
-                    State.View(true);
-                    TeleportToClick.Instance.ChangeCamPriority();                    
-                }
-                catch
-                {
-                    print("В данной сцене нет телепортации");
-                }
-            }
-            
         }
 
     }

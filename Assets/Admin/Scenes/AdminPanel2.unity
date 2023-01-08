@@ -21906,10 +21906,10 @@ RectTransform:
   m_Father: {fileID: 1047751915}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 57.2869}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 278.29996, y: -33.643448}
+  m_SizeDelta: {x: 556.5999, y: 57.2869}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1510953858
 MonoBehaviour:
@@ -31470,12 +31470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ac30fe495f80bf408c3a380d9c30bb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  picture: {fileID: 3031424015120459369, guid: bdc25d92cf6de164ab36663e8528c363, type: 3}
-  pedestal: {fileID: 7332904394431418289, guid: 376f40dc252d76f4c87962996224b945, type: 3}
-  videoFrame: {fileID: 2054267787093758920, guid: 040dedbfefcafde4ab333ad46f16a03d, type: 3}
-  infoBoxPrefab: {fileID: 7980389782601150131, guid: 7a034dc8496141048816ec670e4f71e2, type: 3}
-  decorations:
-  - {fileID: 1919154454442980718, guid: fcf2451135aee654fae9cb5529aa876a, type: 3}
+  exhibitsSpawner: {fileID: 4432507327904548750}
 --- !u!4 &4432507327904548745
 Transform:
   m_ObjectHideFlags: 0
@@ -31503,6 +31498,7 @@ GameObject:
   - component: {fileID: 4432507327904548744}
   - component: {fileID: 4432507327904548749}
   - component: {fileID: 4432507327904548747}
+  - component: {fileID: 4432507327904548750}
   m_Layer: 0
   m_Name: GenerationObject
   m_TagString: Untagged
@@ -31544,6 +31540,24 @@ MonoBehaviour:
   player: {fileID: 373122445}
   playerCamera: {fileID: 776768156}
   mainCanvas: {fileID: 1974609098}
+--- !u!114 &4432507327904548750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4432507327904548746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b22708b22e411ea10cfbf7724c23ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  picture: {fileID: 3031424015120459369, guid: 147fab0eb73547849a115d952a6801ba, type: 3}
+  pedestal: {fileID: 7332904394431418289, guid: 376f40dc252d76f4c87962996224b945, type: 3}
+  videoFrame: {fileID: 2054267787093758920, guid: 040dedbfefcafde4ab333ad46f16a03d, type: 3}
+  infoBoxPrefab: {fileID: 7980389782601150131, guid: 7a034dc8496141048816ec670e4f71e2, type: 3}
+  decorations:
+  - {fileID: 1919154454442980718, guid: fcf2451135aee654fae9cb5529aa876a, type: 3}
 --- !u!1001 &5995638553454845213
 PrefabInstance:
   m_ObjectHideFlags: 0

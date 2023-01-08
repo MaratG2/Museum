@@ -11,7 +11,6 @@ public class SetMapText : MonoBehaviour
     void Start()
     {
         father = GetComponentInParent<Transform>();
-        name = GetComponentInParent<Location>().Name;
         TextMeshPro text = GetComponent<TextMeshPro>();
         text.text = name;
 

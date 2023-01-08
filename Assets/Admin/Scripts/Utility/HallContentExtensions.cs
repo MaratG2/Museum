@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using Admin.GenerationMap;
+using Admin.Models;
 using GenerationMap;
 
 namespace Admin.Utility

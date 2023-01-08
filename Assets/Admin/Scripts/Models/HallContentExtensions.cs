@@ -1,4 +1,5 @@
-﻿using Admin.Utility;
+﻿using Admin.GenerationMap;
+using Admin.Utility;
 using GenerationMap;
 
 namespace Admin.Models
