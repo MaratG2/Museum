@@ -1,23 +1,19 @@
-using System;
-using Admin.Utility;
 using Admin.View;
 using GenerationMap;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class View3d : MonoBehaviour
 {
-     [SerializeField]
-     private DataConverter dataConverter;
-     
-     /*[SerializeField]
-     private GenerationConnector generationConnector;*/
+     [FormerlySerializedAs("generarionConnector")] [SerializeField]
+     private GenerationMap.GenerationConnector generationConnector;
 
      [SerializeField] private GameObject player;
      [SerializeField] private GameObject playerCamera;
      [SerializeField] private GameObject mainCanvas;
+     
      private HallViewer _hallViewer;
      private TilesDrawer _tilesDrawer;
-     private RoomDto _cachedRoomDto;
      private bool _isView;
 
      public void Awake()
@@ -62,12 +58,12 @@ public class View3d : MonoBehaviour
           playerCamera.SetActive(false);
      }
 
-     public void GenerateHall()
+     private void GenerateHall()
      {
           var selectedRoomDto = GetSelectedRoomDto();
           
-          var selectedRoom= dataConverter.GetRoomByRoomDto(selectedRoomDto);
-          dataConverter.GenerateRoomWithContens(selectedRoom);
+          var selectedRoom= generationConnector.GetRoomByRoomDto(selectedRoomDto);
+          generationConnector.GenerateRoomWithContens(selectedRoom);
           var spawnPosition = selectedRoom.GetSpawnPosition();
           
           player.transform.position = spawnPosition;

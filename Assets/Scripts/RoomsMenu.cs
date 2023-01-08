@@ -15,7 +15,7 @@ public class RoomsMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI goToHallText;
     [SerializeField] private RoomsContainer _roomsContainer;
 
-    [SerializeField] private DataConverter converter;
+    [SerializeField] private GenerationMap.GenerationConnector converter;
     [SerializeField] private GameObject player;
     private Vector3 startPosPlayer;
     private List<GameObject> buttons;
