@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Admin.Edit.ProgressSaver">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAACAAAAAAAAAAAAABAAAAAAAAEAAEBAAAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\ProgressSaver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Edit.EditCursor">
+    <Position X="2" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAwACBgAAGAAAEAAAAQARAAABACAECAIAEBAQAAACEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\EditCursor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Edit.ToolSelector">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAQAACAAAIEAAAAgAAAAAAAoAAgAoAAAQRABAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\ToolSelector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Edit.RubberBrush">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAABAAAAAAAAEAAACAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\RubberBrush.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_editCursor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Admin.Edit.PaintBrush">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCBEAAQAAAAAgAABAAACACAAAAAAGAAAAAAAAIAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\PaintBrush.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_editCursor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Admin.Edit.EditBrush">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACABABAAQAAAAAgAABAABgACAAEAAAADAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\EditBrush.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_editCursor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Admin.Edit.EditMedia">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAIAAABEAAAAAEQAAAAAAAAAAAAAAAAACAAAQAAAABA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\EditMedia.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Edit.EditInfoBox">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAABAEQAAAAAAAAAAAAAAAIAAAAAAAAAAQA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\EditInfoBox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InfoPart">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="InfoPart.InfoPartData" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\Admin\Scripts\Edit\InfoPart.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQAAAAAAAIAABAAAAAAACCABAAQAgEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\InfoPart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Edit.EditDecoration">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Edit\EditDecoration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
