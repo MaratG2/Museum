@@ -19,7 +19,7 @@ public class RoomsMenu : MonoBehaviour
     [SerializeField] private GameObject player;
     private Vector3 startPosPlayer;
     private List<GameObject> buttons;
-    private int currentHall = 0;
+    private int currentHall;
     
     
     public void Start()
