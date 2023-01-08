@@ -30659,7 +30659,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 859186490584342856, guid: b1e96eef1f6129d42bafe5e3932438ff, type: 3}
       propertyPath: m_Name
-      value: mainCamera
+      value: PlayerCamera
       objectReference: {fileID: 0}
     - target: {fileID: 859186490584342856, guid: b1e96eef1f6129d42bafe5e3932438ff, type: 3}
       propertyPath: m_IsActive
@@ -31502,7 +31502,6 @@ GameObject:
   - component: {fileID: 4432507327904548745}
   - component: {fileID: 4432507327904548744}
   - component: {fileID: 4432507327904548749}
-  - component: {fileID: 4432507327904548748}
   - component: {fileID: 4432507327904548747}
   m_Layer: 0
   m_Name: GenerationObject
@@ -31529,18 +31528,6 @@ MonoBehaviour:
   cellingBlock: {fileID: 197208, guid: ad5912cee0e9bb44982053d5e1a46c24, type: 3}
   angleWallBlock: {fileID: 227425533966409173, guid: e95cd0758bc11f040843fd8c9bcab742, type: 3}
   positionForSpawn: {x: 100, y: 0, z: 100}
---- !u!114 &4432507327904548748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4432507327904548746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2a8b3688cada53469e04de0b6cb7c87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4432507327904548749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31553,7 +31540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89e713ea808a4a84e888118566e073bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataConverter: {fileID: 4432507327904548747}
+  generationConnector: {fileID: 4432507327904548747}
   player: {fileID: 373122445}
   playerCamera: {fileID: 776768156}
   mainCanvas: {fileID: 1974609098}

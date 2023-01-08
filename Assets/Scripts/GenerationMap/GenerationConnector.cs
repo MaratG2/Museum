@@ -13,7 +13,7 @@ namespace GenerationMap
         [SerializeField] public GameObject floorBlock;
         [SerializeField] public GameObject cellingBlock;
         [SerializeField] public GameObject angleWallBlock;
-        [SerializeField] public Vector3 positionForSpawn = new(100,0,100);
+        [SerializeField] public Vector3 positionForSpawn = new(100, 0, 100);
         private Room _lastSpawnedRoom;
 
         public void GenerateRoomWithContens(Room roomOptions)
