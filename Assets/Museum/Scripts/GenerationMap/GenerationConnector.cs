@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Admin.GenerationMap;
 using Admin.Models;
+using GenerationMap;
 using UnityEngine;
 using HallContentExtensions = Admin.Utility.HallContentExtensions;
 
-namespace GenerationMap
+namespace Museum.Scripts.GenerationMap
 {
     public class GenerationConnector : MonoBehaviour
     {
@@ -75,7 +76,5 @@ namespace GenerationMap
             if (_lastSpawnedRoom == null) return;
             StartCoroutine(generationScript.DestroyRoom(_lastSpawnedRoom));
         }
-        
-        
     }
 }

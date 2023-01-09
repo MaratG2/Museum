@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Museum.Scripts.HandlePlayer;
 using UnityEngine;
 
 public class RoomText : MonoBehaviour

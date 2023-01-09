@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Exit : MonoBehaviour,IInteractive
+namespace InProject
 {
-    
-    public void Interact()
+    public class Exit : MonoBehaviour, IInteractive
     {
-        SceneChoice.scene = 0;
-        SceneManager.LoadScene("Load", LoadSceneMode.Single);
+        public void Interact()
+        {
+            SceneChoice.scene = 0;
+            SceneManager.LoadScene("Load", LoadSceneMode.Single);
+        }
     }
 }

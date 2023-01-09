@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Museum.Scripts.HandlePlayer;
+using Museum.Scripts.Menu;
+using UnityEngine;
 
 public class ActiveAction : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class ActiveAction : MonoBehaviour
     
     void Update()
     {
-        if (PlayerManager.isJump == false)
+        if (PlayerManager.IsJump == false)
         {
             RaycastHit hit;
 

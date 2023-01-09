@@ -1,115 +1,109 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 
-#pragma warning disable 0649
-public class ReadEvent : MonoBehaviour
+namespace Museum.Scripts.ReadInfo
 {
-    #region Singleton
-
-    private static ReadEvent _instance;
-    public static ReadEvent Instance
+    public class ReadEvent : MonoBehaviour
     {
-        get
+        #region Singleton
+
+        private static ReadEvent _instance;
+        public static ReadEvent Instance
         {
-            if (_instance == null)
+            get
             {
-                print("Instance");
+                if (_instance == null)
+                {
+                    print("Instance");
+                }
+                return _instance;
             }
-            return _instance;
         }
-    }
-    #endregion
+        #endregion
 
-    private void Awake()
-    {
-        _instance = gameObject.GetComponent<ReadEvent>();
-        SetPanelProperty();
-    }
-
-    public GameObject goForm;
-    [SerializeField] private GameObject goScroll;
-    public TMP_FontAsset Font;
-    public GameObject PicturePanel;
-    [HideInInspector]
-    public List<ReadObject> ListObjects = new List<ReadObject>();
-    [HideInInspector]
-    public List<ReadFile> ListFile = new List<ReadFile>();
-    [HideInInspector]
-    public static float width;
-    [HideInInspector]
-    public static float height;
-
-    [HideInInspector]
-    public static float SpaceFortext;
-    [HideInInspector]
-    public static float SpaceBetweenEl;
-
-    float yValueForScroll = 0f;
-
-
-
-    void SetPanelProperty()
-    {
-        width = Screen.width * 0.8f;
-        height = width / 16f * 10f;
-
-        SpaceFortext = width * 0.05f;
-        SpaceBetweenEl = width * 0.04f;
-    }
-
-
-
-    float NextPoint(RectTransform x1, RectTransform x2)
-    {
-        return (-x1.sizeDelta.y / 2) - SpaceBetweenEl + x1.localPosition.y + (-x2.sizeDelta.y / 2);
-    }
-
-    public IEnumerator SetForm()
-    {
-        goScroll.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 0);
-        CreatObjects();
-        yield return null; // Для постановки системой подходящей высоты
-        SetPostion();
-        
-        goForm.GetComponent<RectTransform>().sizeDelta = new Vector2(width, yValueForScroll);
-        goForm.GetComponent<RectTransform>().localPosition = new Vector3(0f, -yValueForScroll / 2 + SpaceBetweenEl, 0f);
-    }
-
-    void SetPostion()
-    {      
-
-        for (var i = 0; i < ListObjects.Count; i++)
+        private void Awake()
         {
-
-            ListObjects[i].SetYValue();            
-            yValueForScroll += ListObjects[i].RectTran.sizeDelta.y+ SpaceBetweenEl;
-
+            _instance = gameObject.GetComponent<ReadEvent>();
+            SetPanelProperty();
         }
-        
-        ListObjects[0].RectTran.localPosition = new Vector3(0, yValueForScroll/2- ListObjects[0].RectTran.sizeDelta.y/2, 0);
-        
-        for (var i = 1; i < ListObjects.Count; i++)
-        {           
-            ListObjects[i].RectTran.localPosition = new Vector3(0, NextPoint(ListObjects[i - 1].RectTran, ListObjects[i].RectTran), 0);
-        }
-    }
-    public void CreatObjects()
-    {
-        foreach (var i in ListFile)
+
+        public GameObject goForm;
+        [SerializeField] private GameObject goScroll;
+        public GameObject PicturePanel;
+        public TMP_FontAsset Font;
+        public List<ReadObject> ListObjects = new();
+        [HideInInspector]
+        public List<ReadFile> ListFile = new();
+
+        public static float Width;
+        public static float Height;
+
+        public static float SpaceFortext;
+        private static float _spaceBetweenEl;
+
+        float _yValueForScroll;
+
+
+
+        void SetPanelProperty()
         {
-            ListObjects.Add(i.ToReadObject());
+            Width = Screen.width * 0.8f;
+            Height = Width / 16f * 10f;
+
+            SpaceFortext = Width * 0.05f;
+            _spaceBetweenEl = Width * 0.04f;
         }
-    }
-    public void DestroyList()
-    {
-        foreach (var k in ListObjects)
-            Destroy(k.TypedObject);
-        yValueForScroll = 0f;
-        ListObjects.Clear();
+
+
+        private float NextPoint(RectTransform x1, RectTransform x2)
+        {
+            return -x1.sizeDelta.y / 2 - _spaceBetweenEl + x1.localPosition.y + (-x2.sizeDelta.y / 2);
+        }
+
+        public IEnumerator SetForm()
+        {
+            goScroll.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, 0);
+            CreateObjects();
+            yield return null; // Для постановки системой подходящей высоты
+            SetPostion();
+        
+            goForm.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, _yValueForScroll);
+            goForm.GetComponent<RectTransform>().localPosition = new Vector3(0f, -_yValueForScroll / 2 + _spaceBetweenEl, 0f);
+        }
+
+        private void SetPostion()
+        {      
+
+            foreach (var t in ListObjects)
+            {
+                t.SetYValue();            
+                _yValueForScroll += t.RectTran.sizeDelta.y+ _spaceBetweenEl;
+            }
+        
+            ListObjects[0].RectTran.localPosition = new Vector3(0, _yValueForScroll/2- ListObjects[0].RectTran.sizeDelta.y/2, 0);
+        
+            for (var i = 1; i < ListObjects.Count; i++)
+            {           
+                ListObjects[i].RectTran.localPosition = new Vector3(0, NextPoint(ListObjects[i - 1].RectTran, ListObjects[i].RectTran), 0);
+            }
+        }
+
+        private void CreateObjects()
+        {
+            foreach (var i in ListFile)
+            {
+                ListObjects.Add(i.ToReadObject());
+            }
+        }
+        
+        public void DestroyList()
+        {
+            foreach (var k in ListObjects)
+                Destroy(k.TypedObject);
+            _yValueForScroll = 0f;
+            ListObjects.Clear();
+        }
     }
 }
-
-#pragma warning restore 0649

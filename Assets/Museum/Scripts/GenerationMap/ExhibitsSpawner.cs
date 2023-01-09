@@ -2,9 +2,11 @@
 using Admin.GenerationMap;
 using Admin.Models;
 using Admin.Utility;
+using GenerationMap;
+using Museum.Scripts.ReadInfo;
 using UnityEngine;
 
-namespace GenerationMap
+namespace Museum.Scripts.GenerationMap
 {
     public class ExhibitsSpawner : MonoBehaviour
     {

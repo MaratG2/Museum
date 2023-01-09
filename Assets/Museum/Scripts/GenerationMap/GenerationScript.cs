@@ -1,7 +1,8 @@
 using System.Collections;
+using GenerationMap;
 using UnityEngine;
 
-namespace GenerationMap
+namespace Museum.Scripts.GenerationMap
 {
     public class GenerationScript : MonoBehaviour
     {

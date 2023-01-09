@@ -3074,6 +3074,10 @@ PrefabInstance:
       propertyPath: Slider
       value: 
       objectReference: {fileID: 1373918785}
+    - target: {fileID: 3966510324393102788, guid: 5266db5b6a4805043a9de88deb885bc0, type: 3}
+      propertyPath: slider
+      value: 
+      objectReference: {fileID: 1373918785}
     - target: {fileID: 3966510324393102791, guid: 5266db5b6a4805043a9de88deb885bc0, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -3241,6 +3245,10 @@ PrefabInstance:
       propertyPath: converter
       value: 
       objectReference: {fileID: 1297331437}
+    - target: {fileID: 6679507301563981924, guid: c65353ff355896b45bd6044e377b176b, type: 3}
+      propertyPath: roomsContainer
+      value: 
+      objectReference: {fileID: 1297331440}
     - target: {fileID: 6679507301563981924, guid: c65353ff355896b45bd6044e377b176b, type: 3}
       propertyPath: _roomsContainer
       value: 

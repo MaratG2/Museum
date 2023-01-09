@@ -1,12 +1,13 @@
 using Admin.View;
 using GenerationMap;
+using Museum.Scripts.GenerationMap;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class View3d : MonoBehaviour
 {
      [FormerlySerializedAs("generarionConnector")] [SerializeField]
-     private GenerationMap.GenerationConnector generationConnector;
+     private GenerationConnector generationConnector;
 
      [SerializeField] private GameObject player;
      [SerializeField] private GameObject playerCamera;

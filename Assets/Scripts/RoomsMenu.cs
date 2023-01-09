@@ -1,4 +1,5 @@
 using GenerationMap;
+using Museum.Scripts.GenerationMap;
 using TMPro;
 using UnityEngine;
 

@@ -1,32 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
-using System;
 
-public class PlayerManager : MonoBehaviour
+namespace Museum.Scripts.HandlePlayer
 {
-    private static PlayerManager _instance;
-    public static PlayerManager Instance    
+    public class PlayerManager : MonoBehaviour
     {
-        get {
-            return _instance;
+        private static PlayerManager _instance;
+        public static PlayerManager Instance => _instance;
+        [FormerlySerializedAs("Slider")] 
+        public GameObject slider;
+        
+        [HideInInspector] public Transform tran;
+        public static bool IsJump = false;
+        public static float MouseSensitivity = 150f;
+
+        private void Awake()
+        {
+            GameObject o;
+            _instance = (o = gameObject).GetComponent<PlayerManager>();
+            tran = o.transform;
+            slider.GetComponent<Slider>().value = MouseSensitivity;
+        }
+
+        public void SetSensity()
+        {           
+            MouseSensitivity = slider.GetComponent<Slider>().value;
         }
     }
-    public GameObject Slider;
-    private void Awake()
-    {
-        _instance = gameObject.GetComponent<PlayerManager>();
-        tran = gameObject.transform;
-        Slider.GetComponent<Slider>().value = mouseSensitivity;
-    }
-    [HideInInspector] public Transform tran;
-    public static bool isJump = false;
-    public static float mouseSensitivity=150f;
-
-    public void SetSensity()
-    {           
-        mouseSensitivity = Slider.GetComponent<Slider>().value;
-    }
-
 }

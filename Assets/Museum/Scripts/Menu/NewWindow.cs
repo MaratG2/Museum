@@ -1,30 +1,30 @@
 ﻿using UnityEngine;
-#pragma warning disable 0649
-public class NewWindow : MonoBehaviour
+
+namespace Museum.Scripts.Menu
 {
-    [SerializeField]
-    GameObject Info;
-    [SerializeField]
-    GameObject Control;
-    [SerializeField]
-    GameObject Panel;
+    public class NewWindow : MonoBehaviour
+    {
+        [SerializeField] private GameObject Info;
+        [SerializeField] private GameObject Control;
+        [SerializeField] private GameObject Panel;
 
-    public void OpenInfo()
-    {
-        Info.SetActive(true);
-        Panel.SetActive(true);
+        public void OpenInfo()
+        {
+            Info.SetActive(true);
+            Panel.SetActive(true);
+        }
+        
+        public void OpenControl()
+        {
+            Control.SetActive(true);
+            Panel.SetActive(true);
+        }
+        
+        public void Close()
+        {
+            Info.SetActive(false);
+            Control.SetActive(false);
+            Panel.SetActive(false);
+        }
     }
-    public void OpenControl()
-    {
-        Control.SetActive(true);
-        Panel.SetActive(true);
-    }
-    public void Close()
-    {
-        Info.SetActive(false);
-        Control.SetActive(false);
-        Panel.SetActive(false);
-    }
-
 }
-#pragma warning restore 0649
