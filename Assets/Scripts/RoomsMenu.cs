@@ -1,61 +1,47 @@
-using System.Collections.Generic;
 using GenerationMap;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class RoomsMenu : MonoBehaviour
 {
-
-    [SerializeField] private Canvas canvas;
-    [SerializeField] private Font font;
-    [SerializeField] private Button next;
-    [SerializeField] private Button back;
-    [SerializeField] private Button goToHall;
     [SerializeField] private TextMeshProUGUI goToHallText;
-    [SerializeField] private RoomsContainer _roomsContainer;
+    [SerializeField] private RoomsContainer roomsContainer;
 
-    [SerializeField] private GenerationMap.GenerationConnector converter;
+    [SerializeField] private GenerationConnector converter;
     [SerializeField] private GameObject player;
-    private Vector3 startPosPlayer;
-    private List<GameObject> buttons;
-    private int currentHall;
+    private Vector3 _startPosPlayer;
+    private int _currentHall;
     
     
     public void Start()
     {
-        startPosPlayer = player.transform.position;
-        if(_roomsContainer.CachedHallsInfo.Count == 0)
+        _startPosPlayer = player.transform.position;
+        if(roomsContainer.CachedHallsInfo.Count == 0)
             return;
-        goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+        goToHallText.text = roomsContainer.CachedHallsInfo[_currentHall].name;
         
     }
 
     public void NextHall()
     {
-        if (currentHall == _roomsContainer.CachedHallsInfo.Count - 1)
-            currentHall = 0;
-        else currentHall++;
-        goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
-        
-        foreach (var info in _roomsContainer.CachedHallsInfo)
-        {
-            Debug.Log($"{info.name} {info.sizex} {info.sizez}");
-        }
+        if (_currentHall == roomsContainer.CachedHallsInfo.Count - 1)
+            _currentHall = 0;
+        else _currentHall++;
+        goToHallText.text = roomsContainer.CachedHallsInfo[_currentHall].name;
     }
     
     public void PreviewHall()
     {
-        if (currentHall == 0)
-            currentHall = _roomsContainer.CachedHallsInfo.Count - 1;
+        if (_currentHall == 0)
+            _currentHall = roomsContainer.CachedHallsInfo.Count - 1;
         else
-            currentHall--;
-        goToHallText.text = _roomsContainer.CachedHallsInfo[currentHall].name;
+            _currentHall--;
+        goToHallText.text = roomsContainer.CachedHallsInfo[_currentHall].name;
     }
 
     public void LoadHall()
     {
-        var room = converter.GetRoomByRoomDto(_roomsContainer.CachedRooms[_roomsContainer.CachedHallsInfo[currentHall].hnum]);
+        var room = converter.GetRoomByRoomDto(roomsContainer.CachedRooms[roomsContainer.CachedHallsInfo[_currentHall].hnum]);
         converter.GenerateRoomWithContens(room);
         var posForSpawn = room.GetSpawnPosition();
         player.transform.position = posForSpawn;
@@ -63,54 +49,6 @@ public class RoomsMenu : MonoBehaviour
     
     public void BackToMainRoom()
     {
-        player.transform.position = startPosPlayer;
+        player.transform.position = _startPosPlayer;
     }
-
-
-    /*private void OnEnable()
-    {
-        var rooms = GetAllowsRooms();
-        buttons = CreateButtons(rooms);
-    }*/
-
-    /*private async Task<List<GameObject>> CreateButtons(List<Hall> rooms)
-    {
-        return rooms
-            .Select(async x=>await CreateButton(x).ConfigureAwait(false))
-            .ToList();
-    }*/
-
-    /*private async Task<GameObject> CreateButton (Hall room)
-    {
-        var newButton = new GameObject($"button: {room.name}", typeof(Image), typeof(Button), typeof(LayoutElement));
-        newButton.transform.SetParent(gameObject.transform);
-        newButton.GetComponent<LayoutElement>().minHeight = 35;
-        newButton.GetComponent<LayoutElement>().minWidth = 100;
-        
-        
-        var newText = new GameObject($"text: {room.name}", typeof(Text));
-        newText.transform.SetParent(newButton.transform);
-        newText.GetComponent<Text>().text = $"{room.name}";
-        newText.GetComponent<Text>().font = font;
-        var rt = newText.GetComponent<RectTransform>();
-        rt.anchorMin = new Vector2(0, 0);
-        rt.anchorMax = new Vector2(1, 1);
-        rt.anchoredPosition = new Vector2(0, 0);
-        rt.sizeDelta = new Vector2(0, 0);
-        newText.GetComponent<Text>().color = new Color(0, 0, 0);
-        newText.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-        newButton.GetComponent<Button>().onClick.AddListener(delegate { await GetActionPressButton(room); });
-        return newButton;
-    }*/
-
-    /*public async Task GetActionPressButton(Hall hall)
-    {
-        var pos = await converter.GenerateRoomByOnum(hall).ConfigureAwait(false);
-        player.transform.position = pos;
-        foreach (var t in buttons)
-        {
-            Destroy(t);
-        }
-        buttons.Clear();
-    }*/
 }
