@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Admin.UsersManagement.UsersParser">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAACCAAAAAAAAAEAAAAAABIQAgBAAAACAg=</HashCode>
+      <FileName>Assets\Admin\Scripts\UsersManagement\UsersParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.UsersManagement.UserContent">
+    <Position X="4.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AQAAAQEAAAAAASABAQIAAAAEABAAAIBIQAAgAAAACAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\UsersManagement\UserContent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.UsersManagement.UsersSpawner">
+    <Position X="2.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>BAABAAAAAAAAAAAAAAAAACAAAAAAABAAAAQBAAAAAAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\UsersManagement\UsersSpawner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

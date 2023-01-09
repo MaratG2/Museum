@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Admin.Auth.Registration">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAQAQAAAAAAIAABAAAwAAgABIAAQQAAIACMA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\Registration.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_loggerUI" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Admin.Auth.VersionText">
+    <Position X="12.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\VersionText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Auth.Login">
+    <Position X="3" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>GBIAAAAAAMAQAAAABAIABQAECABAAABIAAQAAAAACEE=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\Login.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_loggerUI" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Admin.Auth.Logger">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAgAAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\Logger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Admin.Auth.LoginFieldsProvider">
+    <Position X="8.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAggAAAAIAACAAAAAAAAAIQAAAAAAACAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\LoginFieldsProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Admin.Auth.RegistrationFieldsProvider">
+    <Position X="10" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAggAAAAIAACAAAAAAAAIIQAAAAAAACAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\RegistrationFieldsProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Admin.Auth.PasswordSaver">
+    <Position X="5.5" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAABAAAAAAAAAAAAAAQAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\PasswordSaver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Admin.Auth.AuthPanel">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAACAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\AuthPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Admin.Auth.IFieldsProvider">
+    <Position X="8.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\IFieldsProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Admin.Auth.ILoggable">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Admin\Scripts\Auth\ILoggable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
