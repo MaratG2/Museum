@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 using System.Reflection;
 using Admin.Models;
-using GenerationMap;
 
 namespace Admin.GenerationMap
 {
     public static class ExhibitsConstants
     {
-        public static ExhibitDto SpawnPoint = new ExhibitDto()
+        public static ExhibitDto SpawnPoint = new()
         {
             Id = 0,
             Icon = null,
@@ -15,7 +14,7 @@ namespace Admin.GenerationMap
             IsBlock = false
         };
         
-        public static ExhibitDto Picture = new ExhibitDto()
+        public static ExhibitDto Picture = new()
         {
             Id = 1,
             Icon = null,
@@ -25,7 +24,7 @@ namespace Admin.GenerationMap
             HeightSpawn = 1
         };
         
-        public static ExhibitDto InfoBox = new ExhibitDto()
+        public static ExhibitDto InfoBox = new()
         {
             Id = 2,
             Icon = null,
@@ -33,16 +32,16 @@ namespace Admin.GenerationMap
             IsBlock = false
         };
         
-        public static ExhibitDto Cup = new ExhibitDto()
+        public static ExhibitDto Cup = new()
         {
             Id = 3,
             Icon = null,
             Name = "Cup",
             IsBlock = false,
-            HeightSpawn = 1
+            HeightSpawn = 1.2f
         };
         
-        public static ExhibitDto Medal = new ExhibitDto()
+        public static ExhibitDto Medal = new()
         {
             Id = 4,
             Icon = null,
@@ -50,7 +49,7 @@ namespace Admin.GenerationMap
             IsBlock = false
         };
         
-        public static ExhibitDto Video = new ExhibitDto()
+        public static ExhibitDto Video = new()
         {
             Id = 5,
             Icon = null,
@@ -58,7 +57,7 @@ namespace Admin.GenerationMap
             IsBlock = false
         };
         
-        public static ExhibitDto Decoration = new ExhibitDto()
+        public static ExhibitDto Decoration = new()
         {
             Id = 6,
             Icon = null,
@@ -66,7 +65,7 @@ namespace Admin.GenerationMap
             IsBlock = false
         };
         
-        public static ExhibitDto Floor = new ExhibitDto()
+        public static ExhibitDto Floor = new()
         {
             Id = 101,
             Icon = null,
@@ -74,7 +73,7 @@ namespace Admin.GenerationMap
             IsBlock = true
         };
         
-        public static ExhibitDto Celling = new ExhibitDto()
+        public static ExhibitDto Celling = new()
         {
             Id = 102,
             Icon = null,
@@ -82,7 +81,7 @@ namespace Admin.GenerationMap
             IsBlock = true
         };
         
-        public static ExhibitDto Wall = new ExhibitDto()
+        public static ExhibitDto Wall = new()
         {
             Id = 103,
             Icon = null,
