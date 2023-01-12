@@ -18,7 +18,8 @@ namespace Admin.View
         private float _tileSize;
         public float TileSize => _tileSize;
         private Vector2 _leftBottomTilePos;
-        private List<HallContent> _hallContents = new ();
+        public List<HallContent> _hallContents = new ();
+        public List<HallContent> HallContents => _hallContents;
         
         private void OnEnable()
         {

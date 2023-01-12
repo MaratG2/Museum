@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Museum.Scripts.HandlePlayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +10,7 @@ public class Load : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        PlayerManager.isJump = false;
+        PlayerManager.IsJump = false;
         AsyncOperation L = SceneManager.LoadSceneAsync("Inside");
         while (L.isDone == false)
         {

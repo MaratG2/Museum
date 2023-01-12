@@ -1,6 +1,6 @@
 ﻿using UnityEngine.UI;
 
-namespace GenerationMap
+namespace Admin.Models
 {
     public class ExhibitDto
     {

@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Reflection;
+using Admin.Models;
+using GenerationMap;
 
-namespace GenerationMap
+namespace Admin.GenerationMap
 {
     public static class ExhibitsConstants
     {
