@@ -1,10 +1,5 @@
 ﻿interface IInteractive
 {
+     public string Title { get; }
      void Interact();
 }
-interface ITeleportate
-{
-    void Teleportate();
-}
-
-

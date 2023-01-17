@@ -3,6 +3,7 @@ using Admin.GenerationMap;
 using Admin.Models;
 using Admin.Utility;
 using GenerationMap;
+using InProject;
 using Museum.Scripts.ReadInfo;
 using UnityEngine;
 
@@ -14,8 +15,13 @@ namespace Museum.Scripts.GenerationMap
         [SerializeField] public GameObject pedestal;
         [SerializeField] public GameObject videoFrame;
         [SerializeField] public GameObject infoBoxPrefab;
-        [SerializeField] public GameObject[] decorations;
-        
+        private DecorationsRepository _decorationsRepository;
+
+        public void Start()
+        {
+            _decorationsRepository = FindObjectOfType<DecorationsRepository>();
+        }
+
         public List<GameObject> SpawnExhibits(Room room)
         {
             var exhibits = new List<GameObject>();
@@ -33,7 +39,7 @@ namespace Museum.Scripts.GenerationMap
                             room.FloorBlocs, room, pedestal));
                     
                     if (currentExhibit.Id == ExhibitsConstants.Decoration.Id)
-                        exhibits.Add(SpawnDecoration(i, j, currentExhibit.HeightSpawn, room));
+                        exhibits.Add(SpawnDecoration(i, j, currentExhibit.HeightSpawn, currentExhibit, room));
                     
                     if (currentExhibit.Id == ExhibitsConstants.Video.Id)
                         exhibits.Add(SpawnVideoExhibit(i, j, currentExhibit, room));
@@ -55,6 +61,7 @@ namespace Museum.Scripts.GenerationMap
             var exhibit = SpawnChunk(picture,
                 position, rotate);
             exhibit.GetComponent<ReadPicture>().SetNewPicture(exhibitDto.LinkOnImage);
+            exhibit.GetComponent<ReadPicture>().Title = exhibitDto.Description;
 
             return exhibit;
         }
@@ -65,7 +72,7 @@ namespace Museum.Scripts.GenerationMap
             var nearWall = FindNearWallV2(i, j, room);
             var rotate = nearWall.transform.rotation;
             var exhibit = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
-            exhibit.GetComponent<ViewObject>().Name = exhibitDto.TextContentFirst;
+            exhibit.GetComponent<ViewObject>().Title = "Кубок";
             return exhibit;
         }
         
@@ -77,17 +84,19 @@ namespace Museum.Scripts.GenerationMap
             var exhibit = SpawnChunk(videoFrame,
                 position, rotate);
             exhibit.GetComponent<VideoFrame>().videoUrl = exhibitDto.LinkOnImage;
+            exhibit.GetComponent<VideoFrame>().Title = exhibitDto.Description;
 
             return exhibit;
         }
         
-        private GameObject SpawnDecoration(int i, int j, float height, Room room)
+        private GameObject SpawnDecoration(int i, int j, float height, ExhibitDto exhibitDto,Room room)
         {
-            var rnd = Random.Range(0, decorations.Length - 1);
-            var o = decorations[rnd];
+            var go = _decorationsRepository.GetDecorationGOByName(exhibitDto.Description);
+            if (go is null) return null;
+            
             var nearWall = FindNearWallV2(i, j, room);
             var rotate = nearWall.transform.rotation;
-            var decoration = SpawnChunk(o, room.FloorBlocs[i, j].transform.position + new Vector3(0, height, 0), rotate);
+            var decoration = SpawnChunk(go, room.FloorBlocs[i, j].transform.position + new Vector3(0, height, 0), rotate);
            
             return decoration;
         }
@@ -98,6 +107,7 @@ namespace Museum.Scripts.GenerationMap
             var rotate = nearWall.transform.rotation;
             var infoBox = SpawnChunk(infoBoxPrefab, room.FloorBlocs[i, j].transform.position + new Vector3(0, height, 0), rotate);
             var readText = infoBox.GetComponent<ReadText>();
+            readText.Title = "Информация о текущем зале";
             var infos = JsonHelper.FromJson<InfoPart.InfoPartData>(exhibitDto.Description);
             foreach (var info in infos)
             {

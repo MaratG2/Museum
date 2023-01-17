@@ -1,4 +1,5 @@
-﻿using Museum.Scripts.HandlePlayer;
+﻿using InProject;
+using Museum.Scripts.HandlePlayer;
 using Museum.Scripts.Menu;
 using UnityEngine;
 
@@ -19,7 +20,8 @@ public class ActiveAction : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Interactive Object"))
                 {
-                    InteractiveLabel.Instance.ShowLabal(true);
+                    var title = hit.transform.GetComponent<IInteractive>().Title;
+                    InteractiveLabel.Instance.ShowInfoLableWithTitleObj(title);
                     if (Input.GetKeyDown(KeyCode.E))
                     {
                         hit.collider.gameObject.GetComponent<IInteractive>().Interact();
@@ -27,12 +29,12 @@ public class ActiveAction : MonoBehaviour
                 }
                 else
                 {
-                    InteractiveLabel.Instance.ShowLabal(false);
+                    InteractiveLabel.Instance.CloseInfoLable();
                 }
             }
             else
-                InteractiveLabel.Instance.ShowLabal(false);
-            
+                InteractiveLabel.Instance.CloseInfoLable();
+
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {

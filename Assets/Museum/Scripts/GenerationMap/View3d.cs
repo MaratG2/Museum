@@ -1,5 +1,6 @@
 using Admin.View;
 using GenerationMap;
+using InProject;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -53,7 +54,7 @@ namespace Museum.Scripts.GenerationMap
                     return;
           
                _isView = false;
-               State.View();
+               State.SetCursorUnlock();
           
                mainCanvas.SetActive(true);
                player.SetActive(false);

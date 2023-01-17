@@ -38,7 +38,7 @@ namespace Admin.GenerationMap
             Icon = null,
             Name = "Cup",
             IsBlock = false,
-            HeightSpawn = 1.2f
+            HeightSpawn = 1.5f
         };
         
         public static ExhibitDto Medal = new()

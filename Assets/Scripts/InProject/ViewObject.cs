@@ -1,38 +1,40 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 #pragma warning disable 0649
-public class ViewObject : MonoBehaviour,IInteractive
+namespace InProject
 {
-    [SerializeField]
-    public string Name;
-    bool flag = false;
-    public void Interact()
+    public class ViewObject : MonoBehaviour, IInteractive
     {
-        if (!flag)
-        {
-            Open();
-            flag = true;
-        }
-        else
-        {
-            Close();
-            flag = false;
-        }
+        [SerializeField]
+        public string Name;
+        private bool _isActivate;
+        public string Title { get; set; }
 
-    }
-    void Open()
-    {
-        State.View(true);
-        InteractiveLabel.Instance.ChangeTextLabel(Name);
-        ActiveObjectView.Instance.CreateObj(gameObject);
-    }
-    void Close()
-    {        
-        State.View(false);
-        InteractiveLabel.Instance.SetDefaultText();
-        ActiveObjectView.Instance.DestroyObj();
+        public void Interact()
+        {
+            if (!_isActivate)
+            {
+                Open();
+                _isActivate = true;
+            }
+            else
+            {
+                Close();
+                _isActivate = false;
+            }
+        }
+        void Open()
+        {
+            State.View(true);
+            InteractiveLabel.Instance.ChangeTextLabel(Name);
+            ActiveObjectView.Instance.CreateObj(gameObject);
+        }
+        void Close()
+        {        
+            State.View(false);
+            InteractiveLabel.Instance.SetDefaultText();
+            ActiveObjectView.Instance.DestroyObj();
+        }
     }
 }
 #pragma warning restore 0649

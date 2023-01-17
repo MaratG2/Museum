@@ -13,6 +13,7 @@ namespace Museum.Scripts.GenerationMap
         [SerializeField] private GenerationScript generationScript;
         
         [SerializeField] public GameObject wallBlock;
+        
         [SerializeField] public GameObject floorBlock;
         [SerializeField] public GameObject cellingBlock;
         [SerializeField] public GameObject angleWallBlock;
@@ -33,7 +34,7 @@ namespace Museum.Scripts.GenerationMap
             var exhibitsMap = GetExhibitsMap(roomDto, exhibitsData);
             
             var tempSpawnPosition = positionForSpawn;
-
+            
             positionForSpawn *= -1;
             DestroyLastRoom();
             var newRoom = new Room(exhibitsMap, new PrefabPack(wallBlock, floorBlock, cellingBlock, angleWallBlock),

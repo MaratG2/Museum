@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using InProject;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -9,6 +10,8 @@ namespace Museum.Scripts.ReadInfo
     {
         private bool _flag;
         public List<ReadFile> ListFile = new();
+
+        public string Title { get; set; }
 
         public void Interact()
         {

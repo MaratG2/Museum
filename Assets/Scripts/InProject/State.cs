@@ -1,48 +1,68 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public static class State 
+namespace InProject
 {
-    public static bool Frozen = false;
-    public static void SetCursorLock(bool isLocked)
+    public static class State 
     {
-        Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = isLocked ? false : true;
-    }
-    public static void SetCursorLock()
-    {
-        if (Cursor.lockState == CursorLockMode.Locked)
+        public static bool Frozen;
+        public static void SetCursorLock(bool isLocked)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = isLocked ? false : true;
         }
-        else
+        
+        public static void SetCursorLock()
         {
+            if(Cursor.lockState == CursorLockMode.Locked)
+                return;
+            
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-    }
-    public static void View(bool f)
-    {
-        if(f)
+        
+        public static void ChangeCursorState()
         {
-            Frozen = true;
-            SetCursorLock(false);
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+
+        public static void SetCursorUnlock()
+        {
+            if (Cursor.lockState == CursorLockMode.None)
+                return;
+
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        else
+
+        public static void View(bool f)
         {
-            Frozen = false;
-            SetCursorLock(true);
-            Cursor.visible = false;
+            if(f)
+            {
+                Frozen = true;
+                SetCursorLock(false);
+                Cursor.visible = true;
+            }
+            else
+            {
+                Frozen = false;
+                SetCursorLock(true);
+                Cursor.visible = false;
+            }
         }
-    }
-    public static void View()
-    {
         
+        public static void View()
+        {
             Frozen = !Frozen;
-            SetCursorLock();     
-        
+            ChangeCursorState();
+        }
     }
 }

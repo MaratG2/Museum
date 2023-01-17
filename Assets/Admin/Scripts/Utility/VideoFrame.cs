@@ -10,14 +10,16 @@ namespace Admin.Utility
         [SerializeField] private VideoPlayer videoPlayer;
          private bool _isPlayed;
 
-        void Start()
+         public string Title { get; set; }
+
+         void Start()
         {
             videoPlayer.url = videoUrl;
             videoPlayer.Pause();
             videoPlayer.SetDirectAudioVolume(0, volume);
         }
 
-        public void Interact()
+         public void Interact()
         {
             if (_isPlayed) videoPlayer.Pause();
             else videoPlayer.Play();
