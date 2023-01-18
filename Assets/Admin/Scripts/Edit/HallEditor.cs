@@ -5,7 +5,6 @@ using Admin.GenerationMap;
 using Admin.PHP;
 using Admin.Utility;
 using Admin.View;
-using GenerationMap;
 using MaratG2.Extensions;
 using TMPro;
 using UnityEngine;
@@ -13,6 +12,12 @@ using UnityEngine.UI;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за редактирование настроек зала – даты открытия/закрытие, название зала, его доступность, удаление. 
+    /// </summary>
+    /// <remarks>
+    /// Также хранит в себе массив, являющийся 2D планом содержимого зала. В нем происходят все взаимодействия с базой данных – сохранение настроек зала, содержимого, их удаление.
+    /// </remarks>
     public class HallEditor : MonoBehaviour
     {
         [SerializeField] private HallViewer _hallViewer;

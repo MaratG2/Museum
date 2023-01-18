@@ -8,6 +8,9 @@ using HallContentExtensions = Admin.Utility.HallContentExtensions;
 
 namespace Museum.Scripts.GenerationMap
 {
+    /// <summary>
+    /// Отвечает за конвертацию информации о залах, пришедших с php сервера, в нужный для генерации вид.
+    /// </summary>
     public class GenerationConnector : MonoBehaviour
     {
         [SerializeField] private GenerationScript generationScript;

@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за визуальное отображение в тексте прогресса сохранения настроек зала.
+    /// </summary>
     public class ProgressSaver : MonoBehaviour
     {
         [SerializeField] private string _progressSave = "Прогресс сохранения:";

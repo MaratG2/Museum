@@ -1,8 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Admin.Edit;
+using Admin.Utility;
 using UnityEngine;
 
+/// <summary>
+/// Отвечает за управление информационным стендом: добавление и удаление его частей, сериализация всей информации в JSON для последующего сохранения в БД.
+/// </summary>
 public class InfoController : MonoBehaviour
 {
     [SerializeField] private InfoPart _infoPartPrefab;

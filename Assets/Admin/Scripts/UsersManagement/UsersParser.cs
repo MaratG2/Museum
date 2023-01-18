@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Admin.PHP;
-using Admin.UsersManagement;
 using Admin.Utility;
 using UnityEngine;
 
 namespace Admin.UsersManagement
 {
+    /// <summary>
+    /// Отвечает за получение всех пользователей из БД, кеширует их в список пользователей (_cachedUsers).
+    /// </summary>
     public class UsersParser : MonoBehaviour
     {
         private Action<string> OnResponseCallback;

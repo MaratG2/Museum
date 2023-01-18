@@ -3,6 +3,9 @@ using UnityEngine.Video;
 
 namespace Admin.Utility
 {
+    /// <summary>
+    /// Отвечает за загрузку и воспроизведение видео из Интернета (GitHub Pages) по ссылке при взаимодействии с пользователем.
+    /// </summary>
     public class VideoFrame : MonoBehaviour, IInteractive
     {
         [SerializeField] public string videoUrl;

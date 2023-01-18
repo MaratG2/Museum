@@ -1,5 +1,8 @@
 namespace Admin.Utility
 {
+    /// <summary>
+    /// Структура данных, описывающая наполнение зала Музея, совпадает с структурой соответствующей таблицы в базе данных.
+    /// </summary>
     public struct HallContent
     {
         public int hnum;

@@ -5,6 +5,9 @@ using UnityEngine.Video;
 
 namespace Admin.Utility
 {
+    /// <summary>
+    /// Отвечает за загрузку и воспроизведение видео в текстуре из Интернета (GitHub Pages) по ссылке.
+    /// </summary>
     public class Video : MonoBehaviour
     {
         [SerializeField] private string _videoUrl;

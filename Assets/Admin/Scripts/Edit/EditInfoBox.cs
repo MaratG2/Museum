@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за отображение настроек информационного стенда на пользовательском интерфейсе.
+    /// </summary>
     public class EditInfoBox : MonoBehaviour
     {
         [SerializeField] private CanvasGroup _uiGroup;

@@ -6,6 +6,12 @@ using UnityEngine.Serialization;
 
 namespace Museum.Scripts.GenerationMap
 {
+     /// <summary>
+     /// Отвечает за загрузку данных о выбранном зале в администраторском приложении и дальнейшей передаче его для генерации в GenerationConnector.
+     /// </summary>
+     /// <remarks>
+     /// Используется только в приложении для администраторов.
+     /// </remarks>
      public class View3d : MonoBehaviour
      {
           [FormerlySerializedAs("generarionConnector")] [SerializeField]

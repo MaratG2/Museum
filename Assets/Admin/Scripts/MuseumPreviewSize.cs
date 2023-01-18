@@ -1,10 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Отвечает за изменение размера предварительного просмотра плана 2D музея.
+/// </summary>
 public class MuseumPreviewSize : MonoBehaviour
 {
     [SerializeField] private TMP_InputField _inputSizeX;

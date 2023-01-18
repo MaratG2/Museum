@@ -1,13 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Admin.GenerationMap;
-using GenerationMap;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за выбор инструмента из палитры, а также изменение иконки курсора.
+    /// </summary>
     public class ToolSelector : MonoBehaviour
     {
         [SerializeField] private Sprite _doorSprite,

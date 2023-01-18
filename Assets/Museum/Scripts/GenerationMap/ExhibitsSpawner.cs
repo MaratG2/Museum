@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Admin.Edit;
 using Admin.GenerationMap;
 using Admin.Models;
 using Admin.Utility;
@@ -9,6 +10,9 @@ using UnityEngine;
 
 namespace Museum.Scripts.GenerationMap
 {
+    /// <summary>
+    /// Отвечает за генерацию экспонатов музея.
+    /// </summary>
     public class ExhibitsSpawner : MonoBehaviour
     {
         [SerializeField] public GameObject picture;

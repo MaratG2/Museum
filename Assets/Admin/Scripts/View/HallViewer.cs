@@ -1,16 +1,20 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Admin.Auth;
 using Admin.Edit;
 using Admin.PHP;
 using Admin.Utility;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Admin.View
 {
+    /// <summary>
+    /// Отвечает за выбор зала. 
+    /// </summary>
+    /// <remarks>
+    /// Хранит в себе публичное свойство HallSelected, которое используется множеством других классов.
+    /// </remarks>
     public class HallViewer : MonoBehaviour
     {
         [SerializeField] private GameObject _textGORefreshing;

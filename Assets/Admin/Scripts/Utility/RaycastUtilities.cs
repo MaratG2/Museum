@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 
 namespace Admin.Utility
 {
+    /// <summary>
+    /// Отвечает за получение элемента интерфейса, на который указывает курсор.
+    /// </summary>
     public static class RaycastUtilities
     {
         public static bool PointerIsOverUI(Vector2 screenPos)

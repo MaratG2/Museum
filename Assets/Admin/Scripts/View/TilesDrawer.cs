@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Admin.View
 {
+    /// <summary>
+    /// Отвечает за получение содержимого выбранного зала, его отрисовку в интерфейсе, поверх 2D плана.
+    /// </summary>
     public class TilesDrawer : MonoBehaviour
     {
         [SerializeField] private GameObject _tilePrefab;

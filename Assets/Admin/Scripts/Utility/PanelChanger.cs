@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Admin.Utility
 {
+    /// <summary>
+    /// Перечисление Panel, отвечающее за UI-панели в приложении.
+    /// </summary>
     public enum Panel
     {
         Auth,
@@ -12,6 +15,9 @@ namespace Admin.Utility
         New,
         User
     }
+    /// <summary>
+    /// Переключает UI-панели в приложении.
+    /// </summary>
     public class PanelChanger : MonoBehaviour
     {
         [SerializeField] private CanvasGroup _authGroup, _viewGroup, _editGroup, _newGroup, _userGroup;

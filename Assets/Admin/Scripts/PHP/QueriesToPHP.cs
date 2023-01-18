@@ -5,6 +5,13 @@ using UnityEngine.Networking;
 
 namespace Admin.PHP
 {
+    /// <summary>
+    /// Отвечает за GET/POST запросы к PHP скриптам на сервере.
+    /// </summary>
+    /// <remarks>
+    /// Запросы выполняются внутри IEnumerator методах (корутинах), которые принимают название PHP скрипта на сервере, возвращают – обратный вызов с текстом-ответом из скрипта.
+    /// Для использования класса нужно сконструировать его C# объект, обращаться к методам через объект.
+    /// </remarks>
     public class QueriesToPHP
     {
         private string _urlRoot = "https://istu-museum-admin.netlify.app/api/PHP/";

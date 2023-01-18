@@ -1,57 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InfoPart : MonoBehaviour
+namespace Admin.Edit
 {
-    [SerializeField] private TMP_InputField _urlInput;
-    [SerializeField] private TMP_InputField _descInput;
-    [SerializeField] private Button _removeButton;
-    private bool _isSetup = false;
-    
-    [System.Serializable]
-    public struct InfoPartData
+    /// <summary>
+    /// Отвечает за часть информации для информационного стенда – проверка ввода, сохранение, удаление.
+    /// </summary>
+    /// <remarks>
+    /// Также содержит структуру InfoPartData, описывающую ссылка на картинку и описание.
+    /// </remarks>
+    public class InfoPart : MonoBehaviour
     {
-        public string url;
-        public string desc;
-    }
-    private InfoPartData _infoData;
+        [SerializeField] private TMP_InputField _urlInput;
+        [SerializeField] private TMP_InputField _descInput;
+        [SerializeField] private Button _removeButton;
+        private bool _isSetup = false;
 
-    public InfoPartData InfoData
-    {
-        get => _infoData;
-        set => _infoData = value;
-    }
+        [System.Serializable]
+        public struct InfoPartData
+        {
+            public string url;
+            public string desc;
+        }
 
-    private void Awake()
-    {
-        _removeButton.onClick.AddListener(EndPart);
-    }
-    
-    private void EndPart()
-    {
-        GetComponentInParent<InfoController>().InfoPartsChanged(this);
-        Destroy(gameObject);
-    }
+        private InfoPartData _infoData;
 
-    public void ApplyNewData()
-    {
-        _isSetup = true;
-        _urlInput.text = InfoData.url;
-        _descInput.text = InfoData.desc;
-        _isSetup = false;
-    }
+        public InfoPartData InfoData
+        {
+            get => _infoData;
+            set => _infoData = value;
+        }
 
-    public void OnInputUpdated()
-    {
-        if (_isSetup)
-            return;
-        
-        InfoPartData newData = new InfoPartData();
-        newData.url = _urlInput.text;
-        newData.desc = _descInput.text;
-        InfoData = newData;
+        private void Awake()
+        {
+            _removeButton.onClick.AddListener(EndPart);
+        }
+
+        private void EndPart()
+        {
+            GetComponentInParent<InfoController>().InfoPartsChanged(this);
+            Destroy(gameObject);
+        }
+
+        public void ApplyNewData()
+        {
+            _isSetup = true;
+            _urlInput.text = InfoData.url;
+            _descInput.text = InfoData.desc;
+            _isSetup = false;
+        }
+
+        public void OnInputUpdated()
+        {
+            if (_isSetup)
+                return;
+
+            InfoPartData newData = new InfoPartData();
+            newData.url = _urlInput.text;
+            newData.desc = _descInput.text;
+            InfoData = newData;
+        }
     }
 }

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за рисование выбранной иконки из палитры на 2D плане зала, а также установление начального состояния нарисованного предмета музея.
+    /// </summary>
     public class EditMedia : MonoBehaviour
     {
         [SerializeField] private CanvasGroup _uiGroup;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Admin.Utility;
 using TMPro;
@@ -8,6 +7,9 @@ using UnityEngine.UI;
 
 namespace Admin.View
 {
+    /// <summary>
+    /// Отвечает за создание и удаление интерфейсных элементов – списка доступных залов.
+    /// </summary>
     public class HallLister : MonoBehaviour
     {
         [SerializeField] private Button _hallListingPrefab;

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за просчет положения и отображение курсора в интерфейсе.
+    /// </summary>
     public class EditCursor : MonoBehaviour
     {
         [SerializeField] private RectTransform _cursorTile;

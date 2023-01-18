@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Museum.Scripts.GenerationMap
 {
+    /// <summary>
+    /// Отвечает за генерацию стен, полов и потолков зала, а также создание карты экспонатов.
+    /// </summary>
     public class GenerationScript : MonoBehaviour
     {
         [SerializeField] private ExhibitsSpawner exhibitsSpawner;

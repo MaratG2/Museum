@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Admin.Auth
 {
+    /// <summary>
+    /// Контракт с интерфейсом ILoggable, дает в использование публичные методы для логгирования в пользовательском интерфейсе.
+    /// </summary>
     public class Logger : MonoBehaviour, ILoggable
     {
         [SerializeField] private Color _goodColor = Color.green;

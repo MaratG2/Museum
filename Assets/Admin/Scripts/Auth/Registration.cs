@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Admin.Auth
 {
+    /// <summary>
+    /// Занимается логикой регистрации пользователя.
+    /// </summary>
     public class Registration : MonoBehaviour
     {
         private RegistrationFieldsProvider _registrationFields;

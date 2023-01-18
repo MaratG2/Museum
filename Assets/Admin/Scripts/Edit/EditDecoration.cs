@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за отображение настроек декорации на пользовательском интерфейсе.
+    /// </summary>
     public class EditDecoration : MonoBehaviour
     {
         [SerializeField] private CanvasGroup _uiGroup;

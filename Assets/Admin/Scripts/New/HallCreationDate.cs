@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Admin.New
 {
+    /// <summary>
+    /// Отвечает за ввод даты открытия и закрытия зала пользователем.
+    /// </summary>
     public class HallCreationDate : MonoBehaviour
     {
         [SerializeField] private Toggle _dateBegin;

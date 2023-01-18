@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечающий за удаление иконки на месте курсора при выбранном инструменте резинки.
+    /// </summary>
     public class RubberBrush : MonoBehaviour
     {
         [SerializeField] private Transform _paintsParent;

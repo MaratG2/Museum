@@ -11,6 +11,9 @@ using UnityEngine.UI;
 
 namespace Admin.New
 {
+    /// <summary>
+    /// Отвечает за парсинг и валидацию введенных данных нового зала, отправляет запрос к базе данных на его создание.
+    /// </summary>
     public class HallCreator : MonoBehaviour
     {
         [SerializeField] private TMP_InputField _inputName;

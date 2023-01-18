@@ -1,10 +1,11 @@
-using System;
 using Admin.GenerationMap;
 using Admin.Utility;
-using GenerationMap;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Отвечает за визуальное представление иконки на 2D плане Музея.
+/// </summary>
 public class Tile : MonoBehaviour
 {
     public HallContent hallContent;

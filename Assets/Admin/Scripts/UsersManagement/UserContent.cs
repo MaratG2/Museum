@@ -11,6 +11,9 @@ using UnityEngine.UI;
 
 namespace Admin.UsersManagement
 {
+    /// <summary>
+    /// Отвечает за представление пользователя в интерфейсе – отображение его полей, сохранение изменений у пользователя в базе данных и удаление пользователя.
+    /// </summary>
     public class UserContent : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _nameText;

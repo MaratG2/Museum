@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Admin.UsersManagement
 {
+    /// <summary>
+    /// Отвечает за создание всех кешированных пользователей на пользовательском интерфейсе.
+    /// </summary>
     public class UsersSpawner : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _usernameText;

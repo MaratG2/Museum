@@ -6,6 +6,14 @@ using UnityEngine;
 
 namespace Admin.PHP
 {
+    /// <summary>
+    /// Отвечает за ООП запросы к базе данных, относящиеся к залам музея.
+    /// </summary>
+    /// <remarks>
+    /// Имеет 3 публичных контракта-корутины – GetHallByHnum (получить зал по его ID), GetAllHalls (получить все залы), GetAllContentsByHnum (получить все наполнение зала по его ID).
+    /// При успешном выполнении этих методов, вызываются обратные вызовы OnHallGet, OnAllHallsGet, OnAllHallContentsGet, которые передают объекты или списки объектов.
+    /// Для использования класса нужно сконструировать его C# объект, обращаться к методам через объект.
+    /// </remarks>
     public class HallQueries
     {
         public Action<Hall> OnHallGet;

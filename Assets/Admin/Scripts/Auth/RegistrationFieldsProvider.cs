@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Admin.Auth
 {
+    /// <summary>
+    /// Контракт с интерфейсом IFieldsProvider, дает в использование публичные методы для манипуляции с полями ввода текста, используемые при регистрации пользователя.
+    /// </summary>
     public class RegistrationFieldsProvider : MonoBehaviour, IFieldsProvider
     {
         [SerializeField] private TMP_InputField _nameField;

@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace Museum.Scripts.GenerationMap
 {
+    /// <summary>
+    /// Отвечает за получение информации о залах с сервера и хранение их.
+    /// </summary>
     public class RoomsContainer : MonoBehaviour
     {
         public Dictionary<int, RoomDto> CachedRooms { get; private set; }

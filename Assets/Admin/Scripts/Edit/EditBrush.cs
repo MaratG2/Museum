@@ -1,13 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Admin.GenerationMap;
-using GenerationMap;
 using MaratG2.Extensions;
 using UnityEngine;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечает за редактирование (изменение) предмета на месте курсора, его обработку в зависимости от его типа.
+    /// </summary>
     public class EditBrush : MonoBehaviour
     {
         [SerializeField] private CanvasGroup _changePropertiesGroup;

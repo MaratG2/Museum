@@ -1,11 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using Admin.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Admin.Auth
 {
+    /// <summary>
+    /// Занимается логикой сохранения или удаления пароля, если отмечена галочка «Запомнить пароль».
+    /// </summary>
+    /// <remarks>
+    /// Использует PlayerPrefs для сохранения (максимальный вес сохраняемых данных – 1МБ, сохраняются они в IndexedDB браузера).
+    /// </remarks>
     public class PasswordSaver : MonoBehaviour
     {
         [SerializeField] private Toggle _toggleSavePassword;

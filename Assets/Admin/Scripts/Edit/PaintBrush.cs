@@ -1,11 +1,13 @@
 using Admin.GenerationMap;
 using Admin.Utility;
-using GenerationMap;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Admin.Edit
 {
+    /// <summary>
+    /// Отвечающий за рисование выбранной иконки из палитры на 2D плане зала, а также установление начального состояния нарисованного предмета музея.
+    /// </summary>
     public class PaintBrush : MonoBehaviour
     {
         [SerializeField] private Transform _paintsParent;

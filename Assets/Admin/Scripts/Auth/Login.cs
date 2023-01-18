@@ -9,6 +9,12 @@ using UnityEngine;
 
 namespace Admin.Auth
 {
+    /// <summary>
+    /// Занимается логикой авторизации пользователя.
+    /// </summary>
+    /// <remarks>
+    /// Также получает пользователя из базы данных и запоминает его в публичное авто-свойство CurrentUser, которое используется множеством других классов.
+    /// </remarks>
     public class Login : MonoBehaviour
     {
         private QueriesToPHP _queriesToPhp = new(isDebugOn: true);

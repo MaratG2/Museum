@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace Admin.Auth
 {
+    /// <summary>
+    /// Устанавливает полноэкранный режим на старте, а также включает панель авторизации.
+    /// </summary>
+    /// <remarks>
+    /// Либо пропускает панель авторизации при выключенном флаге _isAuthEnabled.
+    /// </remarks>
     public class AuthPanel : MonoBehaviour
     {
         [SerializeField] private bool _isAuthEnabled = true;
