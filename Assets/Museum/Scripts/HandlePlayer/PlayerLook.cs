@@ -8,12 +8,11 @@ namespace Museum.Scripts.HandlePlayer
 {
     public class PlayerLook : MonoBehaviour
     {
-        [Range(0f, 90f)][SerializeField] private float _yRotationLimit = 88f;
         [SerializeField] private string mouseXInputName, mouseYInputName;
-        [SerializeField] private Transform _playerBody;
-        [SerializeField] private LayerMask _uiLayerMask;
-
-        private Vector2 _rotation = Vector2.zero;
+        [SerializeField] private Transform playerBody;
+        [FormerlySerializedAs("_uiLayerMask")] 
+        [SerializeField] private LayerMask uiLayerMask;
+        
         private ActiveAction _activeAction;
         private float _xAxisClamp;
 
@@ -45,22 +44,30 @@ namespace Museum.Scripts.HandlePlayer
             var mouseX = Input.GetAxis(mouseXInputName) * PlayerManager.MouseSensitivity * Time.deltaTime;
             var mouseY = Input.GetAxis(mouseYInputName) * PlayerManager.MouseSensitivity * Time.deltaTime;
 
-            _rotation.x += mouseX;
-            _rotation.y += mouseY;
-            _rotation.y = Mathf.Clamp(_rotation.y, -_yRotationLimit, _yRotationLimit);
-            var xQuat = Quaternion.AngleAxis(_rotation.x, Vector3.up);
-            var yQuat = Quaternion.AngleAxis(_rotation.y, Vector3.left);
-            var newRotation = xQuat * yQuat;
-            transform.rotation = newRotation;
-            _playerBody.rotation = newRotation;
+            _xAxisClamp += mouseY;
+
+            if (_xAxisClamp > 90.0f)
+            {
+                _xAxisClamp = 90.0f;
+                mouseY = 0.0f;
+                ClampXAxisRotationToValue(270.0f);
+            }
+            else if (_xAxisClamp < -90.0f)
+            {
+                _xAxisClamp = -90.0f;
+                mouseY = 0.0f;
+                ClampXAxisRotationToValue(90.0f);
+            }
+
+            transform.Rotate(Vector3.left * mouseY);
+            playerBody.Rotate(Vector3.up * mouseX);
         }
 
         private void RaycastToUI()
         {
             var currentTransform = _activeAction.Camera.transform;
             var ray = new Ray(currentTransform.position, currentTransform.forward);
-            var hits = Physics.RaycastAll(ray.origin, ray.direction * 1000f,
-                1000f, layerMask: _uiLayerMask);
+            var hits = Physics.RaycastAll(ray.origin, ray.direction * 1000f, 1000f, layerMask: uiLayerMask);
             if (hits.Length == 0)
                 return;
             foreach (var hit in hits)
@@ -68,8 +75,7 @@ namespace Museum.Scripts.HandlePlayer
                 var button = hit.collider.gameObject.GetComponent<Button>();
                 if (button == null)
                     continue;
-                ExecuteEvents.Execute(button.gameObject, 
-                    new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+                ExecuteEvents.Execute(button.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
             }
         }
         

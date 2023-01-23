@@ -3088,10 +3088,6 @@ PrefabInstance:
       propertyPath: camera
       value: 
       objectReference: {fileID: 1862350573}
-    - target: {fileID: 3966510322907878611, guid: 5266db5b6a4805043a9de88deb885bc0, type: 3}
-      propertyPath: _uiLayerMask.m_Bits
-      value: 32
-      objectReference: {fileID: 0}
     - target: {fileID: 3966510324393102788, guid: 5266db5b6a4805043a9de88deb885bc0, type: 3}
       propertyPath: Slider
       value: 
