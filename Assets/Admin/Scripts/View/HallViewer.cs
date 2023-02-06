@@ -20,6 +20,7 @@ namespace Admin.View
         [SerializeField] private GameObject _textGORefreshing;
         [SerializeField] private Button _modeSwitchEdit;
         [SerializeField] private Button _modeSwitchNew;
+        [SerializeField] private Button _mode3DView;
         private HallQueries _hallQueries = new();
         private Hall _hallSelected;
         private List<Hall> _cachedHalls;
@@ -62,6 +63,8 @@ namespace Admin.View
                 _modeSwitchEdit.gameObject.SetActive(false);
                 _modeSwitchNew.gameObject.SetActive(false);
             }
+            
+            _mode3DView.interactable = !string.IsNullOrWhiteSpace(_hallSelected.name);
         }
 
         public void SelectHall(int hnum)
