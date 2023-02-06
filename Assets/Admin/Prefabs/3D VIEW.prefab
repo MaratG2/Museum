@@ -64,6 +64,8 @@ MonoBehaviour:
   player: {fileID: 344627979117296755}
   playerCamera: {fileID: 4048679723718349458}
   mainCanvas: {fileID: 0}
+  _tilesDrawerView: {fileID: 0}
+  _tilesDrawerEdit: {fileID: 0}
 --- !u!114 &1027050117021586903
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,15 +20,15 @@ namespace Museum.Scripts.GenerationMap
           [SerializeField] private GameObject player;
           [SerializeField] private GameObject playerCamera;
           [SerializeField] private GameObject mainCanvas;
-     
+          [SerializeField] private TilesDrawer _tilesDrawerView;
+          [SerializeField] private TilesDrawer _tilesDrawerEdit;
+          
           private HallViewer _hallViewer;
-          private TilesDrawer _tilesDrawer;
           private bool _isView;
 
           public void Awake()
           {
                _hallViewer = FindObjectOfType<HallViewer>();
-               _tilesDrawer = FindObjectOfType<TilesDrawer>();
           
                player.SetActive(false);
                playerCamera.SetActive(false);
@@ -83,7 +83,8 @@ namespace Museum.Scripts.GenerationMap
                return new RoomDto()
                {
                     HallOptions = _hallViewer.HallSelected,
-                    Contents = _tilesDrawer.HallContents,
+                    Contents = _tilesDrawerView.HallContents.Count != 0 ?
+                         _tilesDrawerView.HallContents : _tilesDrawerEdit.HallContents
                };
           }
      }
