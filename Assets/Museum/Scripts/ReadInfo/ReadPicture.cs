@@ -30,9 +30,7 @@ namespace Museum.Scripts.ReadInfo
             yield return request.SendWebRequest();
 
             if (!request.isDone)
-            {
-                Debug.Log(request.error);
-            }
+                yield return new WaitForFixedUpdate();
             else
             {
                 var newTexture = ((DownloadHandlerTexture) request.downloadHandler).texture;
