@@ -112,7 +112,8 @@ namespace Museum.Scripts.GenerationMap
             var infoBox = SpawnChunk(infoBoxPrefab, room.FloorBlocs[i, j].transform.position + new Vector3(0, height, 0), rotate);
             var readText = infoBox.GetComponent<ReadText>();
             readText.Title = "Информация о текущем зале";
-            var infos = JsonHelper.FromJson<InfoPart.InfoPartData>(exhibitDto.Description);
+            string descriptionWithNewLines = FormatNewLines(exhibitDto.Description);
+            var infos = JsonHelper.FromJson<InfoPart.InfoPartData>(descriptionWithNewLines);
             foreach (var info in infos)
             {
                 if (info.url == null) continue;
@@ -120,6 +121,12 @@ namespace Museum.Scripts.GenerationMap
             }
             
             return infoBox;
+        }
+
+        private string FormatNewLines(string description)
+        {
+            return description.Replace("\n", "\\n")
+                .Replace("\r", "\\r").Replace("\t", "\\t");
         }
 
         private GameObject FindNearWallV2(int i, int j, Room room)

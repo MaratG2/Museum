@@ -26,9 +26,16 @@ public class InfoController : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(newAllJson))
             return;
-        InfoPart.InfoPartData[] partsDatas = JsonHelper.FromJson<InfoPart.InfoPartData>(newAllJson);
+        string descriptionWithNewLines = FormatNewLines(newAllJson);
+        InfoPart.InfoPartData[] partsDatas = JsonHelper.FromJson<InfoPart.InfoPartData>(descriptionWithNewLines);
         foreach (var pd in partsDatas)
             CreateNewInfoPart(pd);
+    }
+    
+    private string FormatNewLines(string description)
+    {
+        return description.Replace("\n", "\\n")
+            .Replace("\r", "\\r").Replace("\t", "\\t");
     }
     
     public void InfoPartsChanged(InfoPart partDeleted = null)

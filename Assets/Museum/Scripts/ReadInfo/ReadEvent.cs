@@ -82,7 +82,8 @@ namespace Museum.Scripts.ReadInfo
                 _yValueForScroll += t.RectTran.sizeDelta.y+ _spaceBetweenEl;
             }
         
-            ListObjects[0].RectTran.localPosition = new Vector3(0, _yValueForScroll/2- ListObjects[0].RectTran.sizeDelta.y/2, 0);
+            if(ListObjects != null && ListObjects.Count > 0)
+                ListObjects[0].RectTran.localPosition = new Vector3(0, _yValueForScroll/2- ListObjects[0].RectTran.sizeDelta.y/2, 0);
         
             for (var i = 1; i < ListObjects.Count; i++)
             {           
