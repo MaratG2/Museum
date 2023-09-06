@@ -105,6 +105,8 @@ namespace Museum.Scripts.ReadInfo
 
         public static Sprite ToSpite(Texture2D photo)
         {
+            if(photo == null)
+                return Sprite.Create(new Texture2D(1, 1), new Rect(0f, 0f, 1f, 1f), new Vector2(0f, 0f));
             return Sprite.Create(photo, new Rect(new Vector2(0f, 0f), new Vector2(photo.width, photo.height)), new Vector2(0f, 0f));
         }
     }
