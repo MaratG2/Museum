@@ -17,6 +17,7 @@ namespace Museum.Scripts.GenerationMap
     {
         [SerializeField] public GameObject picture;
         [SerializeField] public GameObject pedestal;
+        [SerializeField] public GameObject pedestal_base;
         [SerializeField] public GameObject videoFrame;
         [SerializeField] public GameObject infoBoxPrefab;
         private DecorationsRepository _decorationsRepository;
@@ -40,7 +41,7 @@ namespace Museum.Scripts.GenerationMap
                     
                     if (currentExhibit.Id == ExhibitsConstants.Cup.Id)
                         exhibits.Add(SpawnExhibit(i, j, currentExhibit.HeightSpawn, currentExhibit,
-                            room.FloorBlocs, room, pedestal));
+                            room.FloorBlocs, room));
                     
                     if (currentExhibit.Id == ExhibitsConstants.Decoration.Id)
                         exhibits.Add(SpawnDecoration(i, j, currentExhibit.HeightSpawn, currentExhibit, room));
@@ -71,11 +72,12 @@ namespace Museum.Scripts.GenerationMap
         }
 
         private GameObject SpawnExhibit(int i, int j, float height, ExhibitDto exhibitDto,
-            GameObject[,] floorBlocks, Room room, GameObject o)
+            GameObject[,] floorBlocks, Room room)
         {
             var nearWall = FindNearWallV2(i, j, room);
             var rotate = nearWall.transform.rotation;
-            var exhibit = SpawnChunk(o, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
+            var exhibit = SpawnChunk(pedestal, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
+            SpawnChunk(pedestal_base, floorBlocks[i, j].transform.position + new Vector3(0, height, 0), rotate);
             exhibit.GetComponent<ViewObject>().Title = "Кубок";
             return exhibit;
         }
