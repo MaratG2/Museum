@@ -13,6 +13,7 @@ namespace Museum.Scripts.ReadInfo
         private Material FrameMaterial;
         [SerializeField]
         public Texture2D picture;
+        private float _timer = 0f;
 
         private void Awake()
         {
@@ -26,6 +27,7 @@ namespace Museum.Scripts.ReadInfo
 
         private IEnumerator LoadImage(string url)
         {
+            _timer = 0f;
             var request = UnityWebRequestTexture.GetTexture(url);
             yield return request.SendWebRequest();
 
@@ -35,8 +37,18 @@ namespace Museum.Scripts.ReadInfo
             }
             else
             {
-                var newTexture = ((DownloadHandlerTexture) request.downloadHandler).texture;
-                UpdatePicture(newTexture);
+                while (!request.downloadHandler.isDone)
+                {
+                    yield return null;
+                    _timer += Time.deltaTime;
+                    if (_timer > 10f)
+                        break;
+                }
+                if (_timer <= 10f)
+                {
+                    var newTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                    UpdatePicture(newTexture);
+                }
             }
         }
     

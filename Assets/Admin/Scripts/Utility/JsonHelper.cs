@@ -14,6 +14,8 @@ namespace Admin.Utility
         public static T[] FromJson<T>(string json)
         {
             Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
+            if (wrapper == null)
+                return new T[] {};
             return wrapper.Items;
         }
 

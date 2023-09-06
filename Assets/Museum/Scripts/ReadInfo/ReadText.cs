@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using InProject;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,11 +11,13 @@ namespace Museum.Scripts.ReadInfo
     {
         private bool _flag;
         public List<ReadFile> ListFile = new();
+        private float _timer = 0f;
 
         public string Title { get; set; }
 
         public void Interact()
         {
+            Debug.Log("INTERACT");
             if (!_flag)
             {
                 Open();
@@ -26,6 +29,12 @@ namespace Museum.Scripts.ReadInfo
                 _flag = false;
             }
         }
+
+        public bool IsOpen()
+        {
+            return _flag;
+        }
+
         public void AddNewInfo(string url, string description)
         {
             StartCoroutine(LoadImage(url, description));
@@ -33,29 +42,40 @@ namespace Museum.Scripts.ReadInfo
 
         private IEnumerator LoadImage(string url, string description)
         {
+            _timer = 0f;
             var request = UnityWebRequestTexture.GetTexture(url);
             yield return request.SendWebRequest();
-
+            
             if (!request.isDone)
             {
                 Debug.Log(request.error);
             }
             else
             {
-                var newTexture = ((DownloadHandlerTexture) request.downloadHandler).texture;
-                var downloadSprite = ReadFile.ToSpite(newTexture);
-            
-                ListFile.Add(new ReadFile
+                while (!request.downloadHandler.isDone)
                 {
-                    sprite = downloadSprite,
-                    type = TypeObj.Image,
-                });
-            
-                ListFile.Add(new ReadFile
+                    yield return null;
+                    _timer += Time.deltaTime;
+                    if (_timer > 10f)
+                        break;
+                }
+                if(_timer <= 10f)
                 {
-                    text = description,
-                    type = TypeObj.Text,
-                });
+                    var newTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                    var downloadSprite = ReadFile.ToSpite(newTexture);
+
+                    ListFile.Add(new ReadFile
+                    {
+                        sprite = downloadSprite,
+                        type = TypeObj.Image,
+                    });
+
+                    ListFile.Add(new ReadFile
+                    {
+                        text = description,
+                        type = TypeObj.Text,
+                    });
+                }
             }
         }
 

@@ -21423,6 +21423,10 @@ PrefabInstance:
       propertyPath: _tilesDrawerView
       value: 
       objectReference: {fileID: 1756156832}
+    - target: {fileID: 1027050117021586898, guid: 4096f846d4feaff4398f8448664bf93c, type: 3}
+      propertyPath: pedestal_base
+      value: 
+      objectReference: {fileID: 7332904394431418289, guid: 1bc08edc59f872c47bbf62706a14884d, type: 3}
     - target: {fileID: 3730033058069164626, guid: 4096f846d4feaff4398f8448664bf93c, type: 3}
       propertyPath: m_Name
       value: 3D VIEW

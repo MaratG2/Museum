@@ -23,6 +23,12 @@ namespace InProject
                 _isActivate = false;
             }
         }
+
+        public bool IsOpen()
+        {
+            return _isActivate;
+        }
+
         void Open()
         {
             State.View(true);

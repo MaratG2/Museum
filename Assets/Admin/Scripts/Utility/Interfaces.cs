@@ -2,4 +2,5 @@
 {
      public string Title { get; }
      void Interact();
+     bool IsOpen();
 }

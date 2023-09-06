@@ -37,7 +37,10 @@ namespace Museum.Scripts.GenerationMap
           public void Update()
           {
                if (Input.GetKeyDown(KeyCode.R))
+               {
+                    FindObjectOfType<ActiveAction>().isForceE = true;
                     Exit3DView();
+               }
           }
 
           public void To3DView()
@@ -58,10 +61,10 @@ namespace Museum.Scripts.GenerationMap
           {
                if (!_isView)
                     return;
-          
+               
                _isView = false;
                State.SetCursorUnlock();
-          
+               
                mainCanvas.SetActive(true);
                player.SetActive(false);
                playerCamera.SetActive(false);

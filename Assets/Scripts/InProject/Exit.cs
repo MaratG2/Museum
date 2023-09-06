@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace InProject
@@ -11,6 +12,11 @@ namespace InProject
         {
             SceneChoice.scene = 0;
             SceneManager.LoadScene("Load", LoadSceneMode.Single);
+        }
+
+        public bool IsOpen()
+        {
+            return false;
         }
     }
 }

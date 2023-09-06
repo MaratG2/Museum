@@ -28,5 +28,10 @@ namespace Admin.Utility
             else videoPlayer.Play();
             _isPlayed = !_isPlayed;
         }
+
+         public bool IsOpen()
+         {
+             return false;
+         }
     }
 }

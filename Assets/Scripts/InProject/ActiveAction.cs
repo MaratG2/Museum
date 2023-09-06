@@ -9,9 +9,19 @@ public class ActiveAction : MonoBehaviour
     [SerializeField]
     private Camera camera;
     public Camera Camera => camera;
+
+    public bool isForceE = false;
+    private IInteractive _oldInteractive;
     
     void Update()
     {
+        if (isForceE)
+        {
+            if(_oldInteractive != null && _oldInteractive.IsOpen())
+                _oldInteractive?.Interact();
+            InteractiveLabel.Instance.CloseInfoLable();
+            isForceE = false;
+        }
         if (PlayerManager.IsJump == false)
         {
             RaycastHit hit;
@@ -24,7 +34,8 @@ public class ActiveAction : MonoBehaviour
                     InteractiveLabel.Instance.ShowInfoLableWithTitleObj(title);
                     if (Input.GetKeyDown(KeyCode.E))
                     {
-                        hit.collider.gameObject.GetComponent<IInteractive>().Interact();
+                        _oldInteractive = hit.collider.gameObject.GetComponent<IInteractive>();
+                        _oldInteractive?.Interact();
                     }
                 }
                 else
