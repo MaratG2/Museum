@@ -10,6 +10,7 @@ namespace Museum.Scripts.GenerationMap
     public class GenerationScript : MonoBehaviour
     {
         [SerializeField] private ExhibitsSpawner exhibitsSpawner;
+        [SerializeField] private Transform _parentSpawn;
         public IEnumerator DestroyRoom(Room room)
         {
             foreach (var exhibit in room.ExhibitsGO)
@@ -132,12 +133,12 @@ namespace Museum.Scripts.GenerationMap
 
         private GameObject SpawnChunk(GameObject chunk, Vector3 position, Quaternion rotate)
         {
-            return Instantiate(chunk, position, rotate);
+            return Instantiate(chunk, position, rotate, _parentSpawn);
         }
 
         private GameObject SpawnChunk(GameObject chunk, Vector3 position)
         {
-            return Instantiate(chunk, position, Quaternion.identity);
+            return Instantiate(chunk, position, Quaternion.identity, _parentSpawn);
         }
     }
 }

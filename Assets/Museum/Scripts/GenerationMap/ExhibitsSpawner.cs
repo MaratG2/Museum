@@ -20,6 +20,7 @@ namespace Museum.Scripts.GenerationMap
         [SerializeField] public GameObject pedestal_base;
         [SerializeField] public GameObject videoFrame;
         [SerializeField] public GameObject infoBoxPrefab;
+        [SerializeField] private Transform _spawnParent;
         private DecorationsRepository _decorationsRepository;
 
         public void Start()
@@ -154,7 +155,7 @@ namespace Museum.Scripts.GenerationMap
         
         private GameObject SpawnChunk(GameObject chunk, Vector3 position, Quaternion rotate)
         {
-            return Instantiate(chunk, position, rotate);
+            return Instantiate(chunk, position, rotate, _spawnParent);
         }
     }
 }
