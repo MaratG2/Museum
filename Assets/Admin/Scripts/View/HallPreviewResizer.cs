@@ -33,7 +33,8 @@ namespace Admin.View
                 return;
             }
 
-            Vector2 windowSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            //Screen.currentResolution.width & height
+            Vector2 windowSize = new Vector2(1920,1080);
             int sizeX = _adminView.HallSelected.sizex, sizeZ = _adminView.HallSelected.sizez;
             float heightScale = windowSize.y * 0.85f / sizeZ;
             float widthScale = windowSize.x * 0.25f / sizeX;

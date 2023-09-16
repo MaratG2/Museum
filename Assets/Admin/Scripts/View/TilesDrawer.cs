@@ -109,8 +109,8 @@ namespace Admin.View
 
         private IEnumerator FindLeftBottomTilePosition()
         {
-            for (int i = 0; i < 1920 / _tileSize; i++)
-                for (int j = 0; j < 1080 / _tileSize; j++)
+            for (int i = 0; i < Screen.width / _tileSize; i++)
+                for (int j = 0; j < Screen.height / _tileSize; j++)
                     if (CheckIfTileExistsAt(i, j))
                     {
                         _leftBottomTilePos = new Vector2
@@ -118,6 +118,7 @@ namespace Admin.View
                             i + 0.5f,
                             j + 0.25f
                         );
+                        Debug.Log("START. i: " + i + " | j: " + j + " | leftBottom: " + _leftBottomTilePos);
                         OnStartTileFound?.Invoke(_leftBottomTilePos);
                         yield break;
                     }
@@ -125,10 +126,13 @@ namespace Admin.View
 
         private bool CheckIfTileExistsAt(int x, int y)
         {
+            float multiX = 1920f / Screen.width;
+            float multiY = 1080f / Screen.height;
+            
             bool isOverPreview = false;
             GameObject[] casted = RaycastUtilities.UIRaycasts(
                 RaycastUtilities.ScreenPosToPointerData(
-                    new Vector2(x * _tileSize + _tileSize / 2, y * _tileSize + _tileSize / 4)));
+                    new Vector2((x * _tileSize + _tileSize / 2) / multiX, (y * _tileSize + _tileSize / 4) / multiY)));
             foreach (var c in casted)
             {
                 if (c.GetComponent<HallPreviewResizer>())

@@ -59,8 +59,11 @@ namespace Admin.Edit
 
         private void ChangeCursorTileSize()
         {
-            _windowSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
-            _absoluteMousePos = Input.mousePosition;
+            //Screen.currentResolution.width & height
+            _windowSize = new Vector2(1920,1080);
+            float multiX = 1920f / Screen.width;
+            float multiY = 1080f / Screen.height;
+            _absoluteMousePos = new Vector2(Input.mousePosition.x * multiX, Input.mousePosition.y * multiY);
             _tileSize = _tilesDrawer.TileSize;
             _cursorTile.sizeDelta = new Vector2(_tileSize, _tileSize);
         }
@@ -78,6 +81,11 @@ namespace Admin.Edit
             TiledHallMousePos = TiledMousePos - _startTilePos;
             TileHallMousePos = TileMousePos - _startTilePos;
             
+            //Debug.Log("TiledMousePos: " + TiledMousePos + " | TileMousePos: " + TileMousePos + 
+            //          " | TiledHallMousePos: " + TiledHallMousePos + " | TileHallMousePos: " + TileHallMousePos + 
+            //         " | _startTilePos: " + _startTilePos + " | AbsoluteMouse: " + _absoluteMousePos + 
+            //          " | WindowSize: " + _windowSize);
+            
             bool isOverPreview = CheckIfIsOverPreview();
             
             if (isOverPreview && _absoluteMousePos.x < 0.75f * _windowSize.x)
@@ -88,8 +96,11 @@ namespace Admin.Edit
 
         private bool CheckIfIsOverPreview()
         {
+            float multiX = 1920f / Screen.width;
+            float multiY = 1080f / Screen.height;
+            var mousePos = new Vector2(_absoluteMousePos.x / multiX, _absoluteMousePos.y / multiY);
             GameObject[] casted =
-                RaycastUtilities.UIRaycasts(RaycastUtilities.ScreenPosToPointerData(_absoluteMousePos));
+                RaycastUtilities.UIRaycasts(RaycastUtilities.ScreenPosToPointerData(mousePos));
             foreach (var c in casted)
             {
                 if (c.GetComponent<HallPreviewResizer>())
