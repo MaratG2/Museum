@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class SetFPS : MonoBehaviour
@@ -6,7 +7,7 @@ public class SetFPS : MonoBehaviour
      
     void Awake()
     {
-        QualitySettings.vSyncCount = 0;
+        //QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = _targetFPS;
     }
      

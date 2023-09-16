@@ -41,9 +41,10 @@ namespace Museum.Scripts.HandlePlayer
 
         private void CameraRotation()
         {
-            var mouseX = Input.GetAxis(mouseXInputName) * PlayerManager.MouseSensitivity * Time.deltaTime;
-            var mouseY = Input.GetAxis(mouseYInputName) * PlayerManager.MouseSensitivity * Time.deltaTime;
+            var mouseX = Input.GetAxis(mouseXInputName) * PlayerManager.MouseSensitivity * Time.fixedDeltaTime;
+            var mouseY = Input.GetAxis(mouseYInputName) * PlayerManager.MouseSensitivity * Time.fixedDeltaTime;
 
+            /*
             _xAxisClamp += mouseY;
 
             if (_xAxisClamp > 90.0f)
@@ -58,6 +59,7 @@ namespace Museum.Scripts.HandlePlayer
                 mouseY = 0.0f;
                 ClampXAxisRotationToValue(90.0f);
             }
+            */
 
             transform.Rotate(Vector3.left * mouseY);
             playerBody.Rotate(Vector3.up * mouseX);

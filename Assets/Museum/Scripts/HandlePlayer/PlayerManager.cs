@@ -13,7 +13,7 @@ namespace Museum.Scripts.HandlePlayer
         
         [HideInInspector] public Transform tran;
         public static bool IsJump = false;
-        public static float MouseSensitivity = 150f;
+        public static float MouseSensitivity = 50f;
 
         private void Awake()
         {
