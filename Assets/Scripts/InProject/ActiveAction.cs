@@ -1,11 +1,14 @@
 ﻿using InProject;
 using Museum.Scripts.HandlePlayer;
 using Museum.Scripts.Menu;
+using SUPERCharacter;
 using UnityEngine;
 
 public class ActiveAction : MonoBehaviour
 {
     float rayLength = 2f;
+    [SerializeField] private SUPERCharacterAIO _superCharacter;
+    
     [SerializeField]
     private Camera camera;
     public Camera Camera => camera;
@@ -44,7 +47,14 @@ public class ActiveAction : MonoBehaviour
                 }
             }
             else
+            {
                 InteractiveLabel.Instance.CloseInfoLable();
+            }
+
+            if (_oldInteractive != null && _oldInteractive.IsOpen())
+                _superCharacter.controllerPaused = true;
+            else
+                _superCharacter.controllerPaused = false;
 
 
             if (Input.GetKeyDown(KeyCode.Tab))
