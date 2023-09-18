@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Admin.PHP;
 using Admin.Utility;
 using GenerationMap;
@@ -14,17 +15,22 @@ namespace Museum.Scripts.GenerationMap
     {
         public Dictionary<int, RoomDto> CachedRooms { get; private set; }
         public List<Hall> CachedHallsInfo { get; private set; }
+        public List<Hall> CachedPublicHallsInfo { get; private set; }
         private HallQueries _hallQueries = new();
 
         private void OnEnable()
         {
             _hallQueries.OnAllHallsGet += halls => CachedHallsInfo = halls;
+            _hallQueries.OnAllHallsGet += halls => 
+                CachedPublicHallsInfo = halls.Where(x => !x.is_hidden).ToList();
             _hallQueries.OnAllHallContentsGet += AddToCachedRooms;
         }
     
         private void OnDisable()
         {
             _hallQueries.OnAllHallsGet -= halls => CachedHallsInfo = halls;
+            _hallQueries.OnAllHallsGet -= halls => 
+                CachedPublicHallsInfo = halls.Where(x => !x.is_hidden).ToList();
             _hallQueries.OnAllHallContentsGet -= AddToCachedRooms;
         }
 

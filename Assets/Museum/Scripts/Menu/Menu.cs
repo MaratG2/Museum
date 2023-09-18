@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using InProject;
+using SUPERCharacter;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -24,6 +25,8 @@ namespace Museum.Scripts.Menu
         [SerializeField] private GameObject obj;
 
         [SerializeField] public GameObject roomsMenu;
+
+        public bool IsWindow => roomsMenu.activeInHierarchy;
     
         [FormerlySerializedAs("MustBeClosed")] [SerializeField]
         List<GameObject> mustBeClosed = new();

@@ -51,10 +51,14 @@ public class ActiveAction : MonoBehaviour
                 InteractiveLabel.Instance.CloseInfoLable();
             }
 
-            if (_oldInteractive != null && _oldInteractive.IsOpen())
-                _superCharacter.controllerPaused = true;
-            else
-                _superCharacter.controllerPaused = false;
+            if ((_oldInteractive != null && _oldInteractive.IsOpen())
+                || Menu.Instance.IsWindow)
+            {
+                if(!_superCharacter.controllerPaused)
+                    _superCharacter.PausePlayer(PauseModes.BlockInputOnly);
+            }
+            else if(_superCharacter.controllerPaused)
+                _superCharacter.UnpausePlayer();
 
 
             if (Input.GetKeyDown(KeyCode.Tab))
