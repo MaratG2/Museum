@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Admin.Edit;
 using Admin.GenerationMap;
 using Admin.Models;
@@ -116,6 +118,20 @@ namespace Museum.Scripts.GenerationMap
             var readText = infoBox.GetComponent<ReadText>();
             readText.Title = "Информация о текущем зале";
             string descriptionWithNewLines = FormatNewLines(exhibitDto.Description);
+            for (int k = 1; k < descriptionWithNewLines.Length - 1; k++)
+            {
+                if (descriptionWithNewLines[k] == '"' || descriptionWithNewLines[k] == '\'')
+                {
+                    if (descriptionWithNewLines[k - 1] == '{' ||
+                        descriptionWithNewLines[k + 1] == '}' ||
+                        descriptionWithNewLines[k - 1] == ',' ||
+                        descriptionWithNewLines[k + 1] == ',' ||
+                        descriptionWithNewLines[k - 1] == ':' ||
+                        descriptionWithNewLines[k + 1] == ':')
+                        continue;
+                    descriptionWithNewLines = ReplaceAt(descriptionWithNewLines, k, ' ');
+                }
+            }
             var infos = JsonHelper.FromJson<InfoPart.InfoPartData>(descriptionWithNewLines);
             foreach (var info in infos)
             {
@@ -124,6 +140,17 @@ namespace Museum.Scripts.GenerationMap
             }
             
             return infoBox;
+        }
+        
+        public string ReplaceAt(string input, int index, char newChar)
+        {
+            if (input == null)
+            {
+                throw new ArgumentNullException("input");
+            }
+            StringBuilder builder = new StringBuilder(input);
+            builder[index] = newChar;
+            return builder.ToString();
         }
 
         private string FormatNewLines(string description)

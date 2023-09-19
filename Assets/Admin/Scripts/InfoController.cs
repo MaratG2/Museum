@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Admin.Edit;
 using Admin.Utility;
 using UnityEngine;
@@ -27,9 +29,35 @@ public class InfoController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(newAllJson))
             return;
         string descriptionWithNewLines = FormatNewLines(newAllJson);
+        for (int k = 1; k < descriptionWithNewLines.Length - 1; k++)
+        {
+            if (descriptionWithNewLines[k] == '"' || descriptionWithNewLines[k] == '\'')
+            {
+                if (descriptionWithNewLines[k - 1] == '{' ||
+                    descriptionWithNewLines[k + 1] == '}' ||
+                    descriptionWithNewLines[k - 1] == ',' ||
+                    descriptionWithNewLines[k + 1] == ',' ||
+                    descriptionWithNewLines[k - 1] == ':' ||
+                    descriptionWithNewLines[k + 1] == ':')
+                    continue;
+                descriptionWithNewLines = ReplaceAt(descriptionWithNewLines, k, ' ');
+            }
+        }
+        Debug.Log(descriptionWithNewLines);
         InfoPart.InfoPartData[] partsDatas = JsonHelper.FromJson<InfoPart.InfoPartData>(descriptionWithNewLines);
         foreach (var pd in partsDatas)
             CreateNewInfoPart(pd);
+    }
+    
+    public string ReplaceAt(string input, int index, char newChar)
+    {
+        if (input == null)
+        {
+            throw new ArgumentNullException("input");
+        }
+        StringBuilder builder = new StringBuilder(input);
+        builder[index] = newChar;
+        return builder.ToString();
     }
     
     private string FormatNewLines(string description)
@@ -47,6 +75,10 @@ public class InfoController : MonoBehaviour
             if(partDeleted == null || cp != partDeleted)
                 partsDatasList.Add(cp.InfoData);
         partsDatas = partsDatasList.ToArray();
+        
+        for(int i = 0; i < partsDatas.Length; i++)
+            partsDatas[i].desc = partsDatas[i].desc.Replace("\"", "'");
+        
         AllJsonData = JsonHelper.ToJson(partsDatas);
     }
 
