@@ -66,14 +66,51 @@ namespace Museum.Scripts.ReadInfo
         public IEnumerator SetForm()
         {
             //goScroll.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, 0);
+            goForm.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             CreateObjects();
 
             foreach (var listObject in ListObjects)
             {
                 var img = listObject.TypedObject.GetComponent<Image>();
                 if (img)
+                {
                     img.preserveAspect = true;
+                }
+                
+                listObject.RectTran.localScale = Vector3.one;
             }
+            
+            goForm.GetComponent<VerticalLayoutGroup>().childControlHeight = true;
+            yield return new WaitForEndOfFrame();
+            goForm.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
+            yield return new WaitForEndOfFrame();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(goForm.GetComponent<RectTransform>());
+            
+            foreach (var listObject in ListObjects)
+            {
+                var tmp = listObject.TypedObject.GetComponent<TMP_Text>();
+                if (tmp)
+                {
+                    var contentSizeFitter = tmp.gameObject.AddComponent<ContentSizeFitter>();
+                    contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                }
+            }
+            LayoutRebuilder.ForceRebuildLayoutImmediate(goForm.GetComponent<RectTransform>());
+
+            goForm.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.MinSize;
+            
+            foreach (var listObject in ListObjects)
+            {
+                var img = listObject.TypedObject.GetComponent<Image>();
+                if (img)
+                {
+                    if (ListObjects.Count == 1)
+                    {
+                        img.rectTransform.sizeDelta = new Vector2(img.rectTransform.sizeDelta.x, 1060f);
+                    }
+                }
+            }
+            
             yield return null; // Для постановки системой подходящей высоты
             //SetPostion();
         
