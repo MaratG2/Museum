@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Museum.Scripts.ReadInfo
 {
@@ -49,11 +50,11 @@ namespace Museum.Scripts.ReadInfo
 
         void SetPanelProperty()
         {
-            Width = Screen.width * 0.8f;
-            Height = Width / 16f * 10f;
+            //Width = Screen.width * 0.8f;
+            //Height = Width / 16f * 10f;
 
-            SpaceFortext = Width * 0.05f;
-            _spaceBetweenEl = Width * 0.04f;
+            //SpaceFortext = Width * 0.05f;
+            //_spaceBetweenEl = Width * 0.04f;
         }
 
 
@@ -64,18 +65,29 @@ namespace Museum.Scripts.ReadInfo
 
         public IEnumerator SetForm()
         {
-            goScroll.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, 0);
+            //goScroll.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, 0);
             CreateObjects();
+
+            foreach (var listObject in ListObjects)
+            {
+                var img = listObject.TypedObject.GetComponent<Image>();
+                if (img)
+                    img.preserveAspect = true;
+            }
             yield return null; // Для постановки системой подходящей высоты
-            SetPostion();
+            //SetPostion();
         
-            goForm.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, _yValueForScroll);
-            goForm.GetComponent<RectTransform>().localPosition = new Vector3(0f, -_yValueForScroll / 2 + _spaceBetweenEl, 0f);
+            //goForm.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, _yValueForScroll);
+            //goForm.GetComponent<RectTransform>().localPosition = new Vector3(0f, -_yValueForScroll / 2 + _spaceBetweenEl, 0f);
+
+            foreach (var listObject in ListObjects)
+            {
+                //listObject.RectTran.localScale = Vector3.one;
+            }
         }
 
         private void SetPostion()
-        {      
-
+        {    
             foreach (var t in ListObjects)
             {
                 t.SetYValue();            
@@ -93,12 +105,9 @@ namespace Museum.Scripts.ReadInfo
 
         private void CreateObjects()
         {
-            int skip = 0;
             foreach (var i in ListFile)
             {
-                if(skip == 0)
-                    ListObjects.Add(i.ToReadObject());
-                skip++;
+                ListObjects.Add(i.ToReadObject());
             }
         }
         

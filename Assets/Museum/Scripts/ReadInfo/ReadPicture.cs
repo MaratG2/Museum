@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 #pragma warning disable 0649
 namespace Museum.Scripts.ReadInfo
@@ -14,6 +16,7 @@ namespace Museum.Scripts.ReadInfo
         [SerializeField]
         public Texture2D picture;
         private float _timer = 0f;
+        private bool _hasGot;
 
         private void Awake()
         {
@@ -54,6 +57,12 @@ namespace Museum.Scripts.ReadInfo
     
         private void UpdatePicture(Texture2D newImage)
         {
+            if (!_hasGot && ListFile.Count == 1)
+            {
+                ListFile = new List<ReadFile>();
+                _hasGot = true;
+            }
+            
             picture = newImage;
             var spr= ReadFile.ToSpite(picture);
             var rd = new ReadFile
