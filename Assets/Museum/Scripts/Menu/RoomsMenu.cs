@@ -70,6 +70,7 @@ namespace Museum.Scripts.Menu
             converter.GenerateRoomWithContens(room);
             var posForSpawn = room.GetSpawnPosition();
             player.transform.position = posForSpawn;
+            Menu.Instance.ActivateRoomMenu();
         }
     
         public void BackToMainRoom()

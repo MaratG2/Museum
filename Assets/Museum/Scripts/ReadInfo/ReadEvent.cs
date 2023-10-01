@@ -93,9 +93,12 @@ namespace Museum.Scripts.ReadInfo
 
         private void CreateObjects()
         {
+            int skip = 0;
             foreach (var i in ListFile)
             {
-                ListObjects.Add(i.ToReadObject());
+                if(skip == 0)
+                    ListObjects.Add(i.ToReadObject());
+                skip++;
             }
         }
         

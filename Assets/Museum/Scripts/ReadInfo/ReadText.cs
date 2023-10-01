@@ -17,7 +17,6 @@ namespace Museum.Scripts.ReadInfo
 
         public void Interact()
         {
-            Debug.Log("INTERACT");
             if (!_flag)
             {
                 Open();

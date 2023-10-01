@@ -45,7 +45,7 @@ namespace InProject
             Lable.SetActive(true);
             if (string.IsNullOrEmpty(title))
             {
-                Debug.LogWarning("Attempt to include an interactive label with an empty object name.");
+                //Debug.LogWarning("Attempt to include an interactive label with an empty object name.");
                 return;
             }
             lableForTitle.SetActive(true);
