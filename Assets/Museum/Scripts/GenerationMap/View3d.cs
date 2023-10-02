@@ -3,6 +3,7 @@ using GenerationMap;
 using InProject;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Video;
 
 namespace Museum.Scripts.GenerationMap
 {
@@ -38,6 +39,9 @@ namespace Museum.Scripts.GenerationMap
           {
                if (Input.GetKeyDown(KeyCode.R))
                {
+                    var videos = FindObjectsOfType<VideoPlayer>();
+                    foreach (var video in videos)
+                         video.Stop();
                     FindObjectOfType<ActiveAction>().isForceE = true;
                     Exit3DView();
                }

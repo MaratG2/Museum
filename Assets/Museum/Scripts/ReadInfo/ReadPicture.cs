@@ -69,6 +69,16 @@ namespace Museum.Scripts.ReadInfo
             {
                 sprite = spr
             };
+            
+            Vector2 initScale = new Vector2(1f, 1.5f);
+            float xMulti = spr.texture.width / (float)spr.texture.height;
+            Mathf.Clamp(xMulti, 0.3f, 3.3f);
+            if (xMulti >= 1f)
+                initScale.x *= xMulti;
+            else
+                initScale.y /= xMulti;
+            transform.localScale = new Vector3(initScale.x, initScale.y, 1f);
+            
             ListFile.Insert(0,rd);
             var mat = new Material(PictureMaterial);
             mat.SetTexture("_MainTex", picture);
