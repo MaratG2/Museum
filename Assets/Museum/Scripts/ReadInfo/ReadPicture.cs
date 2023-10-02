@@ -70,7 +70,7 @@ namespace Museum.Scripts.ReadInfo
                 sprite = spr
             };
             
-            Vector2 initScale = new Vector2(1f, 1.5f);
+            Vector2 initScale = new Vector2(1f, 1.7f);
             float xMulti = spr.texture.width / (float)spr.texture.height;
             Mathf.Clamp(xMulti, 0.3f, 3.3f);
             if (xMulti >= 1f)

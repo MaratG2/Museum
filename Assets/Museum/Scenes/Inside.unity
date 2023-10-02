@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1736521, g: 0.21709985, b: 0.29921982, a: 1}
+  m_IndirectSpecularColor: {r: 0.1736521, g: 0.21709985, b: 0.2992198, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2593,6 +2593,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: walkingSpeed
+      value: 290
+      objectReference: {fileID: 0}
+    - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: sprintingSpeed
+      value: 291
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
 --- !u!114 &799573478 stripped
@@ -4023,6 +4031,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!23 &1322984842
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4433,6 +4442,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!23 &1450391907
 MeshRenderer:
   m_ObjectHideFlags: 0
