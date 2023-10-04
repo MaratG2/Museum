@@ -2545,6 +2545,14 @@ PrefabInstance:
       propertyPath: slider
       value: 
       objectReference: {fileID: 1373918785}
+    - target: {fileID: 6061337279354121531, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: far clip plane
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6061337279354121531, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: near clip plane
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6061337279661161721, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
       propertyPath: m_Name
       value: Player
