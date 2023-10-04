@@ -2594,12 +2594,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: canCrouch
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: canSprint
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
       propertyPath: walkingSpeed
       value: 290
       objectReference: {fileID: 0}
     - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
       propertyPath: sprintingSpeed
-      value: 291
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 6061337279661161723, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
+      propertyPath: enableFootstepSounds
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91118c94e9e428b4c9c5e73cefb6e2f1, type: 3}
@@ -7552,7 +7564,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 41.933, y: -287.43}
+  m_AnchoredPosition: {x: 41.933105, y: -287.42993}
   m_SizeDelta: {x: -1318.9718, y: -980.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2706699782461606822

@@ -2,6 +2,7 @@ using Museum.Scripts.GenerationMap;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Museum.Scripts.Menu
 {
@@ -75,6 +76,9 @@ namespace Museum.Scripts.Menu
     
         public void BackToMainRoom()
         {
+            var videos = FindObjectsOfType<VideoPlayer>();
+            foreach (var video in videos)
+                video.Stop();
             Menu.Instance.ActivateRoomMenu();
             player.transform.position = _startPosPlayer;
         }
