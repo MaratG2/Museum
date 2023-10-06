@@ -42,7 +42,6 @@ namespace Admin.Utility
              Vector2 initScale = new Vector2(1f, 1.7f);
              initScale /= 1.5f;
              float xMulti = videoPlayer.width / (float)videoPlayer.height;
-             Debug.Log(xMulti);
              Mathf.Clamp(xMulti, 0.3f, 3.3f);
              if (xMulti >= 1f)
                  initScale.x *= xMulti;

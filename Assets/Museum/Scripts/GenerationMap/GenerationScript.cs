@@ -1,5 +1,6 @@
 using System.Collections;
 using GenerationMap;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Museum.Scripts.GenerationMap
@@ -21,6 +22,9 @@ namespace Museum.Scripts.GenerationMap
                 Destroy(cell);
             foreach (var wall in room.WallBlocs)
                 Destroy(wall);
+            for(int i = _parentSpawn.childCount - 1; i >= 0; i--)
+                Destroy(_parentSpawn.GetChild(i).gameObject);
+            
             yield return null;
         }
 

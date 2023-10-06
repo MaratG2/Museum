@@ -1,5 +1,7 @@
+using System;
+using System.Collections.Generic;
+using Admin.Utility;
 using Museum.Scripts.GenerationMap;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -8,69 +10,81 @@ namespace Museum.Scripts.Menu
 {
     public class RoomsMenu : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI goToHallText;
         [SerializeField] private RoomsContainer roomsContainer;
-
         [SerializeField] private GenerationConnector converter;
         [SerializeField] private GameObject player;
-        [SerializeField] private Button _hallButton;
-        [SerializeField] private Button _nextButton;
-        [SerializeField] private Button _previousButton;
+        [SerializeField] private Transform _hallsParent;
+        [SerializeField] private HallListing _hallInListPrefab;
+        [SerializeField] private Button _returnHallButton;
+        [SerializeField] private Button _enterHallButton;
+        [SerializeField] private Color _activeColor;
+        [SerializeField] private Color _inactiveColor;
+        private List<HallListing> _hallListings;
+        private HallListing _hallSelected;
         private Vector3 _startPosPlayer;
         private int _currentHall;
-    
-    
-        public void Start()
+
+        private void Start()
         {
             _startPosPlayer = player.transform.position;
-            if(roomsContainer.CachedPublicHallsInfo.Count == 0)
-            {
-                _hallButton.interactable = false;
-                _nextButton.interactable = false;
-                _previousButton.interactable = false;
-                return;
-            }
-            string prefix = roomsContainer.CachedPublicHallsInfo[_currentHall].is_maintained
-                ? "(в работе) " : "";
-            _hallButton.interactable = prefix.Length <= 1;
-            goToHallText.text = prefix + roomsContainer.CachedPublicHallsInfo[_currentHall].name;
+        }
         
+        private void OnEnable()
+        {
+            _hallListings = new List<HallListing>();
+            _hallSelected = null;
+            for(int i = _hallsParent.childCount - 1; i >= 0; i--)
+                Destroy(_hallsParent.GetChild(i).gameObject);
+            _enterHallButton.interactable = false;
+            _returnHallButton.interactable = true;
+            SpawnHallList();
+            SortHallList();
         }
 
-        public void NextHall()
+        private void SpawnHallList()
         {
-            if(roomsContainer.CachedPublicHallsInfo.Count == 0)
-                return;
-            if (_currentHall == roomsContainer.CachedPublicHallsInfo.Count - 1)
-                _currentHall = 0;
-            else _currentHall++;
-            string prefix = roomsContainer.CachedPublicHallsInfo[_currentHall].is_maintained
-                ? "(в работе) " : "";
-            _hallButton.interactable = prefix.Length <= 1;
-            goToHallText.text = prefix + roomsContainer.CachedPublicHallsInfo[_currentHall].name;
-        }
-    
-        public void PreviewHall()
-        {
-            if(roomsContainer.CachedPublicHallsInfo.Count == 0)
-                return;
-            if (_currentHall == 0)
-                _currentHall = roomsContainer.CachedPublicHallsInfo.Count - 1;
-            else
-                _currentHall--;
-            string prefix = roomsContainer.CachedPublicHallsInfo[_currentHall].is_maintained 
-                ? "(в работе) " : "";
-            _hallButton.interactable = prefix.Length <= 1;
-            goToHallText.text = prefix + roomsContainer.CachedPublicHallsInfo[_currentHall].name;
+            foreach (var hallInfo in roomsContainer.CachedPublicHallsInfo)
+            {
+                var newHallListing = Instantiate(_hallInListPrefab, Vector3.zero, Quaternion.identity, _hallsParent);
+                newHallListing.Setup(hallInfo, this);
+                _hallListings.Add(newHallListing);
+            }
         }
 
+        private void SortHallList()
+        {
+            for (int i = 0; i < _hallListings.Count; i++)
+            {
+                if(_hallListings[i].IsActive())
+                    _hallListings[i].transform.SetAsFirstSibling();
+            }
+        }
+
+        public void SelectHall(HallListing hallListingSelected)
+        {
+            this._hallSelected = hallListingSelected;
+            _enterHallButton.interactable = true;
+
+            for (int i = 0; i < _hallsParent.childCount; i++)
+            {
+                if (_hallsParent.GetChild(i).gameObject == _hallSelected.gameObject)
+                {
+                    _hallsParent.GetChild(i).GetComponent<Image>().color = _activeColor;
+                }
+                else
+                {
+                    _hallsParent.GetChild(i).GetComponent<Image>().color = _inactiveColor;
+                }
+            }
+        }
+        
         public void LoadHall()
         {
-            var room = converter.GetRoomByRoomDto(roomsContainer
-                .CachedRooms[roomsContainer.CachedPublicHallsInfo[_currentHall].hnum]);
+            var room = converter.GetRoomByRoomDto(roomsContainer.CachedRooms[_hallSelected.GetHNum()]);
             converter.GenerateRoomWithContens(room);
             var posForSpawn = room.GetSpawnPosition();
             player.transform.position = posForSpawn;
+            _enterHallButton.interactable = false;
             Menu.Instance.ActivateRoomMenu();
         }
     

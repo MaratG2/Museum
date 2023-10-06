@@ -43,6 +43,7 @@ namespace Museum.Scripts.GenerationMap
         public void Awake()
         {
             StartCoroutine(InitializeRoomsContainer());
+            TimeManager.InitializeTime();
         }
 
         private IEnumerator InitializeRoomsContainer()
