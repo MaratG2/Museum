@@ -68,7 +68,6 @@ namespace Museum.Scripts.Menu
             DateTime date_end = DateTime.Now;
             if (_hall.is_date_b)
             {
-                Debug.Log(_hall.date_begin);
                 date_begin = DateTime.ParseExact(_hall.date_begin, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture,
                     DateTimeStyles.AssumeUniversal);
             }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
- 
+using UnityEngine.Networking;
+
 public static class TimeManager
 {
     private static DateTime _utcStartTime = DateTime.UtcNow;
@@ -20,12 +19,26 @@ public static class TimeManager
     {
         try
         {
-            var client = new TcpClient();
-            await client.ConnectAsync("time.nist.gov", 13);
-            using var streamReader = new StreamReader(client.GetStream());
-            var response = await streamReader.ReadToEndAsync();
-            var utcDateTimeString = response.Substring(7, 17);
-            _utcStartTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            /*
+            string fullUrl = "http://time.nist.gov:13";
+            UnityWebRequest www = UnityWebRequest.Get(fullUrl);
+            UnityWebRequestAsyncOperation op = www.SendWebRequest();
+            op.completed += (obj) =>
+            {
+                if (www.result != UnityWebRequest.Result.Success)
+                    Debug.LogError($"Url: {www.uri} | Error: {www.error} | {www.downloadHandler?.text}");
+                else
+                {
+                    var response = www.downloadHandler.data;
+                    var responseString = response.ToString();
+                    var utcDateTimeString = responseString.Substring(7, 17);
+                    _utcStartTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss",
+                        CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                    IsReady = true;
+                }
+            };
+            */
+            _utcStartTime = DateTime.Now;
         }
         catch
         {
