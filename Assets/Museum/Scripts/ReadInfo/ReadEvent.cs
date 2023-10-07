@@ -66,7 +66,8 @@ namespace Museum.Scripts.ReadInfo
         public IEnumerator SetForm()
         {
             //goScroll.GetComponent<RectTransform>().sizeDelta = new Vector2(Width, 0);
-            goForm.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            if(goForm.GetComponent<ContentSizeFitter>())
+                goForm.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             CreateObjects();
 
             foreach (var listObject in ListObjects)
@@ -80,9 +81,11 @@ namespace Museum.Scripts.ReadInfo
                 listObject.RectTran.localScale = Vector3.one;
             }
             
-            goForm.GetComponent<VerticalLayoutGroup>().childControlHeight = true;
+            if(goForm.GetComponent<VerticalLayoutGroup>())
+                goForm.GetComponent<VerticalLayoutGroup>().childControlHeight = true;
             yield return new WaitForEndOfFrame();
-            goForm.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
+            if(goForm.GetComponent<VerticalLayoutGroup>())
+                goForm.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
             yield return new WaitForEndOfFrame();
             LayoutRebuilder.ForceRebuildLayoutImmediate(goForm.GetComponent<RectTransform>());
             
